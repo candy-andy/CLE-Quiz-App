@@ -13,7 +13,7 @@ import {
   Trophy, BookOpen, Target, BarChart3, Clock, CheckCircle2, XCircle, 
   ArrowLeft, ArrowRight, Play, RotateCcw, Zap, Brain, TrendingUp,
   Award, AlertCircle, ChevronRight, Home, Settings, Star, Users,
-  LogOut, LogIn, UserPlus, Shield, Activity, Calendar, Crown, Lock, Sparkles
+  LogOut, LogIn, UserPlus, Shield, Activity, Calendar
 } from "lucide-react"
 
 // ============================================================================
@@ -107,6 +107,127 @@ const ALLE_FRAGEN = [
 {id:"KO05",k:"Kommunikation",farbe:"#117A65",q:"Was kennzeichnet eine klare Ich-Botschaft?",a:["Beschreibt eigene Wahrnehmung, Gefühl und Bedürfnis","Vermeidet Schuldzuweisungen an andere","Ich-Botschaften und Du-Vorwürfe sind gleichwertig.","Fördert Verständnis statt Abwehr beim Gegenüber"],r:[0,1,3]},
 {id:"KO06",k:"Kommunikation",farbe:"#117A65",q:"Was sind Merkmale nonverbaler Kommunikation?",a:["Körperhaltung, Gestik, Mimik, Blickkontakt","Macht ca. 55-65% der gesamten Kommunikation aus.","Nonverbal ist immer kontrollierbar.","Widerspruch zwischen verbal und nonverbal erzeugt Misstrauen."],r:[0,1,3]},
 {id:"KO07",k:"Kommunikation",farbe:"#117A65",q:"Was ist Feedback nach dem SBI-Modell?",a:["Situation: konkrete Situation beschreiben","Behavior: beobachtetes Verhalten benennen","Impact: Wirkung/Auswirkung schildern","SBI = Subjektive Bewertung und Interpretation"],r:[0,1,2]},
+// Neue Fragen aus CSV importiert
+{id:"F100",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
+{id:"F101",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Impact/Dringlichkeit, Engpass zuerst.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
+{id:"F102",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","konkret, zeitnah, verhaltensbezogen."],r:[3]},
+{id:"F103",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: eine erfahrene Fachkraft die Prozesse ignoriert. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Reifegrad einschätzen und Führungsstil anpassen.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"F104",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein neues Team übernimmt und die Rollen unklar sind. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","konkret, zeitnah, verhaltensbezogen."],r:[3]},
+{id:"F105",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein High Performer toxisches Verhalten zeigt. Was ist der sinnvollste erste Schritt?",a:["Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
+{id:"F106",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt? (Variante 7)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Reifegrad einschätzen und Führungsstil anpassen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"F107",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Projekt in Verzug gerät und der Sponsor Druck macht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","konkret, zeitnah, verhaltensbezogen.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"F108",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["konkret, zeitnah, verhaltensbezogen.","Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"F109",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Reifegrad einschätzen und Führungsstil anpassen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"F110",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein wichtiger Kunde kurzfristig Änderungen verlangt. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Reifegrad einschätzen und Führungsstil anpassen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[1]},
+{id:"F111",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Reifegrad einschätzen und Führungsstil anpassen."],r:[3]},
+{id:"F112",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: eine erfahrene Fachkraft die Prozesse ignoriert. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","SMART Erwartungen, Verantwortlichkeiten, Deadlines."],r:[3]},
+{id:"F113",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein neues Team übernimmt und die Rollen unklar sind. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Impact/Dringlichkeit, Engpass zuerst."],r:[3]},
+{id:"F114",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Teammitglied ständig zusagt, aber nicht liefert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","konkret, zeitnah, verhaltensbezogen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"F115",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Teammitglied ständig zusagt, aber nicht liefert. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Impact/Dringlichkeit, Engpass zuerst."],r:[3]},
+{id:"F116",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: eine erfahrene Fachkraft die Prozesse ignoriert. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"F117",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","konkret, zeitnah, verhaltensbezogen."],r:[3]},
+{id:"F118",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Teammitglied ständig zusagt, aber nicht liefert. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[1]},
+{id:"F119",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein neues Team übernimmt und die Rollen unklar sind. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
+{id:"F120",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt?",a:["Impact/Dringlichkeit, Engpass zuerst.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
+{id:"F121",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt? (Variante 22)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Impact/Dringlichkeit, Engpass zuerst.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"F122",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein wichtiger Kunde kurzfristig Änderungen verlangt. Was ist der sinnvollste erste Schritt? (Variante 23)",a:["Impact/Dringlichkeit, Engpass zuerst.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"F123",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein High Performer toxisches Verhalten zeigt. Was ist der sinnvollste erste Schritt? (Variante 24)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Impact/Dringlichkeit, Engpass zuerst."],r:[3]},
+{id:"F124",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt? (Variante 25)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Reifegrad einschätzen und Führungsstil anpassen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"F125",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein wichtiger Kunde kurzfristig Änderungen verlangt. Was ist der sinnvollste erste Schritt? (Variante 26)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
+{id:"F126",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt? (Variante 27)",a:["Impact/Dringlichkeit, Engpass zuerst.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[0]},
+{id:"F127",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 28)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"F128",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 29)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","SMART Erwartungen, Verantwortlichkeiten, Deadlines."],r:[3]},
+{id:"F129",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt? (Variante 30)",a:["Die Verantwortung vollständig an eine andere Person abgeben","SMART Erwartungen, Verantwortlichkeiten, Deadlines.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"K130",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Rahmen setzen, Regeln, nacheinander sprechen.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
+{id:"K131",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","RACI/Zuständigkeiten fixieren."],r:[3]},
+{id:"K132",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: zwei Abteilungen sich gegenseitig blockieren. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
+{id:"K133",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Konflikt um Ressourcen entsteht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"K134",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Kunde sich über Tonfall beschwert. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Bedürfnisse klären, gemeinsame Ziele definieren."],r:[3]},
+{id:"K135",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt?",a:["Rahmen setzen, Regeln, nacheinander sprechen.","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"K136",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Mitarbeiter sich unfair behandelt fühlt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Bedürfnisse klären, gemeinsame Ziele definieren.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"K137",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
+{id:"K138",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","RACI/Zuständigkeiten fixieren.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"K139",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"K140",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
+{id:"K141",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen."],r:[3]},
+{id:"K142",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: es wiederholt zu Missverständnissen kommt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"K143",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
+{id:"K144",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","RACI/Zuständigkeiten fixieren.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
+{id:"K145",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Kunde sich über Tonfall beschwert. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Rahmen setzen, Regeln, nacheinander sprechen."],r:[3]},
+{id:"K146",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Mitarbeiter sich unfair behandelt fühlt. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","RACI/Zuständigkeiten fixieren.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"K147",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Bedürfnisse klären, gemeinsame Ziele definieren.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"K148",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen."],r:[3]},
+{id:"K149",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Pause, Emotionen benennen, Sachebene herstellen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"M150",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","konkret loben, Erfolge sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"M151",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"M152",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 3)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","Beitrag zum Ganzen sichtbar machen."],r:[3]},
+{id:"M153",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Zielerreichung nur noch über Druck funktioniert. Was ist der sinnvollste erste Schritt?",a:["konkret loben, Erfolge sichtbar machen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"M154",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: Mikromanagement die Eigeninitiative tötet. Was ist der sinnvollste erste Schritt?",a:["Beitrag zum Ganzen sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
+{id:"M155",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Teammitglied innerlich gekündigt wirkt. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Handlungsspielräume geben, Verantwortung übertragen.","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
+{id:"M156",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: nach einer Umstrukturierung Unsicherheit herrscht. Was ist der sinnvollste erste Schritt?",a:["konkret loben, Erfolge sichtbar machen.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"M157",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt? (Variante 8)",a:["Beitrag zum Ganzen sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
+{id:"M158",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["Training/Coaching, klare Lernziele, Feedback.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"M159",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: zu viele parallele Aufgaben Überforderung erzeugen. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
+{id:"M160",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Arbeit monoton ist und Fehler steigen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","konkret loben, Erfolge sichtbar machen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"M161",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Teammitglied innerlich gekündigt wirkt. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["realistische Ziele, Prioritäten, Fokus.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"M162",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Bonus gestrichen wurde und Frust entsteht. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen."],r:[3]},
+{id:"M163",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Zielerreichung nur noch über Druck funktioniert. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","realistische Ziele, Prioritäten, Fokus."],r:[3]},
+{id:"M164",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein sinnvoller Zweck (Purpose) fehlt. Was ist der sinnvollste erste Schritt?",a:["realistische Ziele, Prioritäten, Fokus.","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"M165",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","realistische Ziele, Prioritäten, Fokus.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"M166",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Handlungsspielräume geben, Verantwortung übertragen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"M167",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: zu viele parallele Aufgaben Überforderung erzeugen. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","realistische Ziele, Prioritäten, Fokus.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"M168",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein sinnvoller Zweck (Purpose) fehlt. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Handlungsspielräume geben, Verantwortung übertragen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
+{id:"M169",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: nach einer Umstrukturierung Unsicherheit herrscht. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Training/Coaching, klare Lernziele, Feedback.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"KO170",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Missverständnis per Chat eskaliert. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Wirkung schildern statt Vorwurf.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
+{id:"KO171",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt?",a:["kurz, faktenbasiert, freundlich, klar.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"KO172",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","offene Fragen, Verständnis sichern.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
+{id:"KO173",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","offene Fragen, Verständnis sichern.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
+{id:"KO174",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt? (Variante 5)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Wirkung schildern statt Vorwurf.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"KO175",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du eine Präsentation für Führungsebene hältst. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Wirkung schildern statt Vorwurf.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"KO176",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du Erwartungen an Qualität kommunizieren musst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","paraphrasieren, nachfragen, bestätigen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"KO177",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Kernaussage, Gründe, nächste Schritte.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"KO178",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein wichtiges Change-Update kommuniziert werden muss. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Wirkung schildern statt Vorwurf.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
+{id:"KO179",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","paraphrasieren, nachfragen, bestätigen."],r:[3]},
+{id:"KO180",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","paraphrasieren, nachfragen, bestätigen."],r:[3]},
+{id:"KO181",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","kurz, faktenbasiert, freundlich, klar.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"KO182",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["kurz, faktenbasiert, freundlich, klar.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
+{id:"KO183",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["paraphrasieren, nachfragen, bestätigen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
+{id:"KO184",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Missverständnis per Chat eskaliert. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Kernaussage, Gründe, nächste Schritte.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
+{id:"KO185",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","offene Fragen, Verständnis sichern.","Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
+{id:"KO186",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: remote Meetings ineffektiv sind. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Kernaussage, Gründe, nächste Schritte.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"KO187",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Kernaussage, Gründe, nächste Schritte.","Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"KO188",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du eine Entscheidung transparent erklären musst. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","kurz, faktenbasiert, freundlich, klar."],r:[3]},
+{id:"KO189",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","kurz, faktenbasiert, freundlich, klar.","Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[1]},
+{id:"P190",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Kriterien offenlegen, Gleichbehandlung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"P191",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Fakten sammeln, sauber dokumentieren.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
+{id:"P192",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Probezeitentscheidung getroffen werden muss. Was ist der sinnvollste erste Schritt?",a:["klar, respektvoll, lösungsorientiert.","Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
+{id:"P193",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt? (Variante 4)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Maßnahmenplan, Meilensteine, Follow-up.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
+{id:"P194",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: du ein Bewerbungsgespräch führst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Kriterien offenlegen, Gleichbehandlung."],r:[3]},
+{id:"P195",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Leistungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","HR einbinden, Regeln einhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"P196",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt? (Variante 7)",a:["Maßnahmenplan, Meilensteine, Follow-up.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
+{id:"P197",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Probezeitentscheidung getroffen werden muss. Was ist der sinnvollste erste Schritt? (Variante 8)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Fakten sammeln, sauber dokumentieren.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"P198",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: ein Konflikt mit Betriebsrat absehbar ist. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","HR einbinden, Regeln einhalten.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
+{id:"P199",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","klar, respektvoll, lösungsorientiert."],r:[3]},
+{id:"P200",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Leistungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Maßnahmenplan, Meilensteine, Follow-up.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"P201",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Weiterbildung geplant werden soll. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","klar, respektvoll, lösungsorientiert."],r:[3]},
+{id:"P202",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: ein Teammitglied Versetzungswunsch äußert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Kriterien offenlegen, Gleichbehandlung.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
+{id:"P203",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Weiterbildung geplant werden soll. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","Fakten sammeln, sauber dokumentieren.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"P204",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","klar, respektvoll, lösungsorientiert.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"B205",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Belastungen identifizieren und Ursachen reduzieren."],r:[3]},
+{id:"B206",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: ein BGM-Programm eingeführt werden soll. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","Arbeitsbedingungen + individuelles Verhalten."],r:[3]},
+{id:"B207",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt? (Variante 3)",a:["frühzeitig ansprechen, Angebote vermitteln.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
+{id:"B208",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Arbeitsbedingungen + individuelles Verhalten.","Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
+{id:"B209",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","frühzeitig ansprechen, Angebote vermitteln."],r:[3]},
+{id:"B210",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt? (Variante 6)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Pausen, Prioritäten, Ressourcenausgleich."],r:[3]},
+{id:"B211",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: eine Gefährdungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","frühzeitig ansprechen, Angebote vermitteln.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"B212",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: viele Überstunden anfallen. Was ist der sinnvollste erste Schritt?",a:["frühzeitig ansprechen, Angebote vermitteln.","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[0]},
+{id:"B213",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Pausen, Prioritäten, Ressourcenausgleich.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
+{id:"B214",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Belastungen identifizieren und Ursachen reduzieren.","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
+{id:"B215",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","Plan, Abstimmung, Schonung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
+{id:"B216",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Arbeitsbedingungen + individuelles Verhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
+{id:"B217",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["Belastungen identifizieren und Ursachen reduzieren.","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
+{id:"B218",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Plan, Abstimmung, Schonung.","Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
+{id:"B219",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Arbeitsbedingungen + individuelles Verhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
 ]
 
 const KATEGORIEN = [...new Set(ALLE_FRAGEN.map(f => f.k))]
@@ -131,8 +252,6 @@ interface User {
   email: string
   name: string
   role: string
-  isPremium?: boolean
-  premiumSince?: string | null
   questionsAnswered?: number
 }
 
@@ -189,13 +308,8 @@ export default function App() {
   const [userStats, setUserStats] = useState<UserStats | null>(null)
   const [adminStats, setAdminStats] = useState<any>(null)
   
-  // Premium state
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  // Premium state (für später)
   const [premiumUsers, setPremiumUsers] = useState<any[]>([])
-  const [isUpgrading, setIsUpgrading] = useState(false)
-  
-  // Constants
-  const FREE_QUESTION_LIMIT = 50
 
   // Check session on mount
   useEffect(() => {
@@ -299,13 +413,6 @@ export default function App() {
   }
 
   const start = useCallback(() => {
-    // Premium check
-    const questionsAnswered = user?.questionsAnswered || 0
-    if (!user?.isPremium && questionsAnswered >= FREE_QUESTION_LIMIT) {
-      setShowUpgradeModal(true)
-      return
-    }
-    
     let pool = kat === "Alle" ? ALLE_FRAGEN : ALLE_FRAGEN.filter(f => f.k === kat)
     
     if (mode === "schwach" && userStats) {
@@ -413,14 +520,7 @@ export default function App() {
     }
   }
   
-  const handleUpgrade = async () => {
-    setIsUpgrading(true)
-    // In production, this would redirect to a payment provider
-    // For now, we'll just show a message
-    alert("In der Produktionsversion würdest du hier zu einem Zahlungsanbieter weitergeleitet.\n\nAls Admin kannst du Premium im Admin-Dashboard freischalten.")
-    setIsUpgrading(false)
-    setShowUpgradeModal(false)
-  }
+  
 
   const frage = fragen[idx]
   const mm = Math.floor(elapsed / 60).toString().padStart(2, "0")
@@ -511,6 +611,9 @@ export default function App() {
               </p>
             </div>
           </CardContent>
+          <div className="text-center pb-4 text-xs text-slate-600">
+            Ersteller: A.Neu
+          </div>
         </Card>
       </div>
     )
@@ -589,6 +692,9 @@ export default function App() {
               </p>
             </div>
           </CardContent>
+          <div className="text-center pb-4 text-xs text-slate-600">
+            Ersteller: A.Neu
+          </div>
         </Card>
       </div>
     )
@@ -614,12 +720,6 @@ export default function App() {
               <Badge variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
                 {user?.name || user?.email}
               </Badge>
-              {user?.isPremium && (
-                <Badge className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-400 border-amber-500/50">
-                  <Crown className="w-3 h-3 mr-1" />
-                  Premium
-                </Badge>
-              )}
               {user?.role === 'admin' && (
                 <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
                   <Shield className="w-3 h-3 mr-1" />
@@ -627,28 +727,6 @@ export default function App() {
                 </Badge>
               )}
             </div>
-            
-            {/* Free Tier Warning */}
-            {!user?.isPremium && user?.questionsAnswered !== undefined && (
-              <div className="mt-4">
-                <div className="text-xs text-slate-500 mb-1">
-                  Kostenlose Fragen: {Math.max(0, FREE_QUESTION_LIMIT - user.questionsAnswered)} / {FREE_QUESTION_LIMIT} verbleibend
-                </div>
-                <Progress 
-                  value={(user.questionsAnswered / FREE_QUESTION_LIMIT) * 100} 
-                  className="h-1.5" 
-                />
-                {user.questionsAnswered >= FREE_QUESTION_LIMIT * 0.8 && (
-                  <button 
-                    onClick={() => setShowUpgradeModal(true)}
-                    className="text-xs text-amber-400 mt-1 hover:underline flex items-center gap-1 mx-auto"
-                  >
-                    <Sparkles className="w-3 h-3" />
-                    Upgrade auf Premium
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Stats Overview */}
@@ -781,15 +859,12 @@ export default function App() {
               Abmelden
             </Button>
           </div>
+          
+          {/* Ersteller-Hinweis */}
+          <div className="text-center mt-8 text-xs text-slate-600">
+            Ersteller: A.Neu
+          </div>
         </div>
-        
-        {/* Upgrade Modal */}
-        <UpgradeModal
-          isOpen={showUpgradeModal}
-          onClose={() => setShowUpgradeModal(false)}
-          onUpgrade={handleUpgrade}
-          isLoading={isUpgrading}
-        />
       </div>
     )
   }
@@ -1302,36 +1377,20 @@ export default function App() {
                           {(u.name || u.email || '?').charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate flex items-center gap-2">
+                          <div className="font-medium truncate">
                             {u.name || u.email}
-                            {u.isPremium && (
-                              <Crown className="w-3 h-3 text-amber-400" />
-                            )}
                           </div>
                           <div className="text-xs text-slate-500">{u.email}</div>
                           <div className="text-xs text-slate-500">
-                            {u.questionsAnswered || 0} Fragen
+                            {u.questionsAnswered || 0} Fragen beantwortet
                           </div>
                         </div>
                         <div className="text-right text-xs">
                           <div className="text-slate-400">{u.sessionCount} Sessions</div>
                           <div className={u.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}>
-                            {u.percentage}%
+                            {u.percentage}% richtig
                           </div>
                         </div>
-                        {/* Premium Toggle */}
-                        {u.role !== 'admin' && (
-                          <button
-                            onClick={() => togglePremium(u.id, !u.isPremium)}
-                            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
-                              u.isPremium
-                                ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
-                                : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                            }`}
-                          >
-                            {u.isPremium ? "Premium" : "Free"}
-                          </button>
-                        )}
                         {u.role === 'admin' && (
                           <Badge className="bg-purple-500/20 text-purple-400">Admin</Badge>
                         )}
@@ -1381,87 +1440,4 @@ export default function App() {
   }
 
   return null
-}
-
-// ============================================================================
-// UPGRADE MODAL COMPONENT
-// ============================================================================
-function UpgradeModal({ 
-  isOpen, 
-  onClose, 
-  onUpgrade,
-  isLoading 
-}: { 
-  isOpen: boolean
-  onClose: () => void
-  onUpgrade: () => void
-  isLoading: boolean
-}) {
-  if (!isOpen) return null
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <Card className="w-full max-w-md bg-slate-900 border-slate-700 shadow-2xl">
-        <CardHeader className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 mx-auto mb-4 shadow-lg shadow-amber-500/30">
-            <Crown className="w-8 h-8 text-white" />
-          </div>
-          <CardTitle className="text-2xl">Premium freischalten</CardTitle>
-          <CardDescription>
-            Unbegrenzt lernen für die Prüfung
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="bg-gradient-to-r from-amber-500/10 to-yellow-500/10 rounded-xl p-4 border border-amber-500/30">
-            <div className="text-center">
-              <div className="text-4xl font-black text-white mb-1">2,99€</div>
-              <div className="text-sm text-slate-400">einmalig · Lebzeit-Zugriff</div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            {[
-              "Unbegrenzte Fragen beantworten",
-              "Alle 6 Kategorien freigeschaltet",
-              "Statistiken ohne Einschränkung",
-              "Kein Abo - einmalig zahlen"
-            ].map((feature, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-slate-300">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                {feature}
-              </div>
-            ))}
-          </div>
-
-          <div className="pt-2 space-y-2">
-            <Button
-              onClick={onUpgrade}
-              disabled={isLoading}
-              className="w-full py-6 text-lg font-bold bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black"
-            >
-              {isLoading ? (
-                "Wird freigeschaltet..."
-              ) : (
-                <>
-                  <Lock className="w-4 h-4 mr-2" />
-                  Premium freischalten
-                </>
-              )}
-            </Button>
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              className="w-full text-slate-400 hover:text-white"
-            >
-              Später
-            </Button>
-          </div>
-
-          <p className="text-xs text-center text-slate-500">
-            Nach der Zahlung wird dein Konto sofort freigeschaltet
-          </p>
-        </CardContent>
-      </Card>
-    </div>
-  )
 }
