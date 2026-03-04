@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,19 +11,58 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  password      String
+  role          String         @default("user") // "user" or "admin"
+  isPremium     Boolean        @default(false) // Premium-Freischaltung
+  premiumSince  DateTime?      // Wann wurde Premium aktiviert
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  quizSessions  QuizSession[]
+  questionStats QuestionStat[]
+  usageLogs     UsageLog[]
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model QuizSession {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  mode         String   // "pruefung", "lern", "schwach"
+  category     String?  // null means "Alle"
+  totalQuestions Int
+  correctAnswers Int
+  percentage   Float
+  duration     Int      // in seconds
+  createdAt    DateTime @default(now())
+  
+  questionStats QuestionStat[]
+}
+
+model QuestionStat {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  questionId   String   // e.g., "K01", "F02"
+  correctCount Int      @default(0)
+  wrongCount   Int      @default(0)
+  lastAnswered DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  quizSessionId String?
+  quizSession   QuizSession? @relation(fields: [quizSessionId], references: [id])
+  
+  @@unique([userId, questionId]) // One stat per user per question
+}
+
+model UsageLog {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  action       String   // "login", "quiz_start", "quiz_complete", "logout"
+  metadata     String?  // JSON string for additional data
+  createdAt    DateTime @default(now())
 }

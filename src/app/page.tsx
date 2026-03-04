@@ -5,14 +5,15 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
   Trophy, BookOpen, Target, BarChart3, Clock, CheckCircle2, XCircle, 
   ArrowLeft, ArrowRight, Play, RotateCcw, Zap, Brain, TrendingUp,
-  Award, AlertCircle, ChevronRight, Home, Settings, Star
+  Award, AlertCircle, ChevronRight, Home, Settings, Star, Users,
+  LogOut, LogIn, UserPlus, Shield, Activity, Calendar, Crown, Lock, Sparkles
 } from "lucide-react"
 
 // ============================================================================
@@ -122,8 +123,18 @@ function shuffle(arr: any[]) {
 // ============================================================================
 // TYPES
 // ============================================================================
-type Screen = "home" | "quiz" | "result" | "stats" | "kategorie"
+type Screen = "login" | "register" | "home" | "quiz" | "result" | "stats" | "kategorie" | "admin"
 type Mode = "pruefung" | "lern" | "schwach"
+
+interface User {
+  id: string
+  email: string
+  name: string
+  role: string
+  isPremium?: boolean
+  premiumSince?: string | null
+  questionsAnswered?: number
+}
 
 interface Frage {
   id: string
@@ -134,20 +145,26 @@ interface Frage {
   r: number[]
 }
 
-interface Stats {
-  [key: string]: { r: number; f: number }
-}
-
 interface Ergebnis {
   id: string
   korrekt: boolean
+}
+
+interface UserStats {
+  totalCorrect: number
+  totalWrong: number
+  totalAnswers: number
+  percentage: number
+  categoryStats: Record<string, { correct: number; wrong: number; total: number }>
+  recentSessions: any[]
+  questionCount: number
 }
 
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("home")
+  const [screen, setScreen] = useState<Screen>("login")
   const [mode, setMode] = useState<Mode>("pruefung")
   const [kat, setKat] = useState<string>("Alle")
   const [fragen, setFragen] = useState<Frage[]>([])
@@ -157,23 +174,42 @@ export default function App() {
   const [erg, setErg] = useState<Ergebnis[]>([])
   const [t0, setT0] = useState<number | null>(null)
   const [elapsed, setElapsed] = useState(0)
-  // Initialize stats from localStorage using lazy initializer
-  const [stats, setStats] = useState<Stats>(() => {
-    if (typeof window === 'undefined') return {}
-    try {
-      const saved = localStorage.getItem("cle-quiz-stats")
-      return saved ? JSON.parse(saved) : {}
-    } catch {
-      return {}
-    }
-  })
+  
+  // Auth state
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
+  
+  // Form state
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [name, setName] = useState("")
+  const [error, setError] = useState("")
+  
+  // Stats state
+  const [userStats, setUserStats] = useState<UserStats | null>(null)
+  const [adminStats, setAdminStats] = useState<any>(null)
+  
+  // Premium state
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false)
+  const [premiumUsers, setPremiumUsers] = useState<any[]>([])
+  const [isUpgrading, setIsUpgrading] = useState(false)
+  
+  // Constants
+  const FREE_QUESTION_LIMIT = 50
 
-  // Save stats to localStorage
+  // Check session on mount
   useEffect(() => {
-    if (Object.keys(stats).length > 0) {
-      localStorage.setItem("cle-quiz-stats", JSON.stringify(stats))
-    }
-  }, [stats])
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => {
+        if (data.user) {
+          setUser(data.user)
+          setScreen("home")
+        }
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
 
   // Timer
   useEffect(() => {
@@ -184,20 +220,110 @@ export default function App() {
     return () => clearInterval(t)
   }, [screen, t0])
 
+  // Load user stats when user changes
+  useEffect(() => {
+    if (user && screen === "home") {
+      fetch('/api/quiz/stats')
+        .then(res => res.json())
+        .then(data => setUserStats(data))
+        .catch(console.error)
+    }
+  }, [user, screen])
+
+  // Auth functions
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      
+      const data = await res.json()
+      
+      if (!res.ok) {
+        setError(data.error || 'Fehler beim Anmelden')
+        return
+      }
+      
+      setUser(data.user)
+      setScreen("home")
+      setEmail("")
+      setPassword("")
+    } catch (err) {
+      setError('Ein Fehler ist aufgetreten')
+    }
+  }
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    
+    if (password.length < 6) {
+      setError('Passwort muss mindestens 6 Zeichen haben')
+      return
+    }
+    
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, name })
+      })
+      
+      const data = await res.json()
+      
+      if (!res.ok) {
+        setError(data.error || 'Fehler beim Registrieren')
+        return
+      }
+      
+      setUser(data.user)
+      setScreen("home")
+      setEmail("")
+      setPassword("")
+      setName("")
+    } catch (err) {
+      setError('Ein Fehler ist aufgetreten')
+    }
+  }
+
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    setUser(null)
+    setUserStats(null)
+    setScreen("login")
+  }
+
   const start = useCallback(() => {
+    // Premium check
+    const questionsAnswered = user?.questionsAnswered || 0
+    if (!user?.isPremium && questionsAnswered >= FREE_QUESTION_LIMIT) {
+      setShowUpgradeModal(true)
+      return
+    }
+    
     let pool = kat === "Alle" ? ALLE_FRAGEN : ALLE_FRAGEN.filter(f => f.k === kat)
     
-    if (mode === "schwach") {
-      const bad = Object.entries(stats)
-        .filter(([, s]) => s.f > 0)
-        .map(([id]) => id)
-      if (bad.length === 0) {
-        pool = shuffle(pool).slice(0, 30)
-      } else {
-        pool = pool.filter(f => bad.includes(f.id))
-        if (pool.length < 10) {
-          pool = [...pool, ...shuffle(ALLE_FRAGEN.filter(f => !bad.includes(f.id))).slice(0, 20 - pool.length)]
-        }
+    if (mode === "schwach" && userStats) {
+      // Get questions that were answered wrong
+      const wrongQuestions = Object.entries(userStats.categoryStats)
+        .flatMap(([cat, stats]) => {
+          if (stats.wrong > 0) {
+            return ALLE_FRAGEN.filter(f => 
+              f.k === cat || 
+              (cat === 'Konflikt' && f.k === 'Konflikt') ||
+              (cat === 'Kommunikation' && f.k === 'Kommunikation')
+            )
+          }
+          return []
+        })
+      
+      if (wrongQuestions.length > 0) {
+        pool = wrongQuestions
       }
     }
     
@@ -210,7 +336,7 @@ export default function App() {
     setT0(Date.now())
     setElapsed(0)
     setScreen("quiz")
-  }, [mode, kat, stats])
+  }, [mode, kat, userStats, user])
 
   const toggle = (i: number) => {
     if (best) return
@@ -225,17 +351,32 @@ export default function App() {
     const korrekt = [...ok].every(r => as.has(r)) && [...as].every(a => ok.has(a))
     setBest(true)
     setErg(e => [...e, { id: f.id, korrekt }])
-    setStats(s => {
-      const n = { ...s }
-      if (!n[f.id]) n[f.id] = { r: 0, f: 0 }
-      if (korrekt) n[f.id].r++
-      else n[f.id].f++
-      return n
+  }
+
+  const saveQuizResults = async () => {
+    const total = erg.length
+    const correct = erg.filter(e => e.korrekt).length
+    
+    await fetch('/api/quiz/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mode,
+        category: kat,
+        totalQuestions: total,
+        correctAnswers: correct,
+        duration: elapsed,
+        questionResults: erg.map(e => ({
+          questionId: e.id,
+          correct: e.korrekt
+        }))
+      })
     })
   }
 
   const next = () => {
     if (idx + 1 >= fragen.length) {
+      saveQuizResults()
       setScreen("result")
     } else {
       setIdx(i => i + 1)
@@ -244,17 +385,47 @@ export default function App() {
     }
   }
 
+  const loadAdminStats = async () => {
+    const res = await fetch('/api/admin/stats')
+    if (res.ok) {
+      const data = await res.json()
+      setAdminStats(data)
+    }
+  }
+  
+  const loadPremiumUsers = async () => {
+    const res = await fetch('/api/admin/premium')
+    if (res.ok) {
+      const data = await res.json()
+      setPremiumUsers(data.users || [])
+    }
+  }
+  
+  const togglePremium = async (targetUserId: string, isPremium: boolean) => {
+    const res = await fetch('/api/admin/premium', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ targetUserId, isPremium })
+    })
+    if (res.ok) {
+      loadPremiumUsers()
+      loadAdminStats()
+    }
+  }
+  
+  const handleUpgrade = async () => {
+    setIsUpgrading(true)
+    // In production, this would redirect to a payment provider
+    // For now, we'll just show a message
+    alert("In der Produktionsversion würdest du hier zu einem Zahlungsanbieter weitergeleitet.\n\nAls Admin kannst du Premium im Admin-Dashboard freischalten.")
+    setIsUpgrading(false)
+    setShowUpgradeModal(false)
+  }
+
   const frage = fragen[idx]
-
-  // Calculate stats
-  const totalAnswers = Object.values(stats).reduce((s, v) => s + v.r + v.f, 0)
-  const correctAnswers = Object.values(stats).reduce((s, v) => s + v.r, 0)
-  const percentage = totalAnswers > 0 ? Math.round((correctAnswers / totalAnswers) * 100) : 0
-
   const mm = Math.floor(elapsed / 60).toString().padStart(2, "0")
   const ss = (elapsed % 60).toString().padStart(2, "0")
 
-  // Get status for answer
   const getAnswerStatus = (i: number): "correct" | "wrong" | "missed" | "neutral" | "selected" => {
     if (!best) return sel.includes(i) ? "selected" : "neutral"
     const isCorrect = frage.r.includes(i)
@@ -263,6 +434,164 @@ export default function App() {
     if (!isCorrect && isSelected) return "wrong"
     if (isCorrect && !isSelected) return "missed"
     return "neutral"
+  }
+
+  // Loading screen
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 animate-pulse">
+            <Brain className="w-8 h-8 text-white" />
+          </div>
+          <p className="mt-4 text-slate-400">Wird geladen...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // ==========================================================================
+  // LOGIN SCREEN
+  // ==========================================================================
+  if (screen === "login") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-slate-900/50 border-slate-800 backdrop-blur">
+          <CardHeader className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
+              <Brain className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl">CLE Quiz</CardTitle>
+            <CardDescription>Bitte melde dich an, um fortzufahren</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              {error && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="name@beispiel.de"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-slate-800 border-slate-700"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Passwort</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-slate-800 border-slate-700"
+                />
+              </div>
+              <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
+                <LogIn className="w-4 h-4 mr-2" />
+                Anmelden
+              </Button>
+            </form>
+            <div className="mt-6 text-center">
+              <p className="text-slate-400 text-sm">
+                Noch kein Konto?{' '}
+                <button
+                  onClick={() => { setScreen("register"); setError("") }}
+                  className="text-cyan-400 hover:underline"
+                >
+                  Registrieren
+                </button>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // ==========================================================================
+  // REGISTER SCREEN
+  // ==========================================================================
+  if (screen === "register") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
+        <Card className="w-full max-w-md bg-slate-900/50 border-slate-800 backdrop-blur">
+          <CardHeader className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
+              <UserPlus className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl">Konto erstellen</CardTitle>
+            <CardDescription>Registriere dich, um deine Statistiken zu speichern</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleRegister} className="space-y-4">
+              {error && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
+                  {error}
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="Dein Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="bg-slate-800 border-slate-700"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="reg-email">Email</Label>
+                <Input
+                  id="reg-email"
+                  type="email"
+                  placeholder="name@beispiel.de"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="bg-slate-800 border-slate-700"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="reg-password">Passwort</Label>
+                <Input
+                  id="reg-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="bg-slate-800 border-slate-700"
+                />
+                <p className="text-xs text-slate-500">Mindestens 6 Zeichen</p>
+              </div>
+              <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Registrieren
+              </Button>
+            </form>
+            <div className="mt-6 text-center">
+              <p className="text-slate-400 text-sm">
+                Bereits registriert?{' '}
+                <button
+                  onClick={() => { setScreen("login"); setError("") }}
+                  className="text-cyan-400 hover:underline"
+                >
+                  Anmelden
+                </button>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   // ==========================================================================
@@ -279,32 +608,70 @@ export default function App() {
             </div>
             <h1 className="text-3xl font-bold mb-2">CLE Quiz</h1>
             <p className="text-slate-400 text-sm">Certified Leadership Expert · IHK</p>
-            <Badge variant="secondary" className="mt-2 bg-slate-800 text-slate-300 border-slate-700">
-              {ALLE_FRAGEN.length} Fragen
-            </Badge>
+            
+            {/* User info */}
+            <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
+              <Badge variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
+                {user?.name || user?.email}
+              </Badge>
+              {user?.isPremium && (
+                <Badge className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-400 border-amber-500/50">
+                  <Crown className="w-3 h-3 mr-1" />
+                  Premium
+                </Badge>
+              )}
+              {user?.role === 'admin' && (
+                <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
+                  <Shield className="w-3 h-3 mr-1" />
+                  Admin
+                </Badge>
+              )}
+            </div>
+            
+            {/* Free Tier Warning */}
+            {!user?.isPremium && user?.questionsAnswered !== undefined && (
+              <div className="mt-4">
+                <div className="text-xs text-slate-500 mb-1">
+                  Kostenlose Fragen: {Math.max(0, FREE_QUESTION_LIMIT - user.questionsAnswered)} / {FREE_QUESTION_LIMIT} verbleibend
+                </div>
+                <Progress 
+                  value={(user.questionsAnswered / FREE_QUESTION_LIMIT) * 100} 
+                  className="h-1.5" 
+                />
+                {user.questionsAnswered >= FREE_QUESTION_LIMIT * 0.8 && (
+                  <button 
+                    onClick={() => setShowUpgradeModal(true)}
+                    className="text-xs text-amber-400 mt-1 hover:underline flex items-center gap-1 mx-auto"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    Upgrade auf Premium
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Stats Overview */}
-          {totalAnswers > 0 && (
+          {userStats && userStats.totalAnswers > 0 && (
             <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-cyan-400">{totalAnswers}</div>
+                    <div className="text-2xl font-bold text-cyan-400">{userStats.totalAnswers}</div>
                     <div className="text-xs text-slate-500">Antworten</div>
                   </div>
                   <div>
-                    <div className={`text-2xl font-bold ${percentage >= 70 ? "text-emerald-400" : "text-amber-400"}`}>
-                      {percentage}%
+                    <div className={`text-2xl font-bold ${userStats.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}`}>
+                      {userStats.percentage}%
                     </div>
                     <div className="text-xs text-slate-500">Quote</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-white">{ALLE_FRAGEN.length}</div>
+                    <div className="text-2xl font-bold text-white">{userStats.questionCount}</div>
                     <div className="text-xs text-slate-500">Fragen</div>
                   </div>
                 </div>
-                <Progress value={percentage} className="mt-4 h-2" />
+                <Progress value={userStats.percentage} className="mt-4 h-2" />
               </CardContent>
             </Card>
           )}
@@ -323,14 +690,15 @@ export default function App() {
                 <button
                   key={m.id}
                   onClick={() => setMode(m.id)}
-                  className={`w-full p-4 rounded-xl border transition-all duration-200 text-left flex items-center gap-3 ${
-                    mode === m.id
-                      ? `bg-${m.color}-500/10 border-${m.color}-500/50 text-white`
-                      : "bg-slate-800/50 border-slate-700 text-slate-300 hover:bg-slate-800"
-                  }`}
+                  className="w-full p-4 rounded-xl border transition-all duration-200 text-left flex items-center gap-3"
                   style={{
-                    backgroundColor: mode === m.id ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.1)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)") : undefined,
-                    borderColor: mode === m.id ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.5)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.5)" : "rgba(245, 158, 11, 0.5)") : undefined,
+                    backgroundColor: mode === m.id 
+                      ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.1)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)")
+                      : "rgba(30, 41, 59, 0.5)",
+                    borderColor: mode === m.id 
+                      ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.5)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.5)" : "rgba(245, 158, 11, 0.5)")
+                      : "rgba(71, 85, 105, 0.5)",
+                    color: mode === m.id ? "white" : "#94a3b8"
                   }}
                 >
                   <m.icon className="w-5 h-5 flex-shrink-0" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />
@@ -384,68 +752,44 @@ export default function App() {
               Quiz starten
             </Button>
             
-            {Object.keys(stats).length > 0 && (
+            <Button
+              onClick={() => setScreen("stats")}
+              variant="outline"
+              className="w-full py-5 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white"
+            >
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Meine Statistik
+            </Button>
+
+            {user?.role === 'admin' && (
               <Button
-                onClick={() => setScreen("stats")}
+                onClick={() => { loadAdminStats(); setScreen("admin") }}
                 variant="outline"
-                className="w-full py-5 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white"
+                className="w-full py-5 border-amber-500/50 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
               >
-                <BarChart3 className="w-5 h-5 mr-2" />
-                Meine Statistik
+                <Shield className="w-5 h-5 mr-2" />
+                Admin Dashboard
               </Button>
             )}
-          </div>
 
-          {/* Category Overview */}
-          <Card className="bg-slate-900/50 border-slate-800 mt-6 backdrop-blur">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-400">KATEGORIEN</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {KATEGORIEN.map((k) => {
-                  const fc = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#06b6d4"
-                  const count = ALLE_FRAGEN.filter(f => f.k === k).length
-                  const catStats = Object.entries(stats)
-                    .filter(([id]) => ALLE_FRAGEN.find(f => f.id === id)?.k === k)
-                  const catCorrect = catStats.reduce((s, [, v]) => s + v.r, 0)
-                  const catTotal = catStats.reduce((s, [, v]) => s + v.r + v.f, 0)
-                  const catPct = catTotal > 0 ? Math.round((catCorrect / catTotal) * 100) : 0
-                  
-                  return (
-                    <button
-                      key={k}
-                      onClick={() => { setKat(k); setScreen("kategorie") }}
-                      className="w-full p-3 rounded-lg bg-slate-800/50 hover:bg-slate-800 transition-colors text-left flex items-center gap-3"
-                    >
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: fc }}
-                      />
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">{k}</div>
-                        <div className="text-xs text-slate-500">{count} Fragen</div>
-                      </div>
-                      {catTotal > 0 && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs"
-                          style={{
-                            borderColor: catPct >= 70 ? "#10b981" : "#f59e0b",
-                            color: catPct >= 70 ? "#10b981" : "#f59e0b",
-                          }}
-                        >
-                          {catPct}%
-                        </Badge>
-                      )}
-                      <ChevronRight className="w-4 h-4 text-slate-500" />
-                    </button>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
+            <Button
+              onClick={handleLogout}
+              variant="ghost"
+              className="w-full py-4 text-slate-400 hover:text-white"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Abmelden
+            </Button>
+          </div>
         </div>
+        
+        {/* Upgrade Modal */}
+        <UpgradeModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          onUpgrade={handleUpgrade}
+          isLoading={isUpgrading}
+        />
       </div>
     )
   }
@@ -771,16 +1115,6 @@ export default function App() {
   // STATS SCREEN
   // ==========================================================================
   if (screen === "stats") {
-    const entries = Object.entries(stats)
-      .map(([id, s]) => ({
-        id,
-        ...s,
-        frage: ALLE_FRAGEN.find(q => q.id === id),
-        tot: s.r + s.f,
-        pct: Math.round((s.r / (s.r + s.f)) * 100),
-      }))
-      .sort((a, b) => a.pct - b.pct)
-
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
         <div className="max-w-md mx-auto">
@@ -799,59 +1133,72 @@ export default function App() {
             </div>
           </div>
 
-          {entries.length === 0 ? (
+          {userStats && userStats.totalAnswers > 0 ? (
+            <>
+              {/* Overview */}
+              <div className="px-4 py-6">
+                <Card className="bg-slate-900/50 border-slate-800 mb-4">
+                  <CardContent className="pt-6">
+                    <div className="text-center mb-4">
+                      <div className="text-5xl font-black text-cyan-400">{userStats.percentage}%</div>
+                      <div className="text-sm text-slate-500">Gesamtergebnis</div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-center">
+                      <div>
+                        <div className="text-xl font-bold text-emerald-400">{userStats.totalCorrect}</div>
+                        <div className="text-xs text-slate-500">Richtig</div>
+                      </div>
+                      <div>
+                        <div className="text-xl font-bold text-red-400">{userStats.totalWrong}</div>
+                        <div className="text-xs text-slate-500">Falsch</div>
+                      </div>
+                      <div>
+                        <div className="text-xl font-bold">{userStats.questionCount}</div>
+                        <div className="text-xs text-slate-500">Fragen</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Category Stats */}
+                <Card className="bg-slate-900/50 border-slate-800">
+                  <CardHeader>
+                    <CardTitle className="text-sm text-slate-400">Nach Kategorie</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {Object.entries(userStats.categoryStats).map(([cat, stats]) => {
+                      const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0
+                      const fc = ALLE_FRAGEN.find(f => f.k === cat)?.farbe || "#06b6d4"
+                      
+                      return (
+                        <div key={cat} className="space-y-1">
+                          <div className="flex justify-between text-sm">
+                            <span style={{ color: fc }}>{cat}</span>
+                            <span className={pct >= 70 ? "text-emerald-400" : "text-amber-400"}>{pct}%</span>
+                          </div>
+                          <Progress value={pct} className="h-1.5" />
+                          <div className="text-xs text-slate-500">
+                            ✓ {stats.correct} · ✗ {stats.wrong}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          ) : (
             <div className="text-center py-20 text-slate-500">
               <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Noch keine Fragen beantwortet.</p>
+              <Button
+                onClick={() => setScreen("home")}
+                className="mt-4"
+                variant="outline"
+              >
+                Quiz starten
+              </Button>
             </div>
-          ) : (
-            <>
-              <div className="px-4 py-4 space-y-2">
-                {entries.map((e) => (
-                  <Card
-                    key={e.id}
-                    className={`bg-slate-900/50 backdrop-blur ${
-                      e.pct >= 70 ? "border-emerald-500/30" : "border-red-500/30"
-                    }`}
-                  >
-                    <CardContent className="pt-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm ${
-                            e.pct >= 70 ? "bg-emerald-500/20 text-emerald-400" : "bg-red-500/20 text-red-400"
-                          }`}
-                        >
-                          {e.pct}%
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-medium" style={{ color: e.frage?.farbe }}>
-                            [{e.id}] {e.frage?.k}
-                          </div>
-                          <div className="text-sm truncate">{e.frage?.q || e.id}</div>
-                          <div className="text-xs text-slate-500 mt-1">
-                            ✓ {e.r} · ✗ {e.f} · {e.tot}× beantwortet
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              <div className="px-4 pb-8">
-                <Button
-                  onClick={() => {
-                    setStats({})
-                    localStorage.removeItem("cle-quiz-stats")
-                  }}
-                  variant="outline"
-                  className="w-full py-5 border-red-500/30 bg-red-500/10 text-red-400 hover:bg-red-500/20"
-                >
-                  <RotateCcw className="w-5 h-5 mr-2" />
-                  Statistik zurücksetzen
-                </Button>
-              </div>
-            </>
           )}
         </div>
       </div>
@@ -859,20 +1206,12 @@ export default function App() {
   }
 
   // ==========================================================================
-  // CATEGORY DETAIL SCREEN
+  // ADMIN SCREEN
   // ==========================================================================
-  if (screen === "kategorie" && kat !== "Alle") {
-    const catFragen = ALLE_FRAGEN.filter(f => f.k === kat)
-    const catStats = Object.entries(stats)
-      .filter(([id]) => ALLE_FRAGEN.find(f => f.id === id)?.k === kat)
-    const catCorrect = catStats.reduce((s, [, v]) => s + v.r, 0)
-    const catTotal = catStats.reduce((s, [, v]) => s + v.r + v.f, 0)
-    const catPct = catTotal > 0 ? Math.round((catCorrect / catTotal) * 100) : 0
-    const catColor = catFragen[0]?.farbe || "#06b6d4"
-
+  if (screen === "admin" && adminStats) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
             <div className="px-4 py-3 flex items-center gap-3">
@@ -884,80 +1223,157 @@ export default function App() {
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
-                <h1 className="font-bold">{kat}</h1>
-                <p className="text-xs text-slate-500">{catFragen.length} Fragen</p>
-              </div>
+              <h1 className="font-bold text-lg">Admin Dashboard</h1>
+              <Badge className="ml-auto bg-amber-500/20 text-amber-400 border-amber-500/50">
+                <Shield className="w-3 h-3 mr-1" />
+                Admin
+              </Badge>
             </div>
           </div>
 
-          {/* Category Stats */}
-          <div className="px-4 py-6">
-            <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
-              <CardContent className="pt-6">
-                <div className="text-center mb-4">
-                  <div className="text-4xl font-black" style={{ color: catColor }}>
-                    {catPct}%
+          <div className="px-4 py-6 space-y-4">
+            {/* Overview Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <Card className="bg-slate-900/50 border-slate-800">
+                <CardContent className="pt-4 text-center">
+                  <Users className="w-6 h-6 mx-auto text-cyan-400 mb-2" />
+                  <div className="text-2xl font-bold">{adminStats.totalUsers}</div>
+                  <div className="text-xs text-slate-500">Benutzer</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-slate-900/50 border-slate-800">
+                <CardContent className="pt-4 text-center">
+                  <Activity className="w-6 h-6 mx-auto text-emerald-400 mb-2" />
+                  <div className="text-2xl font-bold">{adminStats.dailyActiveUsers}</div>
+                  <div className="text-xs text-slate-500">Heute aktiv</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-slate-900/50 border-slate-800">
+                <CardContent className="pt-4 text-center">
+                  <Target className="w-6 h-6 mx-auto text-amber-400 mb-2" />
+                  <div className="text-2xl font-bold">{adminStats.totalSessions}</div>
+                  <div className="text-xs text-slate-500">Sessions</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-slate-900/50 border-slate-800">
+                <CardContent className="pt-4 text-center">
+                  <BarChart3 className="w-6 h-6 mx-auto text-purple-400 mb-2" />
+                  <div className="text-2xl font-bold">{adminStats.weeklySessions}</div>
+                  <div className="text-xs text-slate-500">Diese Woche</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Total Answers */}
+            <Card className="bg-slate-900/50 border-slate-800">
+              <CardContent className="pt-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="text-sm text-slate-400">Insgesamt beantwortet</div>
+                    <div className="text-2xl font-bold">
+                      {adminStats.totalCorrect + adminStats.totalWrong} Fragen
+                    </div>
                   </div>
-                  <div className="text-sm text-slate-500">Fortschritt</div>
-                </div>
-                <Progress value={catPct} className="h-2" />
-                <div className="flex justify-between text-xs text-slate-500 mt-2">
-                  <span>✓ {catCorrect} richtig</span>
-                  <span>✗ {catTotal - catCorrect} falsch</span>
+                  <div className="text-right">
+                    <div className="text-emerald-400">✓ {adminStats.totalCorrect}</div>
+                    <div className="text-red-400">✗ {adminStats.totalWrong}</div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Questions List */}
-            <div className="space-y-2">
-              {catFragen.map((f) => {
-                const qStats = stats[f.id]
-                const qPct = qStats ? Math.round((qStats.r / (qStats.r + qStats.f)) * 100) : null
-                
-                return (
-                  <Card
-                    key={f.id}
-                    className="bg-slate-900/50 border-slate-800 backdrop-blur"
-                  >
-                    <CardContent className="pt-3 pb-3">
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                            qPct === null
-                              ? "bg-slate-800 text-slate-500"
-                              : qPct >= 70
-                              ? "bg-emerald-500/20 text-emerald-400"
-                              : "bg-red-500/20 text-red-400"
-                          }`}
-                        >
-                          {qPct === null ? "?" : `${qPct}%`}
+            {/* Users List */}
+            <Card className="bg-slate-900/50 border-slate-800">
+              <CardHeader>
+                <CardTitle className="text-sm text-slate-400 flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Benutzer ({adminStats.users.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-80">
+                  <div className="space-y-2">
+                    {adminStats.users.map((u: any) => (
+                      <div
+                        key={u.id}
+                        className="p-3 rounded-lg bg-slate-800/50 flex items-center gap-3"
+                      >
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center text-white font-bold">
+                          {(u.name || u.email || '?').charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs text-slate-500 mb-1">[{f.id}]</div>
-                          <div className="text-sm leading-relaxed">{f.q}</div>
+                          <div className="font-medium truncate flex items-center gap-2">
+                            {u.name || u.email}
+                            {u.isPremium && (
+                              <Crown className="w-3 h-3 text-amber-400" />
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-500">{u.email}</div>
+                          <div className="text-xs text-slate-500">
+                            {u.questionsAnswered || 0} Fragen
+                          </div>
+                        </div>
+                        <div className="text-right text-xs">
+                          <div className="text-slate-400">{u.sessionCount} Sessions</div>
+                          <div className={u.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}>
+                            {u.percentage}%
+                          </div>
+                        </div>
+                        {/* Premium Toggle */}
+                        {u.role !== 'admin' && (
+                          <button
+                            onClick={() => togglePremium(u.id, !u.isPremium)}
+                            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                              u.isPremium
+                                ? "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+                                : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                            }`}
+                          >
+                            {u.isPremium ? "Premium" : "Free"}
+                          </button>
+                        )}
+                        {u.role === 'admin' && (
+                          <Badge className="bg-purple-500/20 text-purple-400">Admin</Badge>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card className="bg-slate-900/50 border-slate-800">
+              <CardHeader>
+                <CardTitle className="text-sm text-slate-400 flex items-center gap-2">
+                  <Activity className="w-4 h-4" />
+                  Letzte Aktivität
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="h-60">
+                  <div className="space-y-2">
+                    {adminStats.recentActivity.map((a: any, i: number) => (
+                      <div key={i} className="flex items-center gap-3 py-2 border-b border-slate-800 last:border-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs">
+                          {a.action === 'login' && <LogIn className="w-4 h-4 text-emerald-400" />}
+                          {a.action === 'register' && <UserPlus className="w-4 h-4 text-cyan-400" />}
+                          {a.action === 'quiz_complete' && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
+                          {a.action === 'logout' && <LogOut className="w-4 h-4 text-slate-400" />}
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm">{a.userName}</div>
+                          <div className="text-xs text-slate-500">{a.action}</div>
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          {new Date(a.createdAt).toLocaleString('de-DE')}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
-            </div>
-
-            {/* Start Quiz Button */}
-            <div className="mt-6">
-              <Button
-                onClick={() => {
-                  setKat(kat)
-                  start()
-                }}
-                className="w-full py-6 text-lg font-bold"
-                style={{ backgroundColor: catColor }}
-              >
-                <Play className="w-5 h-5 mr-2" />
-                {kat} üben
-              </Button>
-            </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
@@ -965,4 +1381,87 @@ export default function App() {
   }
 
   return null
+}
+
+// ============================================================================
+// UPGRADE MODAL COMPONENT
+// ============================================================================
+function UpgradeModal({ 
+  isOpen, 
+  onClose, 
+  onUpgrade,
+  isLoading 
+}: { 
+  isOpen: boolean
+  onClose: () => void
+  onUpgrade: () => void
+  isLoading: boolean
+}) {
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+      <Card className="w-full max-w-md bg-slate-900 border-slate-700 shadow-2xl">
+        <CardHeader className="text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 mx-auto mb-4 shadow-lg shadow-amber-500/30">
+            <Crown className="w-8 h-8 text-white" />
+          </div>
+          <CardTitle className="text-2xl">Premium freischalten</CardTitle>
+          <CardDescription>
+            Unbegrenzt lernen für die Prüfung
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="bg-gradient-to-r from-amber-500/10 to-yellow-500/10 rounded-xl p-4 border border-amber-500/30">
+            <div className="text-center">
+              <div className="text-4xl font-black text-white mb-1">2,99€</div>
+              <div className="text-sm text-slate-400">einmalig · Lebzeit-Zugriff</div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {[
+              "Unbegrenzte Fragen beantworten",
+              "Alle 6 Kategorien freigeschaltet",
+              "Statistiken ohne Einschränkung",
+              "Kein Abo - einmalig zahlen"
+            ].map((feature, i) => (
+              <div key={i} className="flex items-center gap-2 text-sm text-slate-300">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                {feature}
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-2 space-y-2">
+            <Button
+              onClick={onUpgrade}
+              disabled={isLoading}
+              className="w-full py-6 text-lg font-bold bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black"
+            >
+              {isLoading ? (
+                "Wird freigeschaltet..."
+              ) : (
+                <>
+                  <Lock className="w-4 h-4 mr-2" />
+                  Premium freischalten
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={onClose}
+              variant="ghost"
+              className="w-full text-slate-400 hover:text-white"
+            >
+              Später
+            </Button>
+          </div>
+
+          <p className="text-xs text-center text-slate-500">
+            Nach der Zahlung wird dein Konto sofort freigeschaltet
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
