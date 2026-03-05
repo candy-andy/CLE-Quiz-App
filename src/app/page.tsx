@@ -7,7 +7,9 @@ import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { 
   Trophy, Target, BarChart3, Clock, 
-  ArrowLeft, ArrowRight, RotateCcw, Zap, Brain, Home
+  ArrowLeft, ArrowRight, RotateCcw, Zap, Brain, Home,
+  BookOpen, GraduationCap, Timer, Star, Flame, Award,
+  AlertTriangle, CheckCircle, XCircle, Settings
 } from "lucide-react"
 
 // ============================================================================
@@ -45,7 +47,7 @@ const ALLE_FRAGEN = [
 {id:"F09",k:"Führung",farbe:"#2471A3",q:"Was kennzeichnet gute Feedbackkultur?",a:["Feedback ist konkret, zeitnah und verhaltensorientiert.","Kritik bezieht sich auf Persönlichkeit, nicht Verhalten.","Positives Feedback wird regelmäßig gegeben.","Feedback ist eine Einbahnstraße von oben nach unten."],r:[0,2]},
 {id:"F10",k:"Führung",farbe:"#2471A3",q:"Was sind Aufgaben von FK im Change Management?",a:["Veränderungen kommunizieren und begründen","Widerstände ernst nehmen und aktiv bearbeiten","Veränderungen geheim halten bis zur Umsetzung","MA in Veränderungsprozesse einbeziehen"],r:[0,1,3]},
 {id:"F11",k:"Führung",farbe:"#2471A3",q:"Was ist psychologische Sicherheit im Team?",a:["Mitglieder können Fehler und Ideen ohne Angst äußern.","Konflikte werden grundsätzlich vermieden.","Voraussetzung für Innovation und Lernbereitschaft","FK schafft psychologische Sicherheit durch Vorbild."],r:[0,2,3]},
-{id:"F12",k:"Führung",farbe:"#2471A3",q:"Was sind die Burnout-Phasen nach Freudenberger?",a:["Idealismus → Überarbeitung → Vernachlässigung eigener Bedürfnisse","Emotionale Abstumpfung und Zynismus","Körperliche Erschöpfung und psychosomatische Beschwerden","Burnout entsteht ausschließlich durch persönliche Schwäche."],r:[0,1,2]},
+{id:"F12",k:"Führung",farbe:"#2471A3",q:"Was sind die Burnout-Phasen nach Freudenberger?",a:["Idealismus → Überarbeitung → Vernachlässigung eigener Bedürfnisse","Emotionale Abstumpfung und Zynismus","Körperliche Erschöpfung und psychosomatische Beschwerungen","Burnout entsteht ausschließlich durch persönliche Schwäche."],r:[0,1,2]},
 {id:"F13",k:"Führung",farbe:"#2471A3",q:"Was kennzeichnet das Johari-Fenster?",a:["4 Felder: öffentlich, blinder Fleck, privat, unbewusst","Selbstbild und Fremdbild können voneinander abweichen.","Feedback erweitert den öffentlichen Bereich.","Das Johari-Fenster ist ein Kommunikationsinstrument."],r:[0,1,2,3]},
 {id:"F14",k:"Führung",farbe:"#2471A3",q:"Was ist das Ziel von Delegieren?",a:["Aufgaben, Kompetenz und Verantwortung übertragen","MA entlasten und entwickeln","FK behält alle Kontrolle und entscheidet selbst.","Delegation schafft Kapazität für Führungsaufgaben."],r:[0,1,3]},
 {id:"F15",k:"Führung",farbe:"#2471A3",q:"Was sind SMART-Ziele?",a:["Spezifisch: klar und eindeutig formuliert","Messbar: Fortschritt ist überprüfbar","Attraktiv/Motivierend: für den MA bedeutsam","Realistisch und Terminiert: erreichbar mit Zeitrahmen"],r:[0,1,2,3]},
@@ -101,7 +103,7 @@ const ALLE_FRAGEN = [
 {id:"KO05",k:"Kommunikation",farbe:"#117A65",q:"Was kennzeichnet eine klare Ich-Botschaft?",a:["Beschreibt eigene Wahrnehmung, Gefühl und Bedürfnis","Vermeidet Schuldzuweisungen an andere","Ich-Botschaften und Du-Vorwürfe sind gleichwertig.","Fördert Verständnis statt Abwehr beim Gegenüber"],r:[0,1,3]},
 {id:"KO06",k:"Kommunikation",farbe:"#117A65",q:"Was sind Merkmale nonverbaler Kommunikation?",a:["Körperhaltung, Gestik, Mimik, Blickkontakt","Macht ca. 55-65% der gesamten Kommunikation aus.","Nonverbal ist immer kontrollierbar.","Widerspruch zwischen verbal und nonverbal erzeugt Misstrauen."],r:[0,1,3]},
 {id:"KO07",k:"Kommunikation",farbe:"#117A65",q:"Was ist Feedback nach dem SBI-Modell?",a:["Situation: konkrete Situation beschreiben","Behavior: beobachtetes Verhalten benennen","Impact: Wirkung/Auswirkung schildern","SBI = Subjektive Bewertung und Interpretation"],r:[0,1,2]},
-// Neue Fragen aus CSV (F100-B219)
+// Additional questions from CSV (F100-B219)
 {id:"F100",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
 {id:"F101",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Impact/Dringlichkeit, Engpass zuerst.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
 {id:"F102",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","konkret, zeitnah, verhaltensbezogen."],r:[3]},
@@ -132,101 +134,30 @@ const ALLE_FRAGEN = [
 {id:"F127",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 28)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
 {id:"F128",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 29)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","SMART Erwartungen, Verantwortlichkeiten, Deadlines."],r:[3]},
 {id:"F129",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt? (Variante 30)",a:["Die Verantwortung vollständig an eine andere Person abgeben","SMART Erwartungen, Verantwortlichkeiten, Deadlines.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"K130",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Rahmen setzen, Regeln, nacheinander sprechen.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"K131",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","RACI/Zuständigkeiten fixieren."],r:[3]},
-{id:"K132",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: zwei Abteilungen sich gegenseitig blockieren. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
-{id:"K133",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Konflikt um Ressourcen entsteht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"K134",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Kunde sich über Tonfall beschwert. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Bedürfnisse klären, gemeinsame Ziele definieren."],r:[3]},
-{id:"K135",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt?",a:["Rahmen setzen, Regeln, nacheinander sprechen.","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"K136",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Mitarbeiter sich unfair behandelt fühlt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Bedürfnisse klären, gemeinsame Ziele definieren.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"K137",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
-{id:"K138",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","RACI/Zuständigkeiten fixieren.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"K139",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"K140",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"K141",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen."],r:[3]},
-{id:"K142",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: es wiederholt zu Missverständnissen kommt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"K143",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
-{id:"K144",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","RACI/Zuständigkeiten fixieren.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
-{id:"K145",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Kunde sich über Tonfall beschwert. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Rahmen setzen, Regeln, nacheinander sprechen."],r:[3]},
-{id:"K146",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Mitarbeiter sich unfair behandelt fühlt. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","RACI/Zuständigkeiten fixieren.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"K147",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Bedürfnisse klären, gemeinsame Ziele definieren.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"K148",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen."],r:[3]},
-{id:"K149",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Pause, Emotionen benennen, Sachebene herstellen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"M150",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","konkret loben, Erfolge sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"M151",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"M152",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 3)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","Beitrag zum Ganzen sichtbar machen."],r:[3]},
-{id:"M153",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Zielerreichung nur noch über Druck funktioniert. Was ist der sinnvollste erste Schritt?",a:["konkret loben, Erfolge sichtbar machen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"M154",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: Mikromanagement die Eigeninitiative tötet. Was ist der sinnvollste erste Schritt?",a:["Beitrag zum Ganzen sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
-{id:"M155",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Teammitglied innerlich gekündigt wirkt. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Handlungsspielräume geben, Verantwortung übertragen.","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
-{id:"M156",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: nach einer Umstrukturierung Unsicherheit herrscht. Was ist der sinnvollste erste Schritt?",a:["konkret loben, Erfolge sichtbar machen.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M157",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt? (Variante 8)",a:["Beitrag zum Ganzen sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"M158",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["Training/Coaching, klare Lernziele, Feedback.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M159",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: zu viele parallele Aufgaben Überforderung erzeugen. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
-{id:"M160",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Arbeit monoton ist und Fehler steigen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","konkret loben, Erfolge sichtbar machen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"M161",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Teammitglied innerlich gekündigt wirkt. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["realistische Ziele, Prioritäten, Fokus.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M162",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Bonus gestrichen wurde und Frust entsteht. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen."],r:[3]},
-{id:"M163",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Zielerreichung nur noch über Druck funktioniert. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","realistische Ziele, Prioritäten, Fokus."],r:[3]},
-{id:"M164",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein sinnvoller Zweck (Purpose) fehlt. Was ist der sinnvollste erste Schritt?",a:["realistische Ziele, Prioritäten, Fokus.","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M165",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","realistische Ziele, Prioritäten, Fokus.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"M166",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Handlungsspielräume geben, Verantwortung übertragen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"M167",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: zu viele parallele Aufgaben Überforderung erzeugen. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","realistische Ziele, Prioritäten, Fokus.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"M168",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein sinnvoller Zweck (Purpose) fehlt. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Handlungsspielräume geben, Verantwortung übertragen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
-{id:"M169",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: nach einer Umstrukturierung Unsicherheit herrscht. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Training/Coaching, klare Lernziele, Feedback.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"KO170",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Missverständnis per Chat eskaliert. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Wirkung schildern statt Vorwurf.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"KO171",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt?",a:["kurz, faktenbasiert, freundlich, klar.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"KO172",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","offene Fragen, Verständnis sichern.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"KO173",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","offene Fragen, Verständnis sichern.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
-{id:"KO174",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt? (Variante 5)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Wirkung schildern statt Vorwurf.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"KO175",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du eine Präsentation für Führungsebene hältst. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Wirkung schildern statt Vorwurf.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"KO176",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du Erwartungen an Qualität kommunizieren musst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","paraphrasieren, nachfragen, bestätigen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"KO177",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Kernaussage, Gründe, nächste Schritte.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"KO178",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein wichtiges Change-Update kommuniziert werden muss. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Wirkung schildern statt Vorwurf.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
-{id:"KO179",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","paraphrasieren, nachfragen, bestätigen."],r:[3]},
-{id:"KO180",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","paraphrasieren, nachfragen, bestätigen."],r:[3]},
-{id:"KO181",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","kurz, faktenbasiert, freundlich, klar.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"KO182",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["kurz, faktenbasiert, freundlich, klar.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
-{id:"KO183",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["paraphrasieren, nachfragen, bestätigen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
-{id:"KO184",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Missverständnis per Chat eskaliert. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Kernaussage, Gründe, nächste Schritte.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"KO185",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","offene Fragen, Verständnis sichern.","Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"KO186",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: remote Meetings ineffektiv sind. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Kernaussage, Gründe, nächste Schritte.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"KO187",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Kernaussage, Gründe, nächste Schritte.","Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"KO188",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du eine Entscheidung transparent erklären musst. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","kurz, faktenbasiert, freundlich, klar."],r:[3]},
-{id:"KO189",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","kurz, faktenbasiert, freundlich, klar.","Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[1]},
-{id:"P190",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Kriterien offenlegen, Gleichbehandlung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"P191",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Fakten sammeln, sauber dokumentieren.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"P192",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Probezeitentscheidung getroffen werden muss. Was ist der sinnvollste erste Schritt?",a:["klar, respektvoll, lösungsorientiert.","Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"P193",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt? (Variante 4)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Maßnahmenplan, Meilensteine, Follow-up.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"P194",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: du ein Bewerbungsgespräch führst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Kriterien offenlegen, Gleichbehandlung."],r:[3]},
-{id:"P195",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Leistungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","HR einbinden, Regeln einhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"P196",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt? (Variante 7)",a:["Maßnahmenplan, Meilensteine, Follow-up.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"P197",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Probezeitentscheidung getroffen werden muss. Was ist der sinnvollste erste Schritt? (Variante 8)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Fakten sammeln, sauber dokumentieren.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"P198",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: ein Konflikt mit Betriebsrat absehbar ist. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","HR einbinden, Regeln einhalten.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"P199",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","klar, respektvoll, lösungsorientiert."],r:[3]},
-{id:"P200",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Leistungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Maßnahmenplan, Meilensteine, Follow-up.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"P201",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Weiterbildung geplant werden soll. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","klar, respektvoll, lösungsorientiert."],r:[3]},
-{id:"P202",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: ein Teammitglied Versetzungswunsch äußert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Kriterien offenlegen, Gleichbehandlung.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"P203",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Weiterbildung geplant werden soll. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","Fakten sammeln, sauber dokumentieren.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"P204",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","klar, respektvoll, lösungsorientiert.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"B205",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Belastungen identifizieren und Ursachen reduzieren."],r:[3]},
-{id:"B206",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: ein BGM-Programm eingeführt werden soll. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","Arbeitsbedingungen + individuelles Verhalten."],r:[3]},
-{id:"B207",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt? (Variante 3)",a:["frühzeitig ansprechen, Angebote vermitteln.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
-{id:"B208",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Arbeitsbedingungen + individuelles Verhalten.","Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"B209",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","frühzeitig ansprechen, Angebote vermitteln."],r:[3]},
-{id:"B210",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt? (Variante 6)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Pausen, Prioritäten, Ressourcenausgleich."],r:[3]},
-{id:"B211",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: eine Gefährdungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","frühzeitig ansprechen, Angebote vermitteln.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"B212",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: viele Überstunden anfallen. Was ist der sinnvollste erste Schritt?",a:["frühzeitig ansprechen, Angebote vermitteln.","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[0]},
-{id:"B213",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Pausen, Prioritäten, Ressourcenausgleich.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"B214",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Belastungen identifizieren und Ursachen reduzieren.","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"B215",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","Plan, Abstimmung, Schonung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"B216",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Arbeitsbedingungen + individuelles Verhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"B217",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["Belastungen identifizieren und Ursachen reduzieren.","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"B218",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Plan, Abstimmung, Schonung.","Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"B219",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Arbeitsbedingungen + individuelles Verhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
+{id:"K130",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Konflikt zwischen zwei Teammitgliedern eskaliert. Was ist der sinnvollste erste Schritt?",a:["Beide Parteien sofort trennen","Den Konflikt ignorieren und hoffen dass er sich legt","Aktiv zuhören und beide Perspektiven verstehen","Eine Partei als Schuldigen benennen"],r:[2]},
+{id:"K131",k:"Konflikt",farbe:"#E74C3C",q:"Welche Methode eignet sich besonders zur Konfliktprävention?",a:["Klare Erwartungen und Rollen definieren","Konflikte tabuisieren","Nur schriftliche Kommunikation","Mikromanagement"],r:[0]},
+{id:"K132",k:"Konflikt",farbe:"#E74C3C",q:"Was ist ein Wesensmerkmal von Konflikten im beruflichen Umfeld?",a:["Sie sind immer vermeidbar","Sie können produktiv genutzt werden","Sie sind immer destruktiv","Sie lösen sich von selbst"],r:[1]},
+{id:"K133",k:"Konflikt",farbe:"#E74C3C",q:"Wie reagierst du am besten auf Widerstand bei Veränderungen?",a:["Widerstand ignorieren","Widerstand als Feedback verstehen und darauf eingehen","Durchsetzen um jeden Preis","Verantwortung abgeben"],r:[1]},
+{id:"K134",k:"Konflikt",farbe:"#E74C3C",q:"Was ist die wichtigste Voraussetzung für Konfliktlösung?",a:["Machtausübung","Kommunikationsbereitschaft","Zeitdruck vermeiden","Externe Hilfe"],r:[1]},
+{id:"M130",k:"Motivation",farbe:"#1E8449",q:"Welcher Faktor motiviert Mitarbeiter nach Herzberg dauerhaft?",a:["Gehaltserhöhung","Anerkennung für Leistung","Büroausstattung","Parkplatz"],r:[1]},
+{id:"M131",k:"Motivation",farbe:"#1E8449",q:"Wie kannst du intrinsische Motivation fördern?",a:["Durch Kontrolle","Durch Sinnvermittlung und Autonomie","Durch Strafen","Durch Mikromanagement"],r:[1]},
+{id:"M132",k:"Motivation",farbe:"#1E8449",q:"Was ist ein Zeichen für Demotivation bei Mitarbeitern?",a:["Hohe Eigeninitiative","Rückzug und vermindertes Engagement","Regelmäßige Feedback-Gespräche","Vorschläge einbringen"],r:[1]},
+{id:"P130",k:"Personal",farbe:"#7D3C98",q:"Was ist ein wichtiges Element der Mitarbeiterbindung?",a:["Hohe Fluktuation akzeptieren","Entwicklungsmöglichkeiten bieten","Nur finanzielle Anreize setzen","Strenge Kontrolle"],r:[1]},
+{id:"P131",k:"Personal",farbe:"#7D3C98",q:"Was gehört zu einem guten Onboarding?",a:["Am ersten Tag alleine lassen","Strukturierte Einarbeitung mit Mentoring","Sofort volle Verantwortung übergeben","Keine Einführung"],r:[1]},
+{id:"B130",k:"BGM",farbe:"#D68910",q:"Was ist ein Ziel des Betrieblichen Gesundheitsmanagements?",a:["Krankheitstage erhöhen","Gesundheitsbewusstes Verhalten fördern","Arbeitszeit verlängern","Pausen verkürzen"],r:[1]},
+{id:"B131",k:"BGM",farbe:"#D68910",q:"Wie kannst du zur Gesundheit deiner Mitarbeiter beitragen?",a:["Überlastung ignorieren","Für Ausgleich sorgen und Grenzen respektieren","Immer verfügbar sein müssen","Pausen abschaffen"],r:[1]},
+{id:"KO130",k:"Kommunikation",farbe:"#117A65",q:"Was ist die wichtigste Voraussetzung für effektive Kommunikation?",a:["Viele Worte machen","Aktives Zuhören","Schnell sprechen","Laut sein"],r:[1]},
+{id:"KO131",k:"Kommunikation",farbe:"#117A65",q:"Wie vermeidest du Missverständnisse in der Kommunikation?",a:["Nur E-Mails schreiben","Klar formulieren und nachfragen","Viele Fremdwörter nutzen","Monologe halten"],r:[1]},
+{id:"KO132",k:"Kommunikation",farbe:"#117A65",q:"Was ist ein Zeichen für schlechte Kommunikation im Team?",a:["Offene Diskussionen","Gerüchte und Hinterzimmergespräche","Regelmäßige Meetings","Transparente Informationen"],r:[1]},
 ]
 
-const KATEGORIEN = [...new Set(ALLE_FRAGEN.map(f => f.k))]
+// Kategorien
+const KATEGORIEN = ["Konflikt", "Führung", "Motivation", "Personal", "BGM", "Kommunikation"]
 
-function shuffle(arr: any[]) {
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+const shuffle = <T,>(arr: T[]): T[] => {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -238,7 +169,8 @@ function shuffle(arr: any[]) {
 // ============================================================================
 // TYPES
 // ============================================================================
-type Screen = "home" | "quiz" | "result" | "stats"
+type Screen = "home" | "modes" | "quiz" | "result" | "stats" | "achievements"
+type QuizMode = "normal" | "learn" | "exam" | "blitz" | "weakness" | "favorites"
 
 interface Frage {
   id: string
@@ -252,19 +184,44 @@ interface Frage {
 interface Ergebnis {
   id: string
   korrekt: boolean
+  frage: Frage
+  userAnswers: number[]
 }
 
 interface LocalStats {
   totalCorrect: number
   totalWrong: number
+  totalAnswered: number
   categoryStats: Record<string, { correct: number; wrong: number }>
+  questionStats: Record<string, { correct: number; wrong: number }>
 }
+
+interface GameData {
+  streak: number
+  lastPlayed: string
+  achievements: string[]
+  favorites: string[]
+}
+
+// Achievement Definitionen
+const ACHIEVEMENTS = [
+  { id: "first_quiz", name: "Erste Schritte", desc: "10 Fragen beantwortet", icon: "🎯", requirement: (s: LocalStats) => s.totalAnswered >= 10 },
+  { id: "halfway", name: "Halbzeit", desc: "100 Fragen beantwortet", icon: "🏃", requirement: (s: LocalStats) => s.totalAnswered >= 100 },
+  { id: "master", name: "Quiz-Meister", desc: "500 Fragen beantwortet", icon: "🏆", requirement: (s: LocalStats) => s.totalAnswered >= 500 },
+  { id: "perfect", name: "Perfekt", desc: "100% in einem Quiz", icon: "⭐", requirement: () => false }, // Wird bei Quiz-Ende geprüft
+  { id: "streak_3", name: "Dritte ist der Durchbruch", desc: "3 Tage Streak", icon: "🔥", requirement: (g: GameData) => g.streak >= 3 },
+  { id: "streak_7", name: "Wochenstreak", desc: "7 Tage Streak", icon: "💪", requirement: (g: GameData) => g.streak >= 7 },
+  { id: "streak_30", name: "Monatsmeister", desc: "30 Tage Streak", icon: "👑", requirement: (g: GameData) => g.streak >= 30 },
+  { id: "cat_master", name: "Kategorie-Meister", desc: "80%+ in einer Kategorie (min. 10 Fragen)", icon: "🎓", requirement: () => false }, // Wird dynamisch geprüft
+  { id: "favorites_10", name: "Sammler", desc: "10 Fragen favorisiert", icon: "⭐", requirement: (g: GameData) => g.favorites.length >= 10 },
+]
 
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 export default function App() {
   const [screen, setScreen] = useState<Screen>("home")
+  const [quizMode, setQuizMode] = useState<QuizMode>("normal")
   const [fragen, setFragen] = useState<Frage[]>([])
   const [idx, setIdx] = useState(0)
   const [sel, setSel] = useState<number[]>([])
@@ -272,44 +229,170 @@ export default function App() {
   const [erg, setErg] = useState<Ergebnis[]>([])
   const [t0, setT0] = useState<number | null>(null)
   const [elapsed, setElapsed] = useState(0)
+  const [questionTime, setQuestionTime] = useState(20) // Für Blitz-Modus
+  const [examTime, setExamTime] = useState(30 * 60) // 30 Min für Prüfungsmodus
+  const [showAchievementPopup, setShowAchievementPopup] = useState<string | null>(null)
+  
+  // Stats aus localStorage
   const [stats, setStats] = useState<LocalStats>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('cle-quiz-stats')
-      return saved ? JSON.parse(saved) : { totalCorrect: 0, totalWrong: 0, categoryStats: {} }
+      return saved ? JSON.parse(saved) : { 
+        totalCorrect: 0, 
+        totalWrong: 0, 
+        totalAnswered: 0,
+        categoryStats: {},
+        questionStats: {}
+      }
     }
-    return { totalCorrect: 0, totalWrong: 0, categoryStats: {} }
+    return { totalCorrect: 0, totalWrong: 0, totalAnswered: 0, categoryStats: {}, questionStats: {} }
   })
 
-  // Timer
+  // Game Data (Streak, Achievements, Favorites)
+  const [gameData, setGameData] = useState<GameData>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cle-quiz-game')
+      if (saved) {
+        const data = JSON.parse(saved)
+        // Streak prüfen
+        const today = new Date().toDateString()
+        const lastPlayed = data.lastPlayed
+        if (lastPlayed && lastPlayed !== today) {
+          const yesterday = new Date()
+          yesterday.setDate(yesterday.getDate() - 1)
+          if (lastPlayed !== yesterday.toDateString()) {
+            data.streak = 0 // Streak unterbrochen
+          }
+        }
+        return data
+      }
+    }
+    return { streak: 0, lastPlayed: "", achievements: [], favorites: [] }
+  })
+
+  // Timer für normales Quiz
   useEffect(() => {
     let t: NodeJS.Timeout
-    if (screen === "quiz" && t0) {
+    if (screen === "quiz" && t0 && quizMode !== "blitz") {
       t = setInterval(() => setElapsed(Math.floor((Date.now() - t0) / 1000)), 1000)
     }
     return () => clearInterval(t)
-  }, [screen, t0])
+  }, [screen, t0, quizMode])
+
+  // Timer für Prüfungsmodus
+  useEffect(() => {
+    let t: NodeJS.Timeout
+    if (screen === "quiz" && quizMode === "exam" && examTime > 0) {
+      t = setInterval(() => setExamTime(prev => {
+        if (prev <= 1) {
+          // Zeit abgelaufen - Quiz beenden
+          finishQuiz()
+          return 0
+        }
+        return prev - 1
+      }), 1000)
+    }
+    return () => clearInterval(t)
+  }, [screen, quizMode, examTime])
+
+  // Timer für Blitz-Modus
+  useEffect(() => {
+    let t: NodeJS.Timeout
+    if (screen === "quiz" && quizMode === "blitz" && !best && questionTime > 0) {
+      t = setInterval(() => setQuestionTime(prev => {
+        if (prev <= 1) {
+          // Zeit abgelaufen - automatisch falsch
+          handleTimeOut()
+          return 0
+        }
+        return prev - 1
+      }), 1000)
+    }
+    return () => clearInterval(t)
+  }, [screen, quizMode, best, questionTime])
 
   // Save stats
   useEffect(() => {
     localStorage.setItem('cle-quiz-stats', JSON.stringify(stats))
   }, [stats])
 
-  const startQuiz = useCallback((category: string = "Alle") => {
+  // Save game data
+  useEffect(() => {
+    localStorage.setItem('cle-quiz-game', JSON.stringify(gameData))
+  }, [gameData])
+
+  const handleTimeOut = () => {
+    if (best) return
+    const f = fragen[idx]
+    setBest(true)
+    setErg(e => [...e, { id: f.id, korrekt: false, frage: f, userAnswers: [] }])
+  }
+
+  const startQuiz = useCallback((category: string = "Alle", mode: QuizMode = "normal") => {
     let pool = category === "Alle" ? ALLE_FRAGEN : ALLE_FRAGEN.filter(f => f.k === category)
+    
+    // Schwächen-Modus: Nur Fragen mit < 50% Erfolgsrate
+    if (mode === "weakness") {
+      pool = pool.filter(f => {
+        const qs = stats.questionStats[f.id]
+        if (!qs) return true // Noch nie beantwortet = potentielle Schwäche
+        const total = qs.correct + qs.wrong
+        return total > 0 && (qs.correct / total) < 0.5
+      })
+      if (pool.length < 5) {
+        // Fallback wenn zu wenige schwache Fragen
+        pool = ALLE_FRAGEN.slice(0, 20)
+      }
+    }
+
+    // Favoriten-Modus
+    if (mode === "favorites") {
+      pool = pool.filter(f => gameData.favorites.includes(f.id))
+      if (pool.length < 5) {
+        alert("Du hast noch nicht genug Favoriten! Mindestens 5 Favoriten benötigt.")
+        return
+      }
+    }
+
     const s = shuffle(pool)
-    setFragen(s.slice(0, Math.min(30, s.length)))
+    const questionCount = mode === "exam" ? 30 : mode === "blitz" ? 15 : Math.min(30, s.length)
+    
+    setFragen(s.slice(0, questionCount))
     setIdx(0)
     setSel([])
     setBest(false)
     setErg([])
+    setQuizMode(mode)
     setT0(Date.now())
     setElapsed(0)
+    setQuestionTime(20)
+    setExamTime(30 * 60)
     setScreen("quiz")
-  }, [])
+
+    // Streak aktualisieren
+    const today = new Date().toDateString()
+    if (gameData.lastPlayed !== today) {
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      const newStreak = gameData.lastPlayed === yesterday.toDateString() 
+        ? gameData.streak + 1 
+        : 1
+      setGameData(prev => ({ ...prev, streak: newStreak, lastPlayed: today }))
+    }
+  }, [stats.questionStats, gameData.favorites, gameData.lastPlayed, gameData.streak])
 
   const toggle = (i: number) => {
-    if (best) return
+    if (best && quizMode !== "learn") return
     setSel(p => (p.includes(i) ? p.filter(x => x !== i) : [...p, i]))
+  }
+
+  const toggleFavorite = (questionId: string) => {
+    setGameData(prev => ({
+      ...prev,
+      favorites: prev.favorites.includes(questionId)
+        ? prev.favorites.filter(id => id !== questionId)
+        : [...prev.favorites, questionId]
+    }))
   }
 
   const confirm = () => {
@@ -319,54 +402,120 @@ export default function App() {
     const as = new Set(sel)
     const korrekt = [...ok].every(r => as.has(r)) && [...as].every(a => ok.has(a))
     setBest(true)
-    setErg(e => [...e, { id: f.id, korrekt }])
+    setErg(e => [...e, { id: f.id, korrekt, frage: f, userAnswers: sel }])
   }
 
   const next = () => {
     if (idx + 1 >= fragen.length) {
-      // Update stats
-      const newStats = { ...stats }
-      erg.forEach(e => {
-        const frage = ALLE_FRAGEN.find(f => f.id === e.id)
-        if (frage) {
-          if (!newStats.categoryStats[frage.k]) {
-            newStats.categoryStats[frage.k] = { correct: 0, wrong: 0 }
-          }
-          if (e.korrekt) {
-            newStats.totalCorrect++
-            newStats.categoryStats[frage.k].correct++
-          } else {
-            newStats.totalWrong++
-            newStats.categoryStats[frage.k].wrong++
-          }
-        }
-      })
-      setStats(newStats)
-      setScreen("result")
+      finishQuiz()
     } else {
       setIdx(i => i + 1)
       setSel([])
       setBest(false)
+      setQuestionTime(20) // Reset für Blitz-Modus
     }
   }
 
-  const frage = fragen[idx]
-  const mm = Math.floor(elapsed / 60).toString().padStart(2, "0")
-  const ss = (elapsed % 60).toString().padStart(2, "0")
+  const finishQuiz = () => {
+    // Stats aktualisieren
+    const newStats = { ...stats }
+    erg.forEach(e => {
+      const frage = e.frage
+      if (!newStats.categoryStats[frage.k]) {
+        newStats.categoryStats[frage.k] = { correct: 0, wrong: 0 }
+      }
+      if (!newStats.questionStats[frage.id]) {
+        newStats.questionStats[frage.id] = { correct: 0, wrong: 0 }
+      }
+      if (e.korrekt) {
+        newStats.totalCorrect++
+        newStats.totalAnswered++
+        newStats.categoryStats[frage.k].correct++
+        newStats.questionStats[frage.id].correct++
+      } else {
+        newStats.totalWrong++
+        newStats.totalAnswered++
+        newStats.categoryStats[frage.k].wrong++
+        newStats.questionStats[frage.id].wrong++
+      }
+    })
+    setStats(newStats)
+
+    // Achievements prüfen
+    checkAchievements(newStats)
+    
+    setScreen("result")
+  }
+
+  const checkAchievements = (newStats: LocalStats) => {
+    const newAchievements: string[] = []
+    
+    // Perfect Quiz
+    if (erg.length > 0 && erg.every(e => e.korrekt)) {
+      if (!gameData.achievements.includes("perfect")) {
+        newAchievements.push("perfect")
+      }
+    }
+
+    // Kategorie-Meister
+    KATEGORIEN.forEach(kat => {
+      const catStats = newStats.categoryStats[kat]
+      if (catStats && (catStats.correct + catStats.wrong) >= 10) {
+        const percentage = catStats.correct / (catStats.correct + catStats.wrong)
+        if (percentage >= 0.8 && !gameData.achievements.includes("cat_master_" + kat)) {
+          newAchievements.push("cat_master_" + kat)
+        }
+      }
+    })
+
+    // Stat-basierte Achievements
+    ACHIEVEMENTS.forEach(ach => {
+      if (!gameData.achievements.includes(ach.id)) {
+        if (ach.requirement(newStats) || ach.requirement(gameData)) {
+          newAchievements.push(ach.id)
+        }
+      }
+    })
+
+    if (newAchievements.length > 0) {
+      setGameData(prev => ({
+        ...prev,
+        achievements: [...prev.achievements, ...newAchievements]
+      }))
+      setShowAchievementPopup(newAchievements[0])
+      setTimeout(() => setShowAchievementPopup(null), 3000)
+    }
+  }
 
   const getAnswerStyle = (i: number) => {
     if (!best) {
-      return sel.includes(i) 
-        ? "border-cyan-500 bg-cyan-500/20" 
-        : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
+      if (sel.includes(i)) return "border-cyan-400 bg-cyan-400/20"
+      return "border-slate-600 bg-slate-700/50 hover:border-slate-500"
     }
-    const isCorrect = frage.r.includes(i)
+    
+    const f = fragen[idx]
+    const isCorrect = f.r.includes(i)
     const isSelected = sel.includes(i)
+    
+    if (quizMode === "exam") {
+      // Im Prüfungsmodus keine Farben zeigen
+      if (isSelected) return "border-slate-400 bg-slate-600/50"
+      return "border-slate-600 bg-slate-700/30"
+    }
+    
     if (isCorrect && isSelected) return "border-green-500 bg-green-500/30"
+    if (isCorrect && !isSelected) return "border-green-500 bg-green-500/20"
     if (!isCorrect && isSelected) return "border-red-500 bg-red-500/30"
-    if (isCorrect && !isSelected) return "border-yellow-500 bg-yellow-500/20"
     return "border-slate-600 bg-slate-700/30"
   }
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+    const s = seconds % 60
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  }
+
+  const frage = fragen[idx]
 
   // ==========================================================================
   // HOME SCREEN
@@ -376,15 +525,23 @@ export default function App() {
       <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-4">
         <div className="max-w-md mx-auto">
           {/* Header */}
-          <div className="text-center mb-8 pt-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
-              <Brain className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">CLE Quiz</h1>
-            <p className="text-slate-300">Certified Leadership Expert · {ALLE_FRAGEN.length} Fragen</p>
+          <div className="text-center pt-8 mb-6">
+            <Brain className="w-16 h-16 text-cyan-400 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold">CLE Quiz</h1>
+            <p className="text-slate-400 mt-1">207 Fragen • 6 Kategorien</p>
           </div>
 
-          {/* Stats Card */}
+          {/* Streak Badge */}
+          {gameData.streak > 0 && (
+            <div className="flex justify-center mb-4">
+              <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/50 px-3 py-1">
+                <Flame className="w-4 h-4 mr-1" />
+                {gameData.streak} Tage Streak
+              </Badge>
+            </div>
+          )}
+
+          {/* Stats Summary */}
           <Card className="bg-slate-800/80 border-slate-600 mb-6">
             <CardContent className="p-4">
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -408,52 +565,211 @@ export default function App() {
             </CardContent>
           </Card>
 
-          {/* Category Selection */}
-          <Card className="bg-slate-800/80 border-slate-600 mb-6">
-            <CardHeader>
-              <CardTitle className="text-lg">Kategorie wählen</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Button 
-                onClick={() => startQuiz("Alle")}
-                className="w-full py-6 text-lg bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                Alle Kategorien ({ALLE_FRAGEN.length} Fragen)
-              </Button>
-              {KATEGORIEN.map(k => {
-                const count = ALLE_FRAGEN.filter(f => f.k === k).length
-                const farbe = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#64748b"
-                return (
-                  <Button
-                    key={k}
-                    variant="outline"
-                    onClick={() => startQuiz(k)}
-                    className="w-full py-4 justify-between border-slate-600 bg-slate-700/50 hover:bg-slate-600"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: farbe }} />
-                      {k}
-                    </span>
-                    <Badge variant="secondary" className="bg-slate-600">{count}</Badge>
-                  </Button>
-                )
-              })}
-            </CardContent>
-          </Card>
-
-          {/* Stats Button */}
+          {/* Main Button */}
           <Button 
-            variant="outline" 
-            onClick={() => setScreen("stats")}
-            className="w-full py-4 border-slate-600 bg-slate-700/50 hover:bg-slate-600"
+            onClick={() => setScreen("modes")}
+            className="w-full py-6 text-lg bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 mb-4"
           >
-            <BarChart3 className="w-5 h-5 mr-2" />
-            Statistiken anzeigen
+            <Zap className="w-5 h-5 mr-2" />
+            Quiz starten
           </Button>
 
-          <div className="text-center mt-8 text-xs text-slate-400">
+          {/* Quick Actions */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <Button 
+              variant="outline" 
+              onClick={() => setScreen("stats")}
+              className="py-4 border-slate-600 bg-slate-700/50 hover:bg-slate-600"
+            >
+              <BarChart3 className="w-5 h-5 mr-2" />
+              Statistiken
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => setScreen("achievements")}
+              className="py-4 border-slate-600 bg-slate-700/50 hover:bg-slate-600"
+            >
+              <Award className="w-5 h-5 mr-2" />
+              Achievements
+            </Button>
+          </div>
+
+          {/* Favorites Quick Access */}
+          {gameData.favorites.length > 0 && (
+            <Button 
+              variant="outline" 
+              onClick={() => startQuiz("Alle", "favorites")}
+              className="w-full py-3 border-yellow-500/50 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 mb-6"
+            >
+              <Star className="w-5 h-5 mr-2 fill-current" />
+              Favoriten üben ({gameData.favorites.length})
+            </Button>
+          )}
+
+          <div className="text-center mt-4 text-xs text-slate-400">
             Ersteller: A.Neu
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ==========================================================================
+  // MODE SELECTION SCREEN
+  // ==========================================================================
+  if (screen === "modes") {
+    const weakCount = ALLE_FRAGEN.filter(f => {
+      const qs = stats.questionStats[f.id]
+      if (!qs) return true
+      const total = qs.correct + qs.wrong
+      return total > 0 && (qs.correct / total) < 0.5
+    }).length
+
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-4">
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center gap-4 pt-4 mb-6">
+            <Button variant="ghost" onClick={() => setScreen("home")} className="text-slate-300">
+              <ArrowLeft className="w-5 h-5 mr-1" /> Zurück
+            </Button>
+            <h1 className="text-xl font-bold">Modus wählen</h1>
+          </div>
+
+          <div className="space-y-3">
+            {/* Normaler Modus */}
+              <Card 
+              className="bg-slate-800/80 border-slate-600 cursor-pointer hover:border-cyan-500 transition-colors"
+              onClick={() => startQuiz("Alle", "normal")}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                    <Zap className="w-6 h-6 text-cyan-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">Normaler Modus</h3>
+                    <p className="text-sm text-slate-400">30 zufällige Fragen, sofortige Korrektur</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Lernmodus */}
+            <Card 
+              className="bg-slate-800/80 border-slate-600 cursor-pointer hover:border-green-500 transition-colors"
+              onClick={() => startQuiz("Alle", "learn")}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-green-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">Lernmodus</h3>
+                    <p className="text-sm text-slate-400">Sofortiges Feedback, keine Zeitlimit</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Prüfungsmodus */}
+            <Card 
+              className="bg-slate-800/80 border-slate-600 cursor-pointer hover:border-purple-500 transition-colors"
+              onClick={() => startQuiz("Alle", "exam")}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <GraduationCap className="w-6 h-6 text-purple-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">Prüfungsmodus</h3>
+                    <p className="text-sm text-slate-400">30 Minuten, 30 Fragen, Simulation</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Blitz-Modus */}
+            <Card 
+              className="bg-slate-800/80 border-slate-600 cursor-pointer hover:border-orange-500 transition-colors"
+              onClick={() => startQuiz("Alle", "blitz")}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                    <Timer className="w-6 h-6 text-orange-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">Blitz-Modus</h3>
+                    <p className="text-sm text-slate-400">20 Sekunden pro Frage</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Schwächen-Training */}
+            <Card 
+              className="bg-slate-800/80 border-slate-600 cursor-pointer hover:border-red-500 transition-colors"
+              onClick={() => startQuiz("Alle", "weakness")}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-red-500/20 flex items-center justify-center">
+                    <AlertTriangle className="w-6 h-6 text-red-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">Schwächen-Training</h3>
+                    <p className="text-sm text-slate-400">Fragen mit &lt;50% Erfolgsrate ({weakCount} verfügbar)</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Favoriten-Modus */}
+            <Card 
+              className={`bg-slate-800/80 border-slate-600 cursor-pointer hover:border-yellow-500 transition-colors ${gameData.favorites.length < 5 ? 'opacity-50' : ''}`}
+              onClick={() => gameData.favorites.length >= 5 && startQuiz("Alle", "favorites")}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+                    <Star className="w-6 h-6 text-yellow-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold">Favoriten-Modus</h3>
+                    <p className="text-sm text-slate-400">
+                      {gameData.favorites.length >= 5 
+                        ? `${gameData.favorites.length} Favoriten verfügbar`
+                        : `Mindestens 5 Favoriten nötig (${gameData.favorites.length}/5)`}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Kategorie-Auswahl */}
+          <div className="mt-6">
+            <h2 className="text-lg font-semibold mb-3 text-slate-300">Nach Kategorie</h2>
+            {KATEGORIEN.map(k => {
+              const count = ALLE_FRAGEN.filter(f => f.k === k).length
+              const farbe = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#64748b"
+              return (
+                <Button
+                  key={k}
+                  variant="outline"
+                  onClick={() => startQuiz(k, "normal")}
+                  className="w-full py-3 mb-2 justify-between border-slate-600 bg-slate-700/50 hover:bg-slate-600"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: farbe }} />
+                    {k}
+                  </span>
+                  <Badge variant="secondary" className="bg-slate-600">{count}</Badge>
+                </Button>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -476,10 +792,22 @@ export default function App() {
               <span className="text-slate-300">
                 {idx + 1} <span className="text-slate-400">/ {fragen.length}</span>
               </span>
-              <div className="flex items-center gap-1 text-slate-300">
-                <Clock className="w-4 h-4" />
-                {mm}:{ss}
-              </div>
+              {quizMode === "exam" ? (
+                <div className={`flex items-center gap-1 ${examTime < 300 ? 'text-red-400' : 'text-slate-300'}`}>
+                  <Clock className="w-4 h-4" />
+                  {formatTime(examTime)}
+                </div>
+              ) : quizMode === "blitz" ? (
+                <div className={`flex items-center gap-1 font-bold ${questionTime <= 5 ? 'text-red-400 animate-pulse' : 'text-orange-400'}`}>
+                  <Timer className="w-4 h-4" />
+                  {questionTime}s
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-slate-300">
+                  <Clock className="w-4 h-4" />
+                  {formatTime(elapsed)}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -488,14 +816,24 @@ export default function App() {
           {/* Progress */}
           <Progress value={((idx + 1) / fragen.length) * 100} className="mb-4 h-2" />
 
-          {/* Category Badge */}
-          <Badge 
-            variant="outline" 
-            className="mb-3 border-slate-500"
-            style={{ backgroundColor: `${frage.farbe}20`, borderColor: frage.farbe }}
-          >
-            {frage.k}
-          </Badge>
+          {/* Category Badge & Favorite */}
+          <div className="flex items-center justify-between mb-3">
+            <Badge 
+              variant="outline" 
+              className="border-slate-500"
+              style={{ backgroundColor: `${frage.farbe}20`, borderColor: frage.farbe }}
+            >
+              {frage.k}
+            </Badge>
+            <button
+              onClick={() => toggleFavorite(frage.id)}
+              className="p-1 hover:bg-slate-700 rounded-full transition-colors"
+            >
+              <Star 
+                className={`w-5 h-5 ${gameData.favorites.includes(frage.id) ? 'text-yellow-400 fill-yellow-400' : 'text-slate-400'}`} 
+              />
+            </button>
+          </div>
 
           {/* Question */}
           <Card className="bg-slate-800/80 border-slate-600 mb-4">
@@ -513,7 +851,7 @@ export default function App() {
               <button
                 key={i}
                 onClick={() => toggle(i)}
-                disabled={best}
+                disabled={best && quizMode !== "learn"}
                 className={`w-full text-left p-4 rounded-lg border-2 transition-all ${getAnswerStyle(i)}`}
               >
                 <span className="flex gap-3">
@@ -523,6 +861,31 @@ export default function App() {
               </button>
             ))}
           </div>
+
+          {/* Learn Mode - Show correct answers after confirming */}
+          {best && quizMode === "learn" && (
+            <Card className="bg-slate-800/80 border-slate-600 mt-4">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  {erg[erg.length - 1]?.korrekt ? (
+                    <>
+                      <CheckCircle className="w-5 h-5 text-green-400" />
+                      <span className="text-green-400 font-semibold">Richtig!</span>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-5 h-5 text-red-400" />
+                      <span className="text-red-400 font-semibold">Falsch</span>
+                    </>
+                  )}
+                </div>
+                <p className="text-sm text-slate-300">
+                  Die richtigen Antworten sind:{' '}
+                  {frage.r.map(i => ['A', 'B', 'C', 'D'][i]).join(', ')}
+                </p>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Action Button */}
           <div className="mt-6">
@@ -568,7 +931,9 @@ export default function App() {
             <h1 className="text-3xl font-bold mb-2">
               {percent >= 70 ? "Sehr gut!" : percent >= 50 ? "Gut gemacht!" : "Weiter üben!"}
             </h1>
-            <p className="text-slate-300">Quiz abgeschlossen</p>
+            <p className="text-slate-300">
+              {quizMode === "exam" ? "Prüfung abgeschlossen" : "Quiz abgeschlossen"}
+            </p>
           </div>
 
           <Card className="bg-slate-800/80 border-slate-600 mb-6">
@@ -577,13 +942,42 @@ export default function App() {
                 {percent}%
               </div>
               <p className="text-slate-300">{correct} von {total} richtig</p>
-              <p className="text-sm text-slate-400 mt-2">Zeit: {mm}:{ss}</p>
+              {quizMode !== "blitz" && (
+                <p className="text-sm text-slate-400 mt-2">Zeit: {formatTime(elapsed)}</p>
+              )}
+              {quizMode === "exam" && (
+                <p className="text-sm text-slate-400 mt-2">Verbleibende Zeit: {formatTime(examTime)}</p>
+              )}
             </CardContent>
           </Card>
 
+          {/* Wrong Answers Review (for exam mode) */}
+          {quizMode === "exam" && erg.filter(e => !e.korrekt).length > 0 && (
+            <Card className="bg-slate-800/80 border-slate-600 mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg">Falsche Antworten</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {erg.filter(e => !e.korrekt).slice(0, 5).map((e, i) => (
+                  <div key={i} className="p-3 rounded-lg bg-red-500/10 border border-red-500/30">
+                    <p className="text-sm font-medium mb-1">{e.frage.q}</p>
+                    <p className="text-xs text-slate-400">
+                      Richtig: {e.frage.r.map(idx => e.frage.a[idx]).join(', ')}
+                    </p>
+                  </div>
+                ))}
+                {erg.filter(e => !e.korrekt).length > 5 && (
+                  <p className="text-xs text-slate-400 text-center">
+                    +{erg.filter(e => !e.korrekt).length - 5} weitere falsche Antworten
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           <div className="space-y-3">
             <Button 
-              onClick={() => startQuiz("Alle")}
+              onClick={() => setScreen("modes")}
               className="w-full py-4 bg-gradient-to-r from-cyan-500 to-teal-500"
             >
               <RotateCcw className="w-5 h-5 mr-2" />
@@ -676,13 +1070,70 @@ export default function App() {
             variant="outline"
             onClick={() => {
               if (confirm('Alle Statistiken zurücksetzen?')) {
-                setStats({ totalCorrect: 0, totalWrong: 0, categoryStats: {} })
+                setStats({ totalCorrect: 0, totalWrong: 0, totalAnswered: 0, categoryStats: {}, questionStats: {} })
               }
             }}
             className="w-full mt-6 py-3 border-red-500/50 text-red-400 hover:bg-red-500/10"
           >
             Statistiken zurücksetzen
           </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // ==========================================================================
+  // ACHIEVEMENTS SCREEN
+  // ==========================================================================
+  if (screen === "achievements") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-4">
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center gap-4 pt-4 mb-6">
+            <Button variant="ghost" onClick={() => setScreen("home")} className="text-slate-300">
+              <ArrowLeft className="w-5 h-5 mr-1" /> Zurück
+            </Button>
+            <h1 className="text-xl font-bold">Achievements</h1>
+          </div>
+
+          {/* Streak Card */}
+          <Card className="bg-slate-800/80 border-slate-600 mb-6">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-orange-500/20 flex items-center justify-center">
+                <Flame className="w-8 h-8 text-orange-400" />
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-orange-400">{gameData.streak}</div>
+                <div className="text-slate-400">Tage Streak</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Achievements Grid */}
+          <div className="grid grid-cols-1 gap-3">
+            {ACHIEVEMENTS.map(ach => {
+              const unlocked = gameData.achievements.includes(ach.id)
+              return (
+                <Card 
+                  key={ach.id}
+                  className={`bg-slate-800/80 border-slate-600 ${unlocked ? '' : 'opacity-50'}`}
+                >
+                  <CardContent className="p-4 flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${unlocked ? 'bg-yellow-500/20' : 'bg-slate-700'}`}>
+                      {unlocked ? ach.icon : '🔒'}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{ach.name}</h3>
+                      <p className="text-sm text-slate-400">{ach.desc}</p>
+                    </div>
+                    {unlocked && (
+                      <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
+                    )}
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
         </div>
       </div>
     )
