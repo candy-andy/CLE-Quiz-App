@@ -544,7 +544,7 @@ export default function App() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 animate-pulse">
             <Brain className="w-8 h-8 text-white" />
           </div>
-          <p className="mt-4 text-slate-400">Wird geladen...</p>
+          <p className="mt-4 text-slate-300">Wird geladen...</p>
         </div>
       </div>
     )
@@ -556,7 +556,7 @@ export default function App() {
   if (screen === "login") {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-slate-900/50 border-slate-800 backdrop-blur">
+        <Card className="w-full max-w-md bg-slate-800/80 border-slate-800 backdrop-blur">
           <CardHeader className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
               <Brain className="w-8 h-8 text-white" />
@@ -600,7 +600,7 @@ export default function App() {
               </Button>
             </form>
             <div className="mt-6 text-center">
-              <p className="text-slate-400 text-sm">
+              <p className="text-slate-300 text-sm">
                 Noch kein Konto?{' '}
                 <button
                   onClick={() => { setScreen("register"); setError("") }}
@@ -611,7 +611,7 @@ export default function App() {
               </p>
             </div>
           </CardContent>
-          <div className="text-center pb-4 text-xs text-slate-600">
+          <div className="text-center pb-4 text-xs text-slate-400">
             Ersteller: A.Neu
           </div>
         </Card>
@@ -625,7 +625,7 @@ export default function App() {
   if (screen === "register") {
     return (
       <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-slate-900/50 border-slate-800 backdrop-blur">
+        <Card className="w-full max-w-md bg-slate-800/80 border-slate-800 backdrop-blur">
           <CardHeader className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
               <UserPlus className="w-8 h-8 text-white" />
@@ -673,7 +673,7 @@ export default function App() {
                   required
                   className="bg-slate-800 border-slate-700"
                 />
-                <p className="text-xs text-slate-500">Mindestens 6 Zeichen</p>
+                <p className="text-xs text-slate-300">Mindestens 6 Zeichen</p>
               </div>
               <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
                 <UserPlus className="w-4 h-4 mr-2" />
@@ -681,7 +681,7 @@ export default function App() {
               </Button>
             </form>
             <div className="mt-6 text-center">
-              <p className="text-slate-400 text-sm">
+              <p className="text-slate-300 text-sm">
                 Bereits registriert?{' '}
                 <button
                   onClick={() => { setScreen("login"); setError("") }}
@@ -692,7 +692,7 @@ export default function App() {
               </p>
             </div>
           </CardContent>
-          <div className="text-center pb-4 text-xs text-slate-600">
+          <div className="text-center pb-4 text-xs text-slate-400">
             Ersteller: A.Neu
           </div>
         </Card>
@@ -713,7 +713,7 @@ export default function App() {
               <Brain className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold mb-2">CLE Quiz</h1>
-            <p className="text-slate-400 text-sm">Certified Leadership Expert · IHK</p>
+            <p className="text-slate-300 text-sm">Certified Leadership Expert · IHK</p>
             
             {/* User info */}
             <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
@@ -731,22 +731,22 @@ export default function App() {
 
           {/* Stats Overview */}
           {userStats && userStats.totalAnswers > 0 && (
-            <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
+            <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
               <CardContent className="pt-6">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
                     <div className="text-2xl font-bold text-cyan-400">{userStats.totalAnswers}</div>
-                    <div className="text-xs text-slate-500">Antworten</div>
+                    <div className="text-xs text-slate-300">Antworten</div>
                   </div>
                   <div>
                     <div className={`text-2xl font-bold ${userStats.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}`}>
                       {userStats.percentage}%
                     </div>
-                    <div className="text-xs text-slate-500">Quote</div>
+                    <div className="text-xs text-slate-300">Quote</div>
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-white">{userStats.questionCount}</div>
-                    <div className="text-xs text-slate-500">Fragen</div>
+                    <div className="text-xs text-slate-300">Fragen</div>
                   </div>
                 </div>
                 <Progress value={userStats.percentage} className="mt-4 h-2" />
@@ -755,9 +755,9 @@ export default function App() {
           )}
 
           {/* Mode Selection */}
-          <Card className="bg-slate-900/50 border-slate-800 mb-4 backdrop-blur">
+          <Card className="bg-slate-800/80 border-slate-800 mb-4 backdrop-blur">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-400">MODUS WÄHLEN</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">MODUS WÄHLEN</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {[
@@ -782,7 +782,7 @@ export default function App() {
                   <m.icon className="w-5 h-5 flex-shrink-0" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />
                   <div className="flex-1">
                     <div className="font-semibold">{m.label}</div>
-                    <div className="text-xs text-slate-400">{m.desc}</div>
+                    <div className="text-xs text-slate-300">{m.desc}</div>
                   </div>
                   {mode === m.id && <CheckCircle2 className="w-5 h-5" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />}
                 </button>
@@ -791,9 +791,9 @@ export default function App() {
           </Card>
 
           {/* Category Selection */}
-          <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
+          <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-400">THEMA (optional)</CardTitle>
+              <CardTitle className="text-sm font-medium text-slate-300">THEMA (optional)</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
@@ -833,7 +833,7 @@ export default function App() {
             <Button
               onClick={() => setScreen("stats")}
               variant="outline"
-              className="w-full py-5 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white"
+              className="w-full py-5 border-slate-700 bg-slate-700/80 text-slate-300 hover:bg-slate-800 hover:text-white"
             >
               <BarChart3 className="w-5 h-5 mr-2" />
               Meine Statistik
@@ -853,7 +853,7 @@ export default function App() {
             <Button
               onClick={handleLogout}
               variant="ghost"
-              className="w-full py-4 text-slate-400 hover:text-white"
+              className="w-full py-4 text-slate-300 hover:text-white"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Abmelden
@@ -861,7 +861,7 @@ export default function App() {
           </div>
           
           {/* Ersteller-Hinweis */}
-          <div className="text-center mt-8 text-xs text-slate-600">
+          <div className="text-center mt-8 text-xs text-slate-400">
             Ersteller: A.Neu
           </div>
         </div>
@@ -886,17 +886,17 @@ export default function App() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setScreen("home")}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-300 hover:text-white"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               
               <div className="text-center">
                 <div className="font-bold">
-                  {idx + 1} <span className="text-slate-500 font-normal">/ {fragen.length}</span>
+                  {idx + 1} <span className="text-slate-300 font-normal">/ {fragen.length}</span>
                 </div>
                 {mode === "pruefung" && (
-                  <div className="text-xs text-slate-500 flex items-center gap-1 justify-center">
+                  <div className="text-xs text-slate-300 flex items-center gap-1 justify-center">
                     <Clock className="w-3 h-3" />
                     {mm}:{ss}
                   </div>
@@ -918,7 +918,7 @@ export default function App() {
             <div className="px-4 pb-3">
               <Progress value={progress} className="h-1.5" />
               {erg.length > 0 && (
-                <div className="text-xs text-slate-500 mt-1 text-center">
+                <div className="text-xs text-slate-300 mt-1 text-center">
                   ✓ {correctCount} / {erg.length} richtig
                 </div>
               )}
@@ -927,7 +927,7 @@ export default function App() {
 
           {/* Question */}
           <div className="px-4 py-6">
-            <Badge variant="outline" className="text-xs text-slate-500 border-slate-700 mb-3">
+            <Badge variant="outline" className="text-xs text-slate-300 border-slate-700 mb-3">
               [{frage.id}] · MEHRERE ANTWORTEN MÖGLICH
             </Badge>
             <h2 className="text-lg font-semibold leading-relaxed">{frage.q}</h2>
@@ -951,7 +951,7 @@ export default function App() {
                       ? "bg-emerald-500/5 border-emerald-500/30 border-dashed"
                       : status === "selected"
                       ? "bg-cyan-500/10 border-cyan-500/50"
-                      : "bg-slate-800/50 border-slate-700 hover:bg-slate-800"
+                      : "bg-slate-700/80 border-slate-700 hover:bg-slate-800"
                   }`}
                 >
                   <div
@@ -1036,7 +1036,7 @@ export default function App() {
                 className={`w-full py-6 text-lg font-bold ${
                   sel.length
                     ? "bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-                    : "bg-slate-800 text-slate-500"
+                    : "bg-slate-800 text-slate-300"
                 }`}
               >
                 Antwort bestätigen
@@ -1107,20 +1107,20 @@ export default function App() {
           </div>
 
           {/* Stats Card */}
-          <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
+          <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
             <CardContent className="pt-6">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
                   <div className="text-xl font-bold">{mm}:{ss}</div>
-                  <div className="text-xs text-slate-500">Zeit</div>
+                  <div className="text-xs text-slate-300">Zeit</div>
                 </div>
                 <div>
                   <div className="text-xl font-bold">{correct}/{total}</div>
-                  <div className="text-xs text-slate-500">Richtig</div>
+                  <div className="text-xs text-slate-300">Richtig</div>
                 </div>
                 <div>
                   <div className={`text-xl font-bold ${passed ? "text-emerald-400" : "text-red-400"}`}>{pct}%</div>
-                  <div className="text-xs text-slate-500">Quote</div>
+                  <div className="text-xs text-slate-300">Quote</div>
                 </div>
               </div>
             </CardContent>
@@ -1128,7 +1128,7 @@ export default function App() {
 
           {/* Wrong Answers */}
           {wrong.length > 0 && (
-            <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
+            <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
               <CardHeader>
                 <CardTitle className="text-sm text-red-400 flex items-center gap-2">
                   <XCircle className="w-4 h-4" />
@@ -1144,7 +1144,7 @@ export default function App() {
                         className="border-l-2 pl-3"
                         style={{ borderColor: f.farbe }}
                       >
-                        <div className="text-xs text-slate-500">[{f.id}] {f.k}</div>
+                        <div className="text-xs text-slate-300">[{f.id}] {f.k}</div>
                         <div className="text-sm font-medium mt-1">{f.q}</div>
                         <div className="text-xs text-emerald-400 mt-2">
                           ✓ {f.r.map(r => f.a[r]).join(" | ")}
@@ -1174,7 +1174,7 @@ export default function App() {
                   start()
                 }}
                 variant="outline"
-                className="w-full py-5 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white"
+                className="w-full py-5 border-slate-700 bg-slate-700/80 text-slate-300 hover:bg-slate-800 hover:text-white"
               >
                 <Zap className="w-5 h-5 mr-2" />
                 Schwächen nochmal üben
@@ -1200,7 +1200,7 @@ export default function App() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setScreen("home")}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-300 hover:text-white"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
@@ -1212,33 +1212,33 @@ export default function App() {
             <>
               {/* Overview */}
               <div className="px-4 py-6">
-                <Card className="bg-slate-900/50 border-slate-800 mb-4">
+                <Card className="bg-slate-800/80 border-slate-800 mb-4">
                   <CardContent className="pt-6">
                     <div className="text-center mb-4">
                       <div className="text-5xl font-black text-cyan-400">{userStats.percentage}%</div>
-                      <div className="text-sm text-slate-500">Gesamtergebnis</div>
+                      <div className="text-sm text-slate-300">Gesamtergebnis</div>
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-center">
                       <div>
                         <div className="text-xl font-bold text-emerald-400">{userStats.totalCorrect}</div>
-                        <div className="text-xs text-slate-500">Richtig</div>
+                        <div className="text-xs text-slate-300">Richtig</div>
                       </div>
                       <div>
                         <div className="text-xl font-bold text-red-400">{userStats.totalWrong}</div>
-                        <div className="text-xs text-slate-500">Falsch</div>
+                        <div className="text-xs text-slate-300">Falsch</div>
                       </div>
                       <div>
                         <div className="text-xl font-bold">{userStats.questionCount}</div>
-                        <div className="text-xs text-slate-500">Fragen</div>
+                        <div className="text-xs text-slate-300">Fragen</div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Category Stats */}
-                <Card className="bg-slate-900/50 border-slate-800">
+                <Card className="bg-slate-800/80 border-slate-800">
                   <CardHeader>
-                    <CardTitle className="text-sm text-slate-400">Nach Kategorie</CardTitle>
+                    <CardTitle className="text-sm text-slate-300">Nach Kategorie</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {Object.entries(userStats.categoryStats).map(([cat, stats]) => {
@@ -1252,7 +1252,7 @@ export default function App() {
                             <span className={pct >= 70 ? "text-emerald-400" : "text-amber-400"}>{pct}%</span>
                           </div>
                           <Progress value={pct} className="h-1.5" />
-                          <div className="text-xs text-slate-500">
+                          <div className="text-xs text-slate-300">
                             ✓ {stats.correct} · ✗ {stats.wrong}
                           </div>
                         </div>
@@ -1263,7 +1263,7 @@ export default function App() {
               </div>
             </>
           ) : (
-            <div className="text-center py-20 text-slate-500">
+            <div className="text-center py-20 text-slate-300">
               <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p>Noch keine Fragen beantwortet.</p>
               <Button
@@ -1294,7 +1294,7 @@ export default function App() {
                 variant="ghost"
                 size="icon"
                 onClick={() => setScreen("home")}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-300 hover:text-white"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
@@ -1309,42 +1309,42 @@ export default function App() {
           <div className="px-4 py-6 space-y-4">
             {/* Overview Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Card className="bg-slate-900/50 border-slate-800">
+              <Card className="bg-slate-800/80 border-slate-800">
                 <CardContent className="pt-4 text-center">
                   <Users className="w-6 h-6 mx-auto text-cyan-400 mb-2" />
                   <div className="text-2xl font-bold">{adminStats.totalUsers}</div>
-                  <div className="text-xs text-slate-500">Benutzer</div>
+                  <div className="text-xs text-slate-300">Benutzer</div>
                 </CardContent>
               </Card>
-              <Card className="bg-slate-900/50 border-slate-800">
+              <Card className="bg-slate-800/80 border-slate-800">
                 <CardContent className="pt-4 text-center">
                   <Activity className="w-6 h-6 mx-auto text-emerald-400 mb-2" />
                   <div className="text-2xl font-bold">{adminStats.dailyActiveUsers}</div>
-                  <div className="text-xs text-slate-500">Heute aktiv</div>
+                  <div className="text-xs text-slate-300">Heute aktiv</div>
                 </CardContent>
               </Card>
-              <Card className="bg-slate-900/50 border-slate-800">
+              <Card className="bg-slate-800/80 border-slate-800">
                 <CardContent className="pt-4 text-center">
                   <Target className="w-6 h-6 mx-auto text-amber-400 mb-2" />
                   <div className="text-2xl font-bold">{adminStats.totalSessions}</div>
-                  <div className="text-xs text-slate-500">Sessions</div>
+                  <div className="text-xs text-slate-300">Sessions</div>
                 </CardContent>
               </Card>
-              <Card className="bg-slate-900/50 border-slate-800">
+              <Card className="bg-slate-800/80 border-slate-800">
                 <CardContent className="pt-4 text-center">
                   <BarChart3 className="w-6 h-6 mx-auto text-purple-400 mb-2" />
                   <div className="text-2xl font-bold">{adminStats.weeklySessions}</div>
-                  <div className="text-xs text-slate-500">Diese Woche</div>
+                  <div className="text-xs text-slate-300">Diese Woche</div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Total Answers */}
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-slate-800/80 border-slate-800">
               <CardContent className="pt-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <div className="text-sm text-slate-400">Insgesamt beantwortet</div>
+                    <div className="text-sm text-slate-300">Insgesamt beantwortet</div>
                     <div className="text-2xl font-bold">
                       {adminStats.totalCorrect + adminStats.totalWrong} Fragen
                     </div>
@@ -1358,9 +1358,9 @@ export default function App() {
             </Card>
 
             {/* Users List */}
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-slate-800/80 border-slate-800">
               <CardHeader>
-                <CardTitle className="text-sm text-slate-400 flex items-center gap-2">
+                <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
                   <Users className="w-4 h-4" />
                   Benutzer ({adminStats.users.length})
                 </CardTitle>
@@ -1371,7 +1371,7 @@ export default function App() {
                     {adminStats.users.map((u: any) => (
                       <div
                         key={u.id}
-                        className="p-3 rounded-lg bg-slate-800/50 flex items-center gap-3"
+                        className="p-3 rounded-lg bg-slate-700/80 flex items-center gap-3"
                       >
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center text-white font-bold">
                           {(u.name || u.email || '?').charAt(0).toUpperCase()}
@@ -1380,13 +1380,13 @@ export default function App() {
                           <div className="font-medium truncate">
                             {u.name || u.email}
                           </div>
-                          <div className="text-xs text-slate-500">{u.email}</div>
-                          <div className="text-xs text-slate-500">
+                          <div className="text-xs text-slate-300">{u.email}</div>
+                          <div className="text-xs text-slate-300">
                             {u.questionsAnswered || 0} Fragen beantwortet
                           </div>
                         </div>
                         <div className="text-right text-xs">
-                          <div className="text-slate-400">{u.sessionCount} Sessions</div>
+                          <div className="text-slate-300">{u.sessionCount} Sessions</div>
                           <div className={u.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}>
                             {u.percentage}% richtig
                           </div>
@@ -1402,9 +1402,9 @@ export default function App() {
             </Card>
 
             {/* Recent Activity */}
-            <Card className="bg-slate-900/50 border-slate-800">
+            <Card className="bg-slate-800/80 border-slate-800">
               <CardHeader>
-                <CardTitle className="text-sm text-slate-400 flex items-center gap-2">
+                <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
                   <Activity className="w-4 h-4" />
                   Letzte Aktivität
                 </CardTitle>
@@ -1418,13 +1418,13 @@ export default function App() {
                           {a.action === 'login' && <LogIn className="w-4 h-4 text-emerald-400" />}
                           {a.action === 'register' && <UserPlus className="w-4 h-4 text-cyan-400" />}
                           {a.action === 'quiz_complete' && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
-                          {a.action === 'logout' && <LogOut className="w-4 h-4 text-slate-400" />}
+                          {a.action === 'logout' && <LogOut className="w-4 h-4 text-slate-300" />}
                         </div>
                         <div className="flex-1">
                           <div className="text-sm">{a.userName}</div>
-                          <div className="text-xs text-slate-500">{a.action}</div>
+                          <div className="text-xs text-slate-300">{a.action}</div>
                         </div>
-                        <div className="text-xs text-slate-500">
+                        <div className="text-xs text-slate-300">
                           {new Date(a.createdAt).toLocaleString('de-DE')}
                         </div>
                       </div>
