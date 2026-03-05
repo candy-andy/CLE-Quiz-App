@@ -2,22 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
-  Trophy, BookOpen, Target, BarChart3, Clock, CheckCircle2, XCircle, 
-  ArrowLeft, ArrowRight, Play, RotateCcw, Zap, Brain, TrendingUp,
-  Award, AlertCircle, ChevronRight, Home, Settings, Star, Users,
-  LogOut, LogIn, UserPlus, Shield, Activity, Calendar
+  Trophy, Target, BarChart3, Clock, 
+  ArrowLeft, ArrowRight, RotateCcw, Zap, Brain, Home
 } from "lucide-react"
 
 // ============================================================================
-// FRAGEN-DATENBANK
+// FRAGEN-DATENBANK (207 Fragen)
 // ============================================================================
 const ALLE_FRAGEN = [
 {id:"K01",k:"Konflikt",farbe:"#E74C3C",q:"Was ist die Definition eines Konflikts?",a:["Interessen, Ziele oder Wertvorstellungen sind miteinander unvereinbar oder erscheinen so.","Ein Konflikt entsteht nur durch persönliche Antipathie.","Konflikte sind ausschließlich negativ und destruktiv.","Konflikte sind sowohl Chance als auch Gefahr."],r:[0,3]},
@@ -107,7 +101,7 @@ const ALLE_FRAGEN = [
 {id:"KO05",k:"Kommunikation",farbe:"#117A65",q:"Was kennzeichnet eine klare Ich-Botschaft?",a:["Beschreibt eigene Wahrnehmung, Gefühl und Bedürfnis","Vermeidet Schuldzuweisungen an andere","Ich-Botschaften und Du-Vorwürfe sind gleichwertig.","Fördert Verständnis statt Abwehr beim Gegenüber"],r:[0,1,3]},
 {id:"KO06",k:"Kommunikation",farbe:"#117A65",q:"Was sind Merkmale nonverbaler Kommunikation?",a:["Körperhaltung, Gestik, Mimik, Blickkontakt","Macht ca. 55-65% der gesamten Kommunikation aus.","Nonverbal ist immer kontrollierbar.","Widerspruch zwischen verbal und nonverbal erzeugt Misstrauen."],r:[0,1,3]},
 {id:"KO07",k:"Kommunikation",farbe:"#117A65",q:"Was ist Feedback nach dem SBI-Modell?",a:["Situation: konkrete Situation beschreiben","Behavior: beobachtetes Verhalten benennen","Impact: Wirkung/Auswirkung schildern","SBI = Subjektive Bewertung und Interpretation"],r:[0,1,2]},
-// Neue Fragen aus CSV importiert
+// Neue Fragen aus CSV (F100-B219)
 {id:"F100",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
 {id:"F101",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Impact/Dringlichkeit, Engpass zuerst.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
 {id:"F102",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","konkret, zeitnah, verhaltensbezogen."],r:[3]},
@@ -244,16 +238,7 @@ function shuffle(arr: any[]) {
 // ============================================================================
 // TYPES
 // ============================================================================
-type Screen = "login" | "register" | "home" | "quiz" | "result" | "stats" | "kategorie" | "admin"
-type Mode = "pruefung" | "lern" | "schwach"
-
-interface User {
-  id: string
-  email: string
-  name: string
-  role: string
-  questionsAnswered?: number
-}
+type Screen = "home" | "quiz" | "result" | "stats"
 
 interface Frage {
   id: string
@@ -269,23 +254,17 @@ interface Ergebnis {
   korrekt: boolean
 }
 
-interface UserStats {
+interface LocalStats {
   totalCorrect: number
   totalWrong: number
-  totalAnswers: number
-  percentage: number
-  categoryStats: Record<string, { correct: number; wrong: number; total: number }>
-  recentSessions: any[]
-  questionCount: number
+  categoryStats: Record<string, { correct: number; wrong: number }>
 }
 
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("login")
-  const [mode, setMode] = useState<Mode>("pruefung")
-  const [kat, setKat] = useState<string>("Alle")
+  const [screen, setScreen] = useState<Screen>("home")
   const [fragen, setFragen] = useState<Frage[]>([])
   const [idx, setIdx] = useState(0)
   const [sel, setSel] = useState<number[]>([])
@@ -293,37 +272,13 @@ export default function App() {
   const [erg, setErg] = useState<Ergebnis[]>([])
   const [t0, setT0] = useState<number | null>(null)
   const [elapsed, setElapsed] = useState(0)
-  
-  // Auth state
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  
-  // Form state
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [name, setName] = useState("")
-  const [error, setError] = useState("")
-  
-  // Stats state
-  const [userStats, setUserStats] = useState<UserStats | null>(null)
-  const [adminStats, setAdminStats] = useState<any>(null)
-  
-  // Premium state (für später)
-  const [premiumUsers, setPremiumUsers] = useState<any[]>([])
-
-  // Check session on mount
-  useEffect(() => {
-    fetch('/api/auth/session')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          setUser(data.user)
-          setScreen("home")
-        }
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [])
+  const [stats, setStats] = useState<LocalStats>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cle-quiz-stats')
+      return saved ? JSON.parse(saved) : { totalCorrect: 0, totalWrong: 0, categoryStats: {} }
+    }
+    return { totalCorrect: 0, totalWrong: 0, categoryStats: {} }
+  })
 
   // Timer
   useEffect(() => {
@@ -334,108 +289,15 @@ export default function App() {
     return () => clearInterval(t)
   }, [screen, t0])
 
-  // Load user stats when user changes
+  // Save stats
   useEffect(() => {
-    if (user && screen === "home") {
-      fetch('/api/quiz/stats')
-        .then(res => res.json())
-        .then(data => setUserStats(data))
-        .catch(console.error)
-    }
-  }, [user, screen])
+    localStorage.setItem('cle-quiz-stats', JSON.stringify(stats))
+  }, [stats])
 
-  // Auth functions
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      
-      const data = await res.json()
-      
-      if (!res.ok) {
-        setError(data.error || 'Fehler beim Anmelden')
-        return
-      }
-      
-      setUser(data.user)
-      setScreen("home")
-      setEmail("")
-      setPassword("")
-    } catch (err) {
-      setError('Ein Fehler ist aufgetreten')
-    }
-  }
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    
-    if (password.length < 6) {
-      setError('Passwort muss mindestens 6 Zeichen haben')
-      return
-    }
-    
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name })
-      })
-      
-      const data = await res.json()
-      
-      if (!res.ok) {
-        setError(data.error || 'Fehler beim Registrieren')
-        return
-      }
-      
-      setUser(data.user)
-      setScreen("home")
-      setEmail("")
-      setPassword("")
-      setName("")
-    } catch (err) {
-      setError('Ein Fehler ist aufgetreten')
-    }
-  }
-
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' })
-    setUser(null)
-    setUserStats(null)
-    setScreen("login")
-  }
-
-  const start = useCallback(() => {
-    let pool = kat === "Alle" ? ALLE_FRAGEN : ALLE_FRAGEN.filter(f => f.k === kat)
-    
-    if (mode === "schwach" && userStats) {
-      // Get questions that were answered wrong
-      const wrongQuestions = Object.entries(userStats.categoryStats)
-        .flatMap(([cat, stats]) => {
-          if (stats.wrong > 0) {
-            return ALLE_FRAGEN.filter(f => 
-              f.k === cat || 
-              (cat === 'Konflikt' && f.k === 'Konflikt') ||
-              (cat === 'Kommunikation' && f.k === 'Kommunikation')
-            )
-          }
-          return []
-        })
-      
-      if (wrongQuestions.length > 0) {
-        pool = wrongQuestions
-      }
-    }
-    
+  const startQuiz = useCallback((category: string = "Alle") => {
+    let pool = category === "Alle" ? ALLE_FRAGEN : ALLE_FRAGEN.filter(f => f.k === category)
     const s = shuffle(pool)
-    setFragen(s.slice(0, mode === "pruefung" ? Math.min(30, s.length) : s.length))
+    setFragen(s.slice(0, Math.min(30, s.length)))
     setIdx(0)
     setSel([])
     setBest(false)
@@ -443,7 +305,7 @@ export default function App() {
     setT0(Date.now())
     setElapsed(0)
     setScreen("quiz")
-  }, [mode, kat, userStats, user])
+  }, [])
 
   const toggle = (i: number) => {
     if (best) return
@@ -460,30 +322,26 @@ export default function App() {
     setErg(e => [...e, { id: f.id, korrekt }])
   }
 
-  const saveQuizResults = async () => {
-    const total = erg.length
-    const correct = erg.filter(e => e.korrekt).length
-    
-    await fetch('/api/quiz/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mode,
-        category: kat,
-        totalQuestions: total,
-        correctAnswers: correct,
-        duration: elapsed,
-        questionResults: erg.map(e => ({
-          questionId: e.id,
-          correct: e.korrekt
-        }))
-      })
-    })
-  }
-
   const next = () => {
     if (idx + 1 >= fragen.length) {
-      saveQuizResults()
+      // Update stats
+      const newStats = { ...stats }
+      erg.forEach(e => {
+        const frage = ALLE_FRAGEN.find(f => f.id === e.id)
+        if (frage) {
+          if (!newStats.categoryStats[frage.k]) {
+            newStats.categoryStats[frage.k] = { correct: 0, wrong: 0 }
+          }
+          if (e.korrekt) {
+            newStats.totalCorrect++
+            newStats.categoryStats[frage.k].correct++
+          } else {
+            newStats.totalWrong++
+            newStats.categoryStats[frage.k].wrong++
+          }
+        }
+      })
+      setStats(newStats)
       setScreen("result")
     } else {
       setIdx(i => i + 1)
@@ -492,212 +350,22 @@ export default function App() {
     }
   }
 
-  const loadAdminStats = async () => {
-    const res = await fetch('/api/admin/stats')
-    if (res.ok) {
-      const data = await res.json()
-      setAdminStats(data)
-    }
-  }
-  
-  const loadPremiumUsers = async () => {
-    const res = await fetch('/api/admin/premium')
-    if (res.ok) {
-      const data = await res.json()
-      setPremiumUsers(data.users || [])
-    }
-  }
-  
-  const togglePremium = async (targetUserId: string, isPremium: boolean) => {
-    const res = await fetch('/api/admin/premium', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ targetUserId, isPremium })
-    })
-    if (res.ok) {
-      loadPremiumUsers()
-      loadAdminStats()
-    }
-  }
-  
-  
-
   const frage = fragen[idx]
   const mm = Math.floor(elapsed / 60).toString().padStart(2, "0")
   const ss = (elapsed % 60).toString().padStart(2, "0")
 
-  const getAnswerStatus = (i: number): "correct" | "wrong" | "missed" | "neutral" | "selected" => {
-    if (!best) return sel.includes(i) ? "selected" : "neutral"
+  const getAnswerStyle = (i: number) => {
+    if (!best) {
+      return sel.includes(i) 
+        ? "border-cyan-500 bg-cyan-500/20" 
+        : "border-slate-600 bg-slate-700/50 hover:border-slate-500"
+    }
     const isCorrect = frage.r.includes(i)
     const isSelected = sel.includes(i)
-    if (isCorrect && isSelected) return "correct"
-    if (!isCorrect && isSelected) return "wrong"
-    if (isCorrect && !isSelected) return "missed"
-    return "neutral"
-  }
-
-  // Loading screen
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 animate-pulse">
-            <Brain className="w-8 h-8 text-white" />
-          </div>
-          <p className="mt-4 text-slate-300">Wird geladen...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // ==========================================================================
-  // LOGIN SCREEN
-  // ==========================================================================
-  if (screen === "login") {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-slate-800/80 border-slate-800 backdrop-blur">
-          <CardHeader className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
-              <Brain className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl">CLE Quiz</CardTitle>
-            <CardDescription>Bitte melde dich an, um fortzufahren</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@beispiel.de"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Passwort</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
-                <LogIn className="w-4 h-4 mr-2" />
-                Anmelden
-              </Button>
-            </form>
-            <div className="mt-6 text-center">
-              <p className="text-slate-300 text-sm">
-                Noch kein Konto?{' '}
-                <button
-                  onClick={() => { setScreen("register"); setError("") }}
-                  className="text-cyan-400 hover:underline"
-                >
-                  Registrieren
-                </button>
-              </p>
-            </div>
-          </CardContent>
-          <div className="text-center pb-4 text-xs text-slate-400">
-            Ersteller: A.Neu
-          </div>
-        </Card>
-      </div>
-    )
-  }
-
-  // ==========================================================================
-  // REGISTER SCREEN
-  // ==========================================================================
-  if (screen === "register") {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-slate-800/80 border-slate-800 backdrop-blur">
-          <CardHeader className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
-              <UserPlus className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl">Konto erstellen</CardTitle>
-            <CardDescription>Registriere dich, um deine Statistiken zu speichern</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleRegister} className="space-y-4">
-              {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Dein Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="reg-email">Email</Label>
-                <Input
-                  id="reg-email"
-                  type="email"
-                  placeholder="name@beispiel.de"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="reg-password">Passwort</Label>
-                <Input
-                  id="reg-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-                <p className="text-xs text-slate-300">Mindestens 6 Zeichen</p>
-              </div>
-              <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Registrieren
-              </Button>
-            </form>
-            <div className="mt-6 text-center">
-              <p className="text-slate-300 text-sm">
-                Bereits registriert?{' '}
-                <button
-                  onClick={() => { setScreen("login"); setError("") }}
-                  className="text-cyan-400 hover:underline"
-                >
-                  Anmelden
-                </button>
-              </p>
-            </div>
-          </CardContent>
-          <div className="text-center pb-4 text-xs text-slate-400">
-            Ersteller: A.Neu
-          </div>
-        </Card>
-      </div>
-    )
+    if (isCorrect && isSelected) return "border-green-500 bg-green-500/30"
+    if (!isCorrect && isSelected) return "border-red-500 bg-red-500/30"
+    if (isCorrect && !isSelected) return "border-yellow-500 bg-yellow-500/20"
+    return "border-slate-600 bg-slate-700/30"
   }
 
   // ==========================================================================
@@ -705,162 +373,85 @@ export default function App() {
   // ==========================================================================
   if (screen === "home") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto px-4 py-8">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-4">
+        <div className="max-w-md mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mb-4 shadow-lg shadow-cyan-500/25">
+          <div className="text-center mb-8 pt-8">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
               <Brain className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold mb-2">CLE Quiz</h1>
-            <p className="text-slate-300 text-sm">Certified Leadership Expert · IHK</p>
-            
-            {/* User info */}
-            <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
-              <Badge variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
-                {user?.name || user?.email}
-              </Badge>
-              {user?.role === 'admin' && (
-                <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Admin
-                </Badge>
-              )}
-            </div>
+            <p className="text-slate-300">Certified Leadership Expert · {ALLE_FRAGEN.length} Fragen</p>
           </div>
 
-          {/* Stats Overview */}
-          {userStats && userStats.totalAnswers > 0 && (
-            <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-cyan-400">{userStats.totalAnswers}</div>
-                    <div className="text-xs text-slate-300">Antworten</div>
-                  </div>
-                  <div>
-                    <div className={`text-2xl font-bold ${userStats.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}`}>
-                      {userStats.percentage}%
-                    </div>
-                    <div className="text-xs text-slate-300">Quote</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-white">{userStats.questionCount}</div>
-                    <div className="text-xs text-slate-300">Fragen</div>
-                  </div>
+          {/* Stats Card */}
+          <Card className="bg-slate-800/80 border-slate-600 mb-6">
+            <CardContent className="p-4">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-green-400">{stats.totalCorrect}</div>
+                  <div className="text-xs text-slate-300">Richtig</div>
                 </div>
-                <Progress value={userStats.percentage} className="mt-4 h-2" />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Mode Selection */}
-          <Card className="bg-slate-800/80 border-slate-800 mb-4 backdrop-blur">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-300">MODUS WÄHLEN</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {[
-                { id: "pruefung" as Mode, icon: Clock, label: "Prüfungs-Simulation", desc: "30 Fragen · 60 Min · wie die echte IHK", color: "cyan" },
-                { id: "lern" as Mode, icon: BookOpen, label: "Lern-Modus", desc: "Alle Fragen · sofortiges Feedback", color: "emerald" },
-                { id: "schwach" as Mode, icon: Zap, label: "Schwächen-Training", desc: "Falsch beantwortete wiederholen", color: "amber" },
-              ].map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setMode(m.id)}
-                  className="w-full p-4 rounded-xl border transition-all duration-200 text-left flex items-center gap-3"
-                  style={{
-                    backgroundColor: mode === m.id 
-                      ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.1)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)")
-                      : "rgba(30, 41, 59, 0.5)",
-                    borderColor: mode === m.id 
-                      ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.5)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.5)" : "rgba(245, 158, 11, 0.5)")
-                      : "rgba(71, 85, 105, 0.5)",
-                    color: mode === m.id ? "white" : "#94a3b8"
-                  }}
-                >
-                  <m.icon className="w-5 h-5 flex-shrink-0" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />
-                  <div className="flex-1">
-                    <div className="font-semibold">{m.label}</div>
-                    <div className="text-xs text-slate-300">{m.desc}</div>
+                <div>
+                  <div className="text-2xl font-bold text-red-400">{stats.totalWrong}</div>
+                  <div className="text-xs text-slate-300">Falsch</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-cyan-400">
+                    {stats.totalCorrect + stats.totalWrong > 0 
+                      ? Math.round((stats.totalCorrect / (stats.totalCorrect + stats.totalWrong)) * 100) 
+                      : 0}%
                   </div>
-                  {mode === m.id && <CheckCircle2 className="w-5 h-5" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />}
-                </button>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Category Selection */}
-          <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-300">THEMA (optional)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {["Alle", ...KATEGORIEN].map((k) => {
-                  const fc = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#06b6d4"
-                  const count = k === "Alle" ? ALLE_FRAGEN.length : ALLE_FRAGEN.filter(f => f.k === k).length
-                  const active = kat === k
-                  return (
-                    <button
-                      key={k}
-                      onClick={() => setKat(k)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
-                      style={{
-                        backgroundColor: active ? `${fc}20` : "rgba(30, 41, 59, 0.5)",
-                        border: `1px solid ${active ? fc : "rgba(71, 85, 105, 0.5)"}`,
-                        color: active ? fc : "#94a3b8",
-                      }}
-                    >
-                      {k} <span className="opacity-60">({count})</span>
-                    </button>
-                  )
-                })}
+                  <div className="text-xs text-slate-300">Quote</div>
+                </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={start}
-              className="w-full py-6 text-lg font-bold bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/25"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Quiz starten
-            </Button>
-            
-            <Button
-              onClick={() => setScreen("stats")}
-              variant="outline"
-              className="w-full py-5 border-slate-700 bg-slate-700/80 text-slate-300 hover:bg-slate-800 hover:text-white"
-            >
-              <BarChart3 className="w-5 h-5 mr-2" />
-              Meine Statistik
-            </Button>
-
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => { loadAdminStats(); setScreen("admin") }}
-                variant="outline"
-                className="w-full py-5 border-amber-500/50 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
+          {/* Category Selection */}
+          <Card className="bg-slate-800/80 border-slate-600 mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg">Kategorie wählen</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button 
+                onClick={() => startQuiz("Alle")}
+                className="w-full py-6 text-lg bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
               >
-                <Shield className="w-5 h-5 mr-2" />
-                Admin Dashboard
+                <Zap className="w-5 h-5 mr-2" />
+                Alle Kategorien ({ALLE_FRAGEN.length} Fragen)
               </Button>
-            )}
+              {KATEGORIEN.map(k => {
+                const count = ALLE_FRAGEN.filter(f => f.k === k).length
+                const farbe = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#64748b"
+                return (
+                  <Button
+                    key={k}
+                    variant="outline"
+                    onClick={() => startQuiz(k)}
+                    className="w-full py-4 justify-between border-slate-600 bg-slate-700/50 hover:bg-slate-600"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: farbe }} />
+                      {k}
+                    </span>
+                    <Badge variant="secondary" className="bg-slate-600">{count}</Badge>
+                  </Button>
+                )
+              })}
+            </CardContent>
+          </Card>
 
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              className="w-full py-4 text-slate-300 hover:text-white"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Abmelden
-            </Button>
-          </div>
-          
-          {/* Ersteller-Hinweis */}
+          {/* Stats Button */}
+          <Button 
+            variant="outline" 
+            onClick={() => setScreen("stats")}
+            className="w-full py-4 border-slate-600 bg-slate-700/50 hover:bg-slate-600"
+          >
+            <BarChart3 className="w-5 h-5 mr-2" />
+            Statistiken anzeigen
+          </Button>
+
           <div className="text-center mt-8 text-xs text-slate-400">
             Ersteller: A.Neu
           </div>
@@ -873,179 +464,78 @@ export default function App() {
   // QUIZ SCREEN
   // ==========================================================================
   if (screen === "quiz" && frage) {
-    const progress = ((idx + 1) / fragen.length) * 100
-    const correctCount = erg.filter(e => e.korrekt).length
-
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
-            <div className="px-4 py-3 flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScreen("home")}
-                className="text-slate-300 hover:text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              
-              <div className="text-center">
-                <div className="font-bold">
-                  {idx + 1} <span className="text-slate-300 font-normal">/ {fragen.length}</span>
-                </div>
-                {mode === "pruefung" && (
-                  <div className="text-xs text-slate-300 flex items-center gap-1 justify-center">
-                    <Clock className="w-3 h-3" />
-                    {mm}:{ss}
-                  </div>
-                )}
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white">
+        {/* Header */}
+        <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-700 p-4">
+          <div className="max-w-md mx-auto flex items-center justify-between">
+            <Button variant="ghost" size="sm" onClick={() => setScreen("home")} className="text-slate-300">
+              <ArrowLeft className="w-5 h-5 mr-1" /> Beenden
+            </Button>
+            <div className="flex items-center gap-4">
+              <span className="text-slate-300">
+                {idx + 1} <span className="text-slate-400">/ {fragen.length}</span>
+              </span>
+              <div className="flex items-center gap-1 text-slate-300">
+                <Clock className="w-4 h-4" />
+                {mm}:{ss}
               </div>
-              
-              <Badge
-                style={{
-                  backgroundColor: `${frage.farbe}20`,
-                  color: frage.farbe,
-                  borderColor: `${frage.farbe}50`,
-                }}
-                variant="outline"
-              >
-                {frage.k}
-              </Badge>
-            </div>
-            
-            <div className="px-4 pb-3">
-              <Progress value={progress} className="h-1.5" />
-              {erg.length > 0 && (
-                <div className="text-xs text-slate-300 mt-1 text-center">
-                  ✓ {correctCount} / {erg.length} richtig
-                </div>
-              )}
             </div>
           </div>
+        </div>
+
+        <div className="max-w-md mx-auto p-4">
+          {/* Progress */}
+          <Progress value={((idx + 1) / fragen.length) * 100} className="mb-4 h-2" />
+
+          {/* Category Badge */}
+          <Badge 
+            variant="outline" 
+            className="mb-3 border-slate-500"
+            style={{ backgroundColor: `${frage.farbe}20`, borderColor: frage.farbe }}
+          >
+            {frage.k}
+          </Badge>
 
           {/* Question */}
-          <div className="px-4 py-6">
-            <Badge variant="outline" className="text-xs text-slate-300 border-slate-700 mb-3">
-              [{frage.id}] · MEHRERE ANTWORTEN MÖGLICH
-            </Badge>
-            <h2 className="text-lg font-semibold leading-relaxed">{frage.q}</h2>
-          </div>
+          <Card className="bg-slate-800/80 border-slate-600 mb-4">
+            <CardContent className="p-4">
+              <p className="text-lg leading-relaxed">{frage.q}</p>
+              <p className="text-sm text-slate-400 mt-2">
+                {frage.r.length > 1 ? `Wähle ${frage.r.length} Antworten` : "Wähle 1 Antwort"}
+              </p>
+            </CardContent>
+          </Card>
 
           {/* Answers */}
-          <div className="px-4 space-y-2">
-            {frage.a.map((a, i) => {
-              const status = getAnswerStatus(i)
-              return (
-                <button
-                  key={i}
-                  onClick={() => toggle(i)}
-                  disabled={best}
-                  className={`w-full p-4 rounded-xl border transition-all duration-200 text-left flex items-start gap-3 ${
-                    status === "correct"
-                      ? "bg-emerald-500/10 border-emerald-500/50"
-                      : status === "wrong"
-                      ? "bg-red-500/10 border-red-500/50"
-                      : status === "missed"
-                      ? "bg-emerald-500/5 border-emerald-500/30 border-dashed"
-                      : status === "selected"
-                      ? "bg-cyan-500/10 border-cyan-500/50"
-                      : "bg-slate-700/80 border-slate-700 hover:bg-slate-800"
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      status === "correct"
-                        ? "bg-emerald-500 border-emerald-500"
-                        : status === "wrong"
-                        ? "bg-red-500 border-red-500"
-                        : status === "missed"
-                        ? "border-emerald-500 bg-emerald-500/20"
-                        : status === "selected"
-                        ? "bg-cyan-500 border-cyan-500"
-                        : "border-slate-600"
-                    }`}
-                  >
-                    {status === "correct" && <CheckCircle2 className="w-3 h-3 text-white" />}
-                    {status === "wrong" && <XCircle className="w-3 h-3 text-white" />}
-                    {status === "missed" && <span className="text-emerald-500 text-xs">→</span>}
-                    {status === "selected" && !best && <div className="w-2 h-2 rounded-full bg-white" />}
-                  </div>
-                  <span
-                    className={`text-sm leading-relaxed ${
-                      status === "correct"
-                        ? "text-emerald-300"
-                        : status === "wrong"
-                        ? "text-red-300"
-                        : status === "missed"
-                        ? "text-emerald-400/70"
-                        : "text-slate-300"
-                    }`}
-                  >
-                    {a}
-                  </span>
-                </button>
-              )
-            })}
+          <div className="space-y-3">
+            {frage.a.map((a, i) => (
+              <button
+                key={i}
+                onClick={() => toggle(i)}
+                disabled={best}
+                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${getAnswerStyle(i)}`}
+              >
+                <span className="flex gap-3">
+                  <span className="font-bold text-slate-400">{['A', 'B', 'C', 'D'][i]})</span>
+                  <span>{a}</span>
+                </span>
+              </button>
+            ))}
           </div>
 
-          {/* Feedback (Lern-Modus) */}
-          {best && mode === "lern" && (
-            <div className="px-4 mt-4">
-              <Card
-                className={`${
-                  erg[erg.length - 1]?.korrekt
-                    ? "bg-emerald-500/10 border-emerald-500/30"
-                    : "bg-red-500/10 border-red-500/30"
-                }`}
-              >
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    {erg[erg.length - 1]?.korrekt ? (
-                      <>
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                        <span className="font-semibold text-emerald-400">Richtig!</span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="w-5 h-5 text-red-500" />
-                        <span className="font-semibold text-red-400">Nicht vollständig</span>
-                      </>
-                    )}
-                  </div>
-                  {!erg[erg.length - 1]?.korrekt && (
-                    <div className="text-sm text-slate-300">
-                      Richtige Antworten:{" "}
-                      <span className="text-emerald-400 font-semibold">
-                        {frage.r.map(r => String.fromCharCode(65 + r)).join(", ")}
-                      </span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="px-4 py-6">
+          {/* Action Button */}
+          <div className="mt-6">
             {!best ? (
-              <Button
-                onClick={confirm}
-                disabled={!sel.length}
-                className={`w-full py-6 text-lg font-bold ${
-                  sel.length
-                    ? "bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-                    : "bg-slate-800 text-slate-300"
-                }`}
+              <Button 
+                onClick={confirm} 
+                disabled={sel.length === 0}
+                className="w-full py-6 text-lg bg-gradient-to-r from-cyan-500 to-teal-500"
               >
                 Antwort bestätigen
               </Button>
             ) : (
-              <Button
-                onClick={next}
-                className="w-full py-6 text-lg font-bold bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-              >
+              <Button onClick={next} className="w-full py-6 text-lg bg-gradient-to-r from-cyan-500 to-teal-500">
                 {idx + 1 >= fragen.length ? "Ergebnis anzeigen" : "Nächste Frage"}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
@@ -1060,126 +550,53 @@ export default function App() {
   // RESULT SCREEN
   // ==========================================================================
   if (screen === "result") {
-    const total = erg.length
     const correct = erg.filter(e => e.korrekt).length
-    const pct = Math.round((correct / total) * 100)
-    const passed = pct >= 70
-    const wrong = fragen.filter(f => erg.find(e => e.id === f.id && !e.korrekt))
+    const total = erg.length
+    const percent = Math.round((correct / total) * 100)
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto px-4 py-8">
-          {/* Result Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-4">
-              {pct >= 85 ? (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25">
-                  <Trophy className="w-12 h-12 text-white" />
-                </div>
-              ) : passed ? (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                  <CheckCircle2 className="w-12 h-12 text-white" />
-                </div>
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center">
-                  <BookOpen className="w-12 h-12 text-white" />
-                </div>
-              )}
-            </div>
-            
-            <div className={`text-6xl font-black ${passed ? "text-emerald-400" : "text-red-400"}`}>
-              {pct}%
-            </div>
-            <div className="text-lg font-semibold mt-2">
-              {correct} von {total} Fragen richtig
-            </div>
-            
-            <Badge
-              className={`mt-4 text-sm py-1.5 ${
-                passed
-                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/50"
-                  : "bg-red-500/20 text-red-400 border-red-500/50"
-              }`}
-              variant="outline"
-            >
-              {pct >= 85 ? "Exzellent — Note GUT! 🎯" : passed ? "Bestanden ✓" : "Noch nicht bestanden"}
-            </Badge>
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-4">
+        <div className="max-w-md mx-auto">
+          <div className="text-center pt-8 mb-8">
+            {percent >= 70 ? (
+              <Trophy className="w-24 h-24 text-yellow-400 mx-auto mb-4" />
+            ) : percent >= 50 ? (
+              <Target className="w-24 h-24 text-cyan-400 mx-auto mb-4" />
+            ) : (
+              <Brain className="w-24 h-24 text-slate-400 mx-auto mb-4" />
+            )}
+            <h1 className="text-3xl font-bold mb-2">
+              {percent >= 70 ? "Sehr gut!" : percent >= 50 ? "Gut gemacht!" : "Weiter üben!"}
+            </h1>
+            <p className="text-slate-300">Quiz abgeschlossen</p>
           </div>
 
-          {/* Stats Card */}
-          <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-xl font-bold">{mm}:{ss}</div>
-                  <div className="text-xs text-slate-300">Zeit</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold">{correct}/{total}</div>
-                  <div className="text-xs text-slate-300">Richtig</div>
-                </div>
-                <div>
-                  <div className={`text-xl font-bold ${passed ? "text-emerald-400" : "text-red-400"}`}>{pct}%</div>
-                  <div className="text-xs text-slate-300">Quote</div>
-                </div>
+          <Card className="bg-slate-800/80 border-slate-600 mb-6">
+            <CardContent className="p-6 text-center">
+              <div className="text-5xl font-bold mb-2" style={{ color: percent >= 70 ? '#22c55e' : percent >= 50 ? '#06b6d4' : '#f59e0b' }}>
+                {percent}%
               </div>
+              <p className="text-slate-300">{correct} von {total} richtig</p>
+              <p className="text-sm text-slate-400 mt-2">Zeit: {mm}:{ss}</p>
             </CardContent>
           </Card>
 
-          {/* Wrong Answers */}
-          {wrong.length > 0 && (
-            <Card className="bg-slate-800/80 border-slate-800 mb-6 backdrop-blur">
-              <CardHeader>
-                <CardTitle className="text-sm text-red-400 flex items-center gap-2">
-                  <XCircle className="w-4 h-4" />
-                  {wrong.length} falsch beantwortet
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-64">
-                  <div className="space-y-4">
-                    {wrong.map((f) => (
-                      <div
-                        key={f.id}
-                        className="border-l-2 pl-3"
-                        style={{ borderColor: f.farbe }}
-                      >
-                        <div className="text-xs text-slate-300">[{f.id}] {f.k}</div>
-                        <div className="text-sm font-medium mt-1">{f.q}</div>
-                        <div className="text-xs text-emerald-400 mt-2">
-                          ✓ {f.r.map(r => f.a[r]).join(" | ")}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Action Buttons */}
           <div className="space-y-3">
-            <Button
+            <Button 
+              onClick={() => startQuiz("Alle")}
+              className="w-full py-4 bg-gradient-to-r from-cyan-500 to-teal-500"
+            >
+              <RotateCcw className="w-5 h-5 mr-2" />
+              Nochmal spielen
+            </Button>
+            <Button 
+              variant="outline"
               onClick={() => setScreen("home")}
-              className="w-full py-6 text-lg font-bold bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
+              className="w-full py-4 border-slate-600"
             >
               <Home className="w-5 h-5 mr-2" />
-              Zurück zum Start
+              Zur Startseite
             </Button>
-            
-            {wrong.length > 0 && (
-              <Button
-                onClick={() => {
-                  setMode("schwach")
-                  start()
-                }}
-                variant="outline"
-                className="w-full py-5 border-slate-700 bg-slate-700/80 text-slate-300 hover:bg-slate-800 hover:text-white"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                Schwächen nochmal üben
-              </Button>
-            )}
           </div>
         </div>
       </div>
@@ -1191,249 +608,81 @@ export default function App() {
   // ==========================================================================
   if (screen === "stats") {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white p-4">
         <div className="max-w-md mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
-            <div className="px-4 py-3 flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScreen("home")}
-                className="text-slate-300 hover:text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <h1 className="font-bold text-lg">Meine Statistik</h1>
-            </div>
+          <div className="flex items-center gap-4 pt-4 mb-6">
+            <Button variant="ghost" onClick={() => setScreen("home")} className="text-slate-300">
+              <ArrowLeft className="w-5 h-5 mr-1" /> Zurück
+            </Button>
+            <h1 className="text-xl font-bold">Statistiken</h1>
           </div>
 
-          {userStats && userStats.totalAnswers > 0 ? (
-            <>
-              {/* Overview */}
-              <div className="px-4 py-6">
-                <Card className="bg-slate-800/80 border-slate-800 mb-4">
-                  <CardContent className="pt-6">
-                    <div className="text-center mb-4">
-                      <div className="text-5xl font-black text-cyan-400">{userStats.percentage}%</div>
-                      <div className="text-sm text-slate-300">Gesamtergebnis</div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      <div>
-                        <div className="text-xl font-bold text-emerald-400">{userStats.totalCorrect}</div>
-                        <div className="text-xs text-slate-300">Richtig</div>
-                      </div>
-                      <div>
-                        <div className="text-xl font-bold text-red-400">{userStats.totalWrong}</div>
-                        <div className="text-xs text-slate-300">Falsch</div>
-                      </div>
-                      <div>
-                        <div className="text-xl font-bold">{userStats.questionCount}</div>
-                        <div className="text-xs text-slate-300">Fragen</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Category Stats */}
-                <Card className="bg-slate-800/80 border-slate-800">
-                  <CardHeader>
-                    <CardTitle className="text-sm text-slate-300">Nach Kategorie</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {Object.entries(userStats.categoryStats).map(([cat, stats]) => {
-                      const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0
-                      const fc = ALLE_FRAGEN.find(f => f.k === cat)?.farbe || "#06b6d4"
-                      
-                      return (
-                        <div key={cat} className="space-y-1">
-                          <div className="flex justify-between text-sm">
-                            <span style={{ color: fc }}>{cat}</span>
-                            <span className={pct >= 70 ? "text-emerald-400" : "text-amber-400"}>{pct}%</span>
-                          </div>
-                          <Progress value={pct} className="h-1.5" />
-                          <div className="text-xs text-slate-300">
-                            ✓ {stats.correct} · ✗ {stats.wrong}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </CardContent>
-                </Card>
-              </div>
-            </>
-          ) : (
-            <div className="text-center py-20 text-slate-300">
-              <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>Noch keine Fragen beantwortet.</p>
-              <Button
-                onClick={() => setScreen("home")}
-                className="mt-4"
-                variant="outline"
-              >
-                Quiz starten
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  // ==========================================================================
-  // ADMIN SCREEN
-  // ==========================================================================
-  if (screen === "admin" && adminStats) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
-            <div className="px-4 py-3 flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScreen("home")}
-                className="text-slate-300 hover:text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <h1 className="font-bold text-lg">Admin Dashboard</h1>
-              <Badge className="ml-auto bg-amber-500/20 text-amber-400 border-amber-500/50">
-                <Shield className="w-3 h-3 mr-1" />
-                Admin
-              </Badge>
-            </div>
-          </div>
-
-          <div className="px-4 py-6 space-y-4">
-            {/* Overview Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Card className="bg-slate-800/80 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <Users className="w-6 h-6 mx-auto text-cyan-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.totalUsers}</div>
-                  <div className="text-xs text-slate-300">Benutzer</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-slate-800/80 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <Activity className="w-6 h-6 mx-auto text-emerald-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.dailyActiveUsers}</div>
-                  <div className="text-xs text-slate-300">Heute aktiv</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-slate-800/80 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <Target className="w-6 h-6 mx-auto text-amber-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.totalSessions}</div>
-                  <div className="text-xs text-slate-300">Sessions</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-slate-800/80 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <BarChart3 className="w-6 h-6 mx-auto text-purple-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.weeklySessions}</div>
-                  <div className="text-xs text-slate-300">Diese Woche</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Total Answers */}
-            <Card className="bg-slate-800/80 border-slate-800">
-              <CardContent className="pt-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-slate-300">Insgesamt beantwortet</div>
-                    <div className="text-2xl font-bold">
-                      {adminStats.totalCorrect + adminStats.totalWrong} Fragen
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-emerald-400">✓ {adminStats.totalCorrect}</div>
-                    <div className="text-red-400">✗ {adminStats.totalWrong}</div>
-                  </div>
+          <Card className="bg-slate-800/80 border-slate-600 mb-6">
+            <CardContent className="p-4">
+              <h2 className="text-lg font-semibold mb-4">Gesamtergebnis</h2>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-green-400">{stats.totalCorrect}</div>
+                  <div className="text-xs text-slate-300">Richtig</div>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Users List */}
-            <Card className="bg-slate-800/80 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Benutzer ({adminStats.users.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-80">
-                  <div className="space-y-2">
-                    {adminStats.users.map((u: any) => (
-                      <div
-                        key={u.id}
-                        className="p-3 rounded-lg bg-slate-700/80 flex items-center gap-3"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center text-white font-bold">
-                          {(u.name || u.email || '?').charAt(0).toUpperCase()}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">
-                            {u.name || u.email}
-                          </div>
-                          <div className="text-xs text-slate-300">{u.email}</div>
-                          <div className="text-xs text-slate-300">
-                            {u.questionsAnswered || 0} Fragen beantwortet
-                          </div>
-                        </div>
-                        <div className="text-right text-xs">
-                          <div className="text-slate-300">{u.sessionCount} Sessions</div>
-                          <div className={u.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}>
-                            {u.percentage}% richtig
-                          </div>
-                        </div>
-                        {u.role === 'admin' && (
-                          <Badge className="bg-purple-500/20 text-purple-400">Admin</Badge>
-                        )}
-                      </div>
-                    ))}
+                <div>
+                  <div className="text-2xl font-bold text-red-400">{stats.totalWrong}</div>
+                  <div className="text-xs text-slate-300">Falsch</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-cyan-400">
+                    {stats.totalCorrect + stats.totalWrong > 0 
+                      ? Math.round((stats.totalCorrect / (stats.totalCorrect + stats.totalWrong)) * 100) 
+                      : 0}%
                   </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
+                  <div className="text-xs text-slate-300">Quote</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Recent Activity */}
-            <Card className="bg-slate-800/80 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
-                  <Activity className="w-4 h-4" />
-                  Letzte Aktivität
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-60">
-                  <div className="space-y-2">
-                    {adminStats.recentActivity.map((a: any, i: number) => (
-                      <div key={i} className="flex items-center gap-3 py-2 border-b border-slate-800 last:border-0">
-                        <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs">
-                          {a.action === 'login' && <LogIn className="w-4 h-4 text-emerald-400" />}
-                          {a.action === 'register' && <UserPlus className="w-4 h-4 text-cyan-400" />}
-                          {a.action === 'quiz_complete' && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
-                          {a.action === 'logout' && <LogOut className="w-4 h-4 text-slate-300" />}
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-sm">{a.userName}</div>
-                          <div className="text-xs text-slate-300">{a.action}</div>
-                        </div>
-                        <div className="text-xs text-slate-300">
-                          {new Date(a.createdAt).toLocaleString('de-DE')}
-                        </div>
+          <Card className="bg-slate-800/80 border-slate-600">
+            <CardHeader>
+              <CardTitle className="text-lg">Nach Kategorie</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {KATEGORIEN.map(k => {
+                const catStats = stats.categoryStats[k] || { correct: 0, wrong: 0 }
+                const total = catStats.correct + catStats.wrong
+                const percent = total > 0 ? Math.round((catStats.correct / total) * 100) : 0
+                const farbe = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#64748b"
+                
+                return (
+                  <div key={k} className="flex items-center justify-between p-3 rounded-lg bg-slate-700/50">
+                    <div className="flex items-center gap-3">
+                      <span className="w-3 h-3 rounded-full" style={{ backgroundColor: farbe }} />
+                      <span>{k}</span>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold" style={{ color: percent >= 70 ? '#22c55e' : percent >= 50 ? '#06b6d4' : '#f59e0b' }}>
+                        {total > 0 ? `${percent}%` : '-'}
                       </div>
-                    ))}
+                      <div className="text-xs text-slate-400">
+                        {catStats.correct}/{total}
+                      </div>
+                    </div>
                   </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </div>
+                )
+              })}
+            </CardContent>
+          </Card>
+
+          <Button 
+            variant="outline"
+            onClick={() => {
+              if (confirm('Alle Statistiken zurücksetzen?')) {
+                setStats({ totalCorrect: 0, totalWrong: 0, categoryStats: {} })
+              }
+            }}
+            className="w-full mt-6 py-3 border-red-500/50 text-red-400 hover:bg-red-500/10"
+          >
+            Statistiken zurücksetzen
+          </Button>
         </div>
       </div>
     )
