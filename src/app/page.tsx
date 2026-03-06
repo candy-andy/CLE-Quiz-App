@@ -1,1443 +1,807 @@
 'use client'
 
 import { useState, useEffect, useCallback } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Trophy, BookOpen, Target, BarChart3, Clock, CheckCircle2, XCircle, 
-  ArrowLeft, ArrowRight, Play, RotateCcw, Zap, Brain, TrendingUp,
-  Award, AlertCircle, ChevronRight, Home, Settings, Star, Users,
-  LogOut, LogIn, UserPlus, Shield, Activity, Calendar
-} from "lucide-react"
 
 // ============================================================================
-// FRAGEN-DATENBANK
+// FRAGENDATENBANK — 70 Fragen, keine Duplikate, korrekte Antworten, Erklärungen
 // ============================================================================
-const ALLE_FRAGEN = [
-{id:"K01",k:"Konflikt",farbe:"#E74C3C",q:"Was ist die Definition eines Konflikts?",a:["Interessen, Ziele oder Wertvorstellungen sind miteinander unvereinbar oder erscheinen so.","Ein Konflikt entsteht nur durch persönliche Antipathie.","Konflikte sind ausschließlich negativ und destruktiv.","Konflikte sind sowohl Chance als auch Gefahr."],r:[0,3]},
-{id:"K02",k:"Konflikt",farbe:"#E74C3C",q:"Welche betrieblichen Konfliktursachen sind korrekt beschrieben?",a:["Kompetenzkonflikte entstehen, wenn unklar ist, wer was entscheiden darf.","Sachkonflikte entstehen bei unterschiedlichem Kenntnisstand der Beteiligten.","Beziehungskonflikte entstehen bei gegenseitiger Abneigung.","Kompetenzkonflikte lassen sich grundsätzlich nicht vermeiden."],r:[0,1,2]},
-{id:"K03",k:"Konflikt",farbe:"#E74C3C",q:"Welche Grundaussagen zum Umgang mit Konflikten treffen zu?",a:["Konflikte im Arbeitsalltag sind unvermeidbar.","Es gibt immer Belastungssituationen.","Konflikte werden durch persönliche UND strukturelle Faktoren verursacht.","Gutes Management kann Konflikte vollständig eliminieren."],r:[0,1,2]},
-{id:"K04",k:"Konflikt",farbe:"#E74C3C",q:"Welcher Konflikttyp ist NICHT objektiv beweisbar?",a:["Bewertungskonflikt: rein subjektive Wertung, kein objektiver Maßstab möglich.","Beurteilungskonflikt: prinzipiell als richtig/falsch beweisbar.","Verteilungskonflikt: Streit um Ressourcenverteilung.","Beziehungskonflikt: emotional, meist mit Schuldzuweisungen."],r:[0]},
-{id:"K05",k:"Konflikt",farbe:"#E74C3C",q:"Welche Lösungsansätze sind den Konfliktarten korrekt zugeordnet?",a:["Bewertungskonflikt → Ersatz der Bewertungskriterien","Beurteilungskonflikt → Informationen einholen, Beurteilungsunterschiede beseitigen","Beziehungskonflikt → Vorwurf in Wunsch/Bitte umwandeln","Verteilungskonflikt → Machteinsatz der Führungskraft"],r:[0,1,2]},
-{id:"K06",k:"Konflikt",farbe:"#E74C3C",q:"Welche Eskalationsebenen nach Glasl sind korrekt zugeordnet?",a:["Sachebene → intern lösbar, Führungskraft als Moderator","Beziehungsebene → externer Mediator nötig","Zerstörungsebene → externe Machtinstanz (z.B. Gericht) nötig","Alle Stufen können intern durch die Führungskraft gelöst werden."],r:[0,1,2]},
-{id:"K07",k:"Konflikt",farbe:"#E74C3C",q:"Was sind die 4 Säulen des Harvard-Modells?",a:["Menschen und Probleme getrennt behandeln","Interessen zählen, nicht die Machtpositionen","Optionen entwickeln, die beiden Vorteile bringen","Einigung auf neutrale Beurteilungskriterien"],r:[0,1,2,3]},
-{id:"K08",k:"Konflikt",farbe:"#E74C3C",q:"Wie ist die 20-60-20-Regel bei Veränderungsprozessen verteilt?",a:["Bewahrer: ~20% — Widerstand, Status quo","Unentschlossene: ~60% — abwarten","Befürworter: ~20% — Neugier, Chancen","Die Mehrheit unterstützt Veränderungen von Anfang an aktiv."],r:[0,1,2]},
-{id:"K09",k:"Konflikt",farbe:"#E74C3C",q:"Welche Aussagen zum 3-Phasen-Modell nach Lewin sind korrekt?",a:["Auftauen: Ist-Situation beschreiben, Änderungsgrund nennen","Ändern: kommunizieren, Vorteile zeigen, MA einbeziehen","Einfrieren: Dauerhaftigkeit sicherstellen, Prozesse überwachen","Die Phasenreihenfolge ist frei wählbar."],r:[0,1,2]},
-{id:"K10",k:"Konflikt",farbe:"#E74C3C",q:"Was bedeutet Kaizen?",a:["KAI = Veränderung, ZEN = gut → permanenter Verbesserungsprozess","Kaizen bezieht sich nur auf Produktverbesserung.","Kaizen umfasst ALLE Prozesse: Entwicklung, Produktion, Vertrieb.","Qualität von Anfang an ist eine Kaizen-Zielsetzung."],r:[0,2,3]},
-{id:"K11",k:"Konflikt",farbe:"#E74C3C",q:"Was kennzeichnet Innovation?",a:["Neuartige, fortschrittliche Lösung für ein bestimmtes Problem.","Inkrementelle Innovationen = schrittweise Verbesserungen.","Disruptive Innovationen verändern Märkte grundlegend.","Innovation bezieht sich ausschließlich auf neue Produkte."],r:[0,1,2]},
-{id:"K12",k:"Konflikt",farbe:"#E74C3C",q:"Was ist aktives Zuhören?",a:["Paraphrasieren: Gesagtes in eigenen Worten wiederholen","Nachfragen bei Unklarheiten ohne zu unterbrechen","Sofort Lösungsvorschläge machen","Nonverbale Signale des Gesprächspartners wahrnehmen"],r:[0,1,3]},
-{id:"K13",k:"Konflikt",farbe:"#E74C3C",q:"Was versteht man unter Mediation?",a:["Freiwilliges, strukturiertes Verfahren mit neutralem Dritten","Der Mediator entscheidet verbindlich für beide Parteien.","Ziel ist eine von beiden Seiten akzeptierte Lösung (Win-Win).","Mediation ersetzt immer das Gerichtsverfahren."],r:[0,2]},
-{id:"K14",k:"Konflikt",farbe:"#E74C3C",q:"Was sind Merkmale eines konstruktiven Konfliktgesprächs?",a:["Ich-Botschaften statt Du-Vorwürfe","Vergangenheitsorientiert — alle alten Fehler aufzählen","Konkrete Verhaltensweisen ansprechen, nicht Persönlichkeit","Gemeinsam nach Lösungen suchen statt Schuldige finden"],r:[0,2,3]},
-{id:"K15",k:"Konflikt",farbe:"#E74C3C",q:"Was sind Anzeichen für einen latenten Konflikt?",a:["Zurückgehaltene Meinungen und oberflächliche Zustimmung","Passiv-aggressives Verhalten","Offene, laute Auseinandersetzungen täglich","Sinkendes Engagement und innere Kündigung"],r:[0,1,3]},
-{id:"K16",k:"Konflikt",farbe:"#E74C3C",q:"Welche Rolle spielt Empathie in der Konfliktlösung?",a:["Empathie ermöglicht das Verstehen der Perspektive des anderen.","Empathie bedeutet, der anderen Seite immer recht zu geben.","Empathie schafft Vertrauen und öffnet Gesprächsbereitschaft.","Empathie ist in professionellen Konflikten nicht relevant."],r:[0,2]},
-{id:"K17",k:"Konflikt",farbe:"#E74C3C",q:"Was ist der Unterschied zwischen Position und Interesse?",a:["Position = was jemand fordert (Oberfläche)","Interesse = warum jemand etwas fordert (tiefer liegend)","Positionen und Interessen sind identisch.","Harvard-Modell: Interessen verhandeln, nicht Positionen"],r:[0,1,3]},
-{id:"K18",k:"Konflikt",farbe:"#E74C3C",q:"Was kennzeichnet die Win-Win-Strategie?",a:["Beide Parteien erzielen einen Vorteil.","Eine Partei muss vollständig nachgeben.","Kreative Lösungen werden gemeinsam entwickelt.","Langfristige Beziehung hat Vorrang vor kurzfristigem Gewinn."],r:[0,2,3]},
-{id:"K19",k:"Konflikt",farbe:"#E74C3C",q:"Was sind Ursachen für Kommunikationskonflikte?",a:["Unterschiedliche Bedeutung von Wörtern","Missverständnisse durch nonverbale Widersprüche","Zu viel direkte Kommunikation","Unterschiedliche Kommunikationsstile und -kulturen"],r:[0,1,3]},
-{id:"K20",k:"Konflikt",farbe:"#E74C3C",q:"Was sind Deeskalationsmaßnahmen?",a:["Pause einlegen und Abstand gewinnen","Gemeinsamkeiten betonen statt Unterschiede","Vorwürfe und Schuldzuweisungen eskalieren","Neutral formulieren, keine Verallgemeinerungen"],r:[0,1,3]},
-{id:"F01",k:"Führung",farbe:"#2471A3",q:"Was beschreiben Führungsstile?",a:["Verhaltensmuster einer FK gegenüber weisungsgebundenen MA","Typologien: standardisierte, vereinfachte Verhaltensmuster","Exakte wissenschaftliche Kategorien ohne Vereinfachungen","Universell anwendbar, unabhängig vom Kontext"],r:[0,1]},
-{id:"F02",k:"Führung",farbe:"#2471A3",q:"Was kennzeichnet situative Führung nach Hersey & Blanchard?",a:["Führungsstil wird an den Reifegrad (Kompetenz + Motivation) angepasst.","4 Reifegrade (R1-R4) und 4 Führungsstile (S1-S4)","Ein einheitlicher Stil ist am effektivsten.","R1 (niedrige Kompetenz) → S1 Directing/Anweisen"],r:[0,1,3]},
-{id:"F03",k:"Führung",farbe:"#2471A3",q:"Was sind Warnsignale für Burnout bei Führungskräften?",a:["Chronische Erschöpfung trotz ausreichender Erholung","Zynismus und Distanzierung gegenüber der Arbeit","Nachlassende Leistungsfähigkeit und Konzentration","Erhöhte Energie und gesteigerte Produktivität"],r:[0,1,2]},
-{id:"F04",k:"Führung",farbe:"#2471A3",q:"Was sind Merkmale des kooperativen Führungsstils?",a:["MA werden in Entscheidungen einbezogen.","FK trifft alle Entscheidungen allein.","Offener Informationsaustausch und Transparenz","Eigenverantwortung der MA wird gefördert."],r:[0,2,3]},
-{id:"F05",k:"Führung",farbe:"#2471A3",q:"Was beschreibt der autoritäre Führungsstil?",a:["FK entscheidet allein und gibt klare Anweisungen.","MA gestalten Prozesse aktiv mit.","Informationen werden selektiv weitergegeben.","Disziplin und Kontrolle stehen im Vordergrund."],r:[0,2,3]},
-{id:"F06",k:"Führung",farbe:"#2471A3",q:"Was sind Merkmale transformationaler Führung?",a:["FK inspiriert durch Vision und Vorbildfunktion.","MA werden intrinsisch motiviert.","Fokus liegt auf kurzfristiger Aufgabenerfüllung.","Individuelle Förderung und Entwicklung der MA"],r:[0,1,3]},
-{id:"F07",k:"Führung",farbe:"#2471A3",q:"Was ist das Leader-Leader-Modell nach Marquet?",a:["FK gibt Kontrolle ab und schafft Führung auf allen Ebenen.","MA werden befähigt, eigene Entscheidungen zu treffen.","Zentralisierung von Entscheidungen beim Top-Management","Kompetenz und Klarheit sind Voraussetzungen."],r:[0,1,3]},
-{id:"F08",k:"Führung",farbe:"#2471A3",q:"Was sind Merkmale des laissez-fairen Führungsstils?",a:["MA handeln weitgehend selbstständig ohne Führungsvorgaben.","Hohe Eigenverantwortung der MA","FK gibt klare Anweisungen und kontrolliert eng.","Funktioniert gut bei hochqualifizierten, selbstmotivierten Teams."],r:[0,1,3]},
-{id:"F09",k:"Führung",farbe:"#2471A3",q:"Was kennzeichnet gute Feedbackkultur?",a:["Feedback ist konkret, zeitnah und verhaltensorientiert.","Kritik bezieht sich auf Persönlichkeit, nicht Verhalten.","Positives Feedback wird regelmäßig gegeben.","Feedback ist eine Einbahnstraße von oben nach unten."],r:[0,2]},
-{id:"F10",k:"Führung",farbe:"#2471A3",q:"Was sind Aufgaben von FK im Change Management?",a:["Veränderungen kommunizieren und begründen","Widerstände ernst nehmen und aktiv bearbeiten","Veränderungen geheim halten bis zur Umsetzung","MA in Veränderungsprozesse einbeziehen"],r:[0,1,3]},
-{id:"F11",k:"Führung",farbe:"#2471A3",q:"Was ist psychologische Sicherheit im Team?",a:["Mitglieder können Fehler und Ideen ohne Angst äußern.","Konflikte werden grundsätzlich vermieden.","Voraussetzung für Innovation und Lernbereitschaft","FK schafft psychologische Sicherheit durch Vorbild."],r:[0,2,3]},
-{id:"F12",k:"Führung",farbe:"#2471A3",q:"Was sind die Burnout-Phasen nach Freudenberger?",a:["Idealismus → Überarbeitung → Vernachlässigung eigener Bedürfnisse","Emotionale Abstumpfung und Zynismus","Körperliche Erschöpfung und psychosomatische Beschwerden","Burnout entsteht ausschließlich durch persönliche Schwäche."],r:[0,1,2]},
-{id:"F13",k:"Führung",farbe:"#2471A3",q:"Was kennzeichnet das Johari-Fenster?",a:["4 Felder: öffentlich, blinder Fleck, privat, unbewusst","Selbstbild und Fremdbild können voneinander abweichen.","Feedback erweitert den öffentlichen Bereich.","Das Johari-Fenster ist ein Kommunikationsinstrument."],r:[0,1,2,3]},
-{id:"F14",k:"Führung",farbe:"#2471A3",q:"Was ist das Ziel von Delegieren?",a:["Aufgaben, Kompetenz und Verantwortung übertragen","MA entlasten und entwickeln","FK behält alle Kontrolle und entscheidet selbst.","Delegation schafft Kapazität für Führungsaufgaben."],r:[0,1,3]},
-{id:"F15",k:"Führung",farbe:"#2471A3",q:"Was sind SMART-Ziele?",a:["Spezifisch: klar und eindeutig formuliert","Messbar: Fortschritt ist überprüfbar","Attraktiv/Motivierend: für den MA bedeutsam","Realistisch und Terminiert: erreichbar mit Zeitrahmen"],r:[0,1,2,3]},
-{id:"F16",k:"Führung",farbe:"#2471A3",q:"Was beschreibt Kotter's 8-Stufen-Modell?",a:["Dringlichkeit erzeugen und Führungskoalition aufbauen","Vision entwickeln und kommunizieren","Kurzfristige Erfolge sichtbar machen","Veränderung in der Unternehmenskultur verankern"],r:[0,1,2,3]},
-{id:"F17",k:"Führung",farbe:"#2471A3",q:"Was ist das Günter-Prinzip nach Dr. Frädrich?",a:["Innerer Schweinehund als Metapher für Vermeidungsverhalten","Menschen bevorzugen kurzfristige Befriedigung vor langfristigen Zielen.","Selbstdisziplin und Gewohnheiten entscheiden über Erfolg.","Der 'Günter' verschwindet durch einmalige Motivation dauerhaft."],r:[0,1,2]},
-{id:"F18",k:"Führung",farbe:"#2471A3",q:"Was sind Merkmale einer Hochleistungskultur?",a:["Klare Ziele und hohe Standards kombiniert mit Wertschätzung","Fehlerkultur: Fehler werden als Lernchance genutzt","Ausschließlich Druck und Kontrolle steigern Leistung.","Intrinsische Motivation durch sinnstiftende Arbeit"],r:[0,1,3]},
-{id:"M01",k:"Motivation",farbe:"#1E8449",q:"Was ist der Unterschied zwischen Motivation und Motiv?",a:["Motivation: Streben nach Zielen aufgrund von Antrieben","Motiv: grundlegende Ziele/Bedürfnisse des Menschen","Motivation und Motiv sind Synonyme.","Viele Motive sind unbewusst."],r:[0,1,3]},
-{id:"M02",k:"Motivation",farbe:"#1E8449",q:"Welche Annahmen liegen dem Maslow-Modell zugrunde?",a:["Bedürfnisse werden hierarchisch, Stufe für Stufe befriedigt.","Erst wenn eine Stufe befriedigt ist, wirkt die nächste motivierend.","Selbstverwirklichung steht an der Spitze.","Das Modell ist empirisch vollständig bestätigt."],r:[0,1,2]},
-{id:"M03",k:"Motivation",farbe:"#1E8449",q:"Was sind nach Herzberg Hygienefaktoren?",a:["Gehalt","Statuszuweisung","Führung durch den Vorgesetzten","Unternehmenspolitik und Verwaltung"],r:[0,1,2,3]},
-{id:"M04",k:"Motivation",farbe:"#1E8449",q:"Was sind nach Herzberg Motivatoren?",a:["Anerkennung und Wertschätzung für geleistete Arbeit","Arbeitsinhalt und Verantwortung","Gehalt und Sozialleistungen","Persönliches Wachstum und Aufstiegsmöglichkeiten"],r:[0,1,3]},
-{id:"M05",k:"Motivation",farbe:"#1E8449",q:"Was beschreibt die Equity Theory (Adams)?",a:["Menschen streben nach fairen Gegenleistungen für ihre Beiträge.","MA vergleichen ihr Input/Output-Verhältnis mit anderen.","Das absolute Gehalt ist entscheidend, nicht der Vergleich.","Wahrgenommene Ungerechtigkeit führt zu Demotivation."],r:[0,1,3]},
-{id:"M06",k:"Motivation",farbe:"#1E8449",q:"Was sind die Grundmotive nach McClelland?",a:["Leistungsmotiv: Streben nach Exzellenz","Machtmotiv: Streben nach Einfluss","Zugehörigkeitsmotiv: Streben nach engen Beziehungen","Alle Menschen haben diese Motive in gleicher Ausprägung."],r:[0,1,2]},
-{id:"M07",k:"Motivation",farbe:"#1E8449",q:"Was unterscheidet intrinsische von extrinsischer Motivation?",a:["Intrinsisch: Motivation kommt aus dem Inneren","Extrinsisch: Motivation durch äußere Anreize (Gehalt, Status)","Intrinsische Motivation ist immer stärker.","Übermäßige extrinsische Belohnung kann intrinsische Motivation untergraben."],r:[0,1,3]},
-{id:"M08",k:"Motivation",farbe:"#1E8449",q:"Was ist der Erwartungs-Wert-Ansatz (Vroom)?",a:["Motivation = Erwartung × Instrumentalität × Valenz","Nur wenn alle drei Faktoren positiv sind, entsteht hohe Motivation.","Erwartung = Glaube, dass Anstrengung zu Leistung führt","Valenz beschreibt den Wert des Ergebnisses für die Person."],r:[0,1,2,3]},
-{id:"M09",k:"Motivation",farbe:"#1E8449",q:"Was ist Flow nach Csikszentmihalyi?",a:["Zustand völliger Aufmerksamkeit und Vertiefung","Entsteht wenn Anforderung und Fähigkeit im Gleichgewicht sind","Flow ist immer bei sehr einfachen Aufgaben zu erreichen.","Flow geht mit positiven Emotionen und Zeitvergessenheit einher."],r:[0,1,3]},
-{id:"M10",k:"Motivation",farbe:"#1E8449",q:"Was sind Maßnahmen zur Motivationssteigerung?",a:["Klare Ziele setzen und Sinn kommunizieren","Autonomie und Handlungsspielraum gewähren","Ausschließlich finanziell belohnen","Regelmäßiges, konstruktives Feedback geben"],r:[0,1,3]},
-{id:"M11",k:"Motivation",farbe:"#1E8449",q:"Was beschreibt die Selbstbestimmungstheorie (Deci & Ryan)?",a:["3 Grundbedürfnisse: Kompetenz, Autonomie, Eingebundenheit","Werden alle 3 Bedürfnisse erfüllt, entsteht intrinsische Motivation.","Kontrolle und Überwachung fördern intrinsische Motivation.","FK können diese Bedürfnisse aktiv fördern."],r:[0,1,3]},
-{id:"M12",k:"Motivation",farbe:"#1E8449",q:"Was ist Prokrastination und wie begegnet man ihr?",a:["Aufschieben von Aufgaben trotz negativer Konsequenzen","Kleinstschritte definieren und sofort starten","Prokrastination ist immer Zeichen von Faulheit.","Klare Prioritäten reduzieren Prokrastination."],r:[0,1,3]},
-{id:"M13",k:"Motivation",farbe:"#1E8449",q:"Was ist Lob als Führungsinstrument?",a:["Lob sollte konkret und zeitnah erfolgen.","Allgemeines Lob ('Du bist toll') ist besonders wirksam.","Lob stärkt das Wiederholungsverhalten und die Motivation.","Lob sollte aufrichtig und authentisch sein."],r:[0,2,3]},
-{id:"M14",k:"Motivation",farbe:"#1E8449",q:"Was beschreibt die X-Y-Theorie nach McGregor?",a:["Theorie X: MA sind träge und müssen kontrolliert werden.","Theorie Y: MA sind motiviert und übernehmen Verantwortung.","Beide Annahmen sind bewiesene Tatsachen.","Theorie Y-Führung fördert Eigenverantwortung und Kreativität."],r:[0,1,3]},
-{id:"M15",k:"Motivation",farbe:"#1E8449",q:"Was ist Sinnhaftigkeit (Purpose) als Motivationsfaktor?",a:["MA sind motivierter, wenn sie den Sinn ihrer Arbeit verstehen.","Purpose verbindet individuelle Arbeit mit dem größeren Ganzen.","Gehalt ist immer wichtiger als Sinnhaftigkeit.","FK kommunizieren aktiv Warum und Wozu von Aufgaben."],r:[0,1,3]},
-{id:"P01",k:"Personal",farbe:"#7D3C98",q:"Was umfasst der Personalmanagementprozess?",a:["Planung, Beschaffung, Auswahl","Entwicklung, Beurteilung, Freisetzung","Personalmanagement ist ausschließlich HR-Aufgabe.","Entlohnung und Verwaltung gehören zum Prozess."],r:[0,1,3]},
-{id:"P02",k:"Personal",farbe:"#7D3C98",q:"Was ist bei der Personalbedarfsplanung zu berücksichtigen?",a:["Tarifverträge und Konjunkturentwicklung","Monatsgehalt, Urlaub, Firmenpension, Sozialabgaben","Mehrarbeitszulagen, Krankenstand, Fahrtkosten","Nur der direkte Lohn ist planungsrelevant."],r:[0,1,2]},
-{id:"P03",k:"Personal",farbe:"#7D3C98",q:"Was gehört zu einer vollständigen Stellenbeschreibung?",a:["Stellenbezeichnung und Einordnung in die Organisationsstruktur","Aufgaben, Kompetenzen und Verantwortung","Anforderungsprofil fachlich und persönlich","Persönliche Meinung des Vorgesetzten"],r:[0,1,2]},
-{id:"P04",k:"Personal",farbe:"#7D3C98",q:"Was sind die Säulen der qualitativen Personalplanung?",a:["Qualifikationsplanung: Welche Kompetenzen werden benötigt?","Personalentwicklungsplanung: Wie werden MA gefördert?","Einsatzplanung: Wer wird wo eingesetzt?","Qualitativ bedeutet: nur die Anzahl der MA planen."],r:[0,1,2]},
-{id:"P05",k:"Personal",farbe:"#7D3C98",q:"Was sind Inhalte des Anforderungsprofils?",a:["Fachliche Anforderungen: Ausbildung, Kenntnisse, Erfahrungen","Persönliche Anforderungen: Soft Skills","Gehaltsvorstellung des Bewerbers","Basis für faire und objektive Auswahlentscheidungen"],r:[0,1,3]},
-{id:"P06",k:"Personal",farbe:"#7D3C98",q:"Was sind Ziele des strukturierten Auswahlinterviews?",a:["Einheitliche Fragen sichern Vergleichbarkeit.","Verhaltensbasierte Fragen zeigen vergangenes Verhalten.","Bauchgefühl ist die zuverlässigste Methode.","Objektivität und rechtliche Sicherheit"],r:[0,1,3]},
-{id:"P07",k:"Personal",farbe:"#7D3C98",q:"Was ist Onboarding und warum ist es wichtig?",a:["Systematische Einarbeitung neuer MA","Verkürzt die Zeit bis zur vollen Leistungsfähigkeit","Onboarding endet nach dem ersten Arbeitstag.","Reduziert Fluktuation und erhöht Commitment."],r:[0,1,3]},
-{id:"P08",k:"Personal",farbe:"#7D3C98",q:"Was sind Bestandteile der Personalentwicklung?",a:["Training on the Job","Coaching und Mentoring","Personalentwicklung ist nur für FK relevant.","Seminare und externe Weiterbildungen"],r:[0,1,3]},
-{id:"P09",k:"Personal",farbe:"#7D3C98",q:"Was kennzeichnet ein Mitarbeitergespräch?",a:["Regelmäßiger, strukturierter Austausch zwischen FK und MA","Ziele werden vereinbart und bewertet.","FK spricht, MA hört nur zu.","Entwicklungsperspektiven werden besprochen."],r:[0,1,3]},
-{id:"P10",k:"Personal",farbe:"#7D3C98",q:"Unterschied zwischen Kündigung und Freistellung?",a:["Kündigung beendet das Arbeitsverhältnis nach Kündigungsfrist.","Freistellung: MA wird bis Vertragsende von Arbeitspflicht entbunden.","Bei Freistellung entfällt der Lohnanspruch.","Kündigung muss schriftlich erfolgen."],r:[0,1,3]},
-{id:"P11",k:"Personal",farbe:"#7D3C98",q:"Was sind Ziele der Personalbeurteilung?",a:["Leistungen transparent bewerten und dokumentieren","Grundlage für Entwicklungsmaßnahmen schaffen","Persönliche Sympathie ist der Hauptmaßstab.","Grundlage für Gehalts- und Beförderungsentscheidungen"],r:[0,1,3]},
-{id:"P12",k:"Personal",farbe:"#7D3C98",q:"Was sind Beurteilungsfehler?",a:["Halo-Effekt: eine Eigenschaft überstrahlt alle anderen","Tendenz zur Mitte: alle MA werden durchschnittlich bewertet","Recency-Effekt: nur aktuelle Leistungen berücksichtigt","Objektivität ist bei menschlicher Beurteilung automatisch gegeben."],r:[0,1,2]},
-{id:"P13",k:"Personal",farbe:"#7D3C98",q:"Was ist Work-Life-Balance aus Arbeitgebersicht?",a:["Flexible Arbeitszeiten fördern Produktivität und Bindung.","Work-Life-Balance ist ausschließlich Privatsache.","Homeoffice ist ein modernes Bindungsinstrument.","Burnout-Prävention durch gesunde Arbeitsgestaltung"],r:[0,2,3]},
-{id:"P14",k:"Personal",farbe:"#7D3C98",q:"Was sind Maßnahmen zur Mitarbeiterbindung?",a:["Entwicklungsperspektiven und Karrieremöglichkeiten","Faire Vergütung und Anerkennung","Sinnstiftung und Unternehmenskultur","Gehalt ist der einzige relevante Bindungsfaktor."],r:[0,1,2]},
-{id:"P15",k:"Personal",farbe:"#7D3C98",q:"Was ist Employer Branding?",a:["Aufbau einer attraktiven Arbeitgebermarke","Zielt auf Gewinnung und Bindung qualifizierter MA","Employer Branding ist ausschließlich externe Werbung.","Authentizität ist entscheidend."],r:[0,1,3]},
-{id:"B01",k:"BGM",farbe:"#D68910",q:"Was ist Betriebliches Gesundheitsmanagement (BGM)?",a:["Systematischer Ansatz zur Erhaltung der Mitarbeitergesundheit","Maßnahmen auf Verhaltens- UND Verhältnisebene","Nur gesetzliche Pflicht, kein wirtschaftlicher Nutzen","Reduziert Fehlzeiten und steigert Produktivität."],r:[0,1,3]},
-{id:"B02",k:"BGM",farbe:"#D68910",q:"Welcher Lärmpegel gilt bei geistigen Tätigkeiten?",a:["55 dB(A) bei Tätigkeiten mit Konzentrationsanforderungen","85 dB(A) ist der allgemeine Büro-Richtwert.","Lärm über dem Richtwert beeinträchtigt Kognition.","Lärmschutz gilt nur in der Produktion."],r:[0,2]},
-{id:"B03",k:"BGM",farbe:"#D68910",q:"Ursachen für Rückenbeschwerden am Büroarbeitsplatz?",a:["Falsche Sitzhöhe","Fehlende oder falsch eingestellte Rückenlehne","Falscher Abstand zum Bildschirm","Zu häufige Bewegungspausen"],r:[0,1,2]},
-{id:"B04",k:"BGM",farbe:"#D68910",q:"Unterschied zwischen Eustress und Distress?",a:["Eustress: positiver, leistungssteigernder Stress","Distress: negativer, krankmachender chronischer Stress","Beide haben die gleiche Wirkung auf die Gesundheit.","Eustress fördert Motivation und Leistungsbereitschaft."],r:[0,1,3]},
-{id:"B05",k:"BGM",farbe:"#D68910",q:"Was ist Resilienz am Arbeitsplatz?",a:["Fähigkeit, mit Belastungen umzugehen und sich zu erholen","Resilienz kann trainiert werden.","Resilienz ist angeboren und unveränderlich.","FK können Resilienz aktiv fördern."],r:[0,1,3]},
-{id:"B06",k:"BGM",farbe:"#D68910",q:"Was sind Rollen von FK im BGM?",a:["Frühzeitiges Erkennen von Überlastungszeichen","Vorbildfunktion bei Gesundheitsverhalten","BGM liegt ausschließlich bei Betriebsarzt und HR.","Aktives Ansprechen von Belastungssituationen"],r:[0,1,3]},
-{id:"B07",k:"BGM",farbe:"#D68910",q:"Was sind die Phasen des Burnout-Prozesses?",a:["Phase 1: Enthusiasmus, Überengagement","Phase 2: Stagnation, Desillusionierung, Erschöpfung","Phase 3: Frustration, Zynismus, psychosomatische Symptome","Burnout entsteht plötzlich und ohne Vorwarnung."],r:[0,1,2]},
-{id:"B08",k:"BGM",farbe:"#D68910",q:"Was sind Maßnahmen der betrieblichen Suchtprävention?",a:["Klare Unternehmensrichtlinien zu Suchtmitteln","Früherkennung durch FK und Kolleg:innen","Sucht ist Privatsache und kein Unternehmensthema.","Betriebliche Sozialberatung und externe Hilfsangebote"],r:[0,1,3]},
-{id:"B09",k:"BGM",farbe:"#D68910",q:"Was ist Salutogenese nach Antonovsky?",a:["Was erhält Menschen gesund? (nicht: Was macht krank?)","Kohärenzgefühl: Verstehbarkeit, Handhabbarkeit, Bedeutsamkeit","Salutogenese = Pathogenese, Synonyme.","Starkes Kohärenzgefühl fördert Gesundheit und Resilienz."],r:[0,1,3]},
-{id:"B10",k:"BGM",farbe:"#D68910",q:"Was sind Ziele von Gesundheitszirkeln?",a:["MA erkennen und lösen gesundheitliche Belastungen.","Partizipation: Betroffene werden zu Beteiligten.","Gesundheitszirkel ersetzen den Betriebsarzt.","Nachhaltige Verbesserung der Arbeitsbedingungen"],r:[0,1,3]},
-{id:"B11",k:"BGM",farbe:"#D68910",q:"Was ist Betriebliches Eingliederungsmanagement (BEM)?",a:["Pflichtverfahren nach mehr als 6 Wochen Krankheit in 12 Monaten","Ziel: Arbeitsfähigkeit erhalten und Beschäftigung sichichern","BEM ist freiwillig für den Arbeitnehmer.","BEM ist ausschließlich eine Kontrollmaßnahme."],r:[0,1,2]},
-{id:"B12",k:"BGM",farbe:"#D68910",q:"Was sind Belastungsfaktoren am Arbeitsplatz?",a:["Körperliche Faktoren: Heben, Tragen, ungünstige Haltungen","Psychische Faktoren: Zeitdruck, Monotonie, Verantwortung","Ergonomie ist ausschließlich für körperliche Tätigkeiten.","Umgebungsfaktoren: Lärm, Licht, Temperatur"],r:[0,1,3]},
-{id:"KO01",k:"Kommunikation",farbe:"#117A65",q:"Was ist ein Elevator Pitch?",a:["Kurze Selbst- oder Ideenpräsentation in ca. 30-60 Sekunden","Soll Interesse wecken und zur weiteren Kommunikation einladen","Dauert mindestens 10 Minuten für maximale Wirkung.","Nur im Vertrieb relevant."],r:[0,1]},
-{id:"KO02",k:"Kommunikation",farbe:"#117A65",q:"Was sind Axiome nach Watzlawick?",a:["Man kann nicht NICHT kommunizieren.","Kommunikation hat Inhalts- und Beziehungsaspekt.","Kommunikation ist immer digital (verbal).","Kommunikation ist symmetrisch oder komplementär."],r:[0,1,3]},
-{id:"KO03",k:"Kommunikation",farbe:"#117A65",q:"Was beschreibt das 4-Ohren-Modell (Schulz von Thun)?",a:["Jede Nachricht hat 4 Seiten: Sachinhalt, Selbstoffenbarung, Beziehung, Appell","Sender sendet alle 4 Seiten gleichzeitig.","Empfänger hört nur den Sachinhalt.","Missverständnisse entstehen wenn verschiedene Ebenen betont werden."],r:[0,1,3]},
-{id:"KO04",k:"Kommunikation",farbe:"#117A65",q:"Was ist Gewaltfreie Kommunikation (GFK) nach Rosenberg?",a:["4 Schritte: Beobachtung, Gefühl, Bedürfnis, Bitte","Beobachtungen von Bewertungen trennen","GFK bedeutet, Konflikte zu vermeiden.","Ziel: echte Verbindung und gegenseitiges Verständnis"],r:[0,1,3]},
-{id:"KO05",k:"Kommunikation",farbe:"#117A65",q:"Was kennzeichnet eine klare Ich-Botschaft?",a:["Beschreibt eigene Wahrnehmung, Gefühl und Bedürfnis","Vermeidet Schuldzuweisungen an andere","Ich-Botschaften und Du-Vorwürfe sind gleichwertig.","Fördert Verständnis statt Abwehr beim Gegenüber"],r:[0,1,3]},
-{id:"KO06",k:"Kommunikation",farbe:"#117A65",q:"Was sind Merkmale nonverbaler Kommunikation?",a:["Körperhaltung, Gestik, Mimik, Blickkontakt","Macht ca. 55-65% der gesamten Kommunikation aus.","Nonverbal ist immer kontrollierbar.","Widerspruch zwischen verbal und nonverbal erzeugt Misstrauen."],r:[0,1,3]},
-{id:"KO07",k:"Kommunikation",farbe:"#117A65",q:"Was ist Feedback nach dem SBI-Modell?",a:["Situation: konkrete Situation beschreiben","Behavior: beobachtetes Verhalten benennen","Impact: Wirkung/Auswirkung schildern","SBI = Subjektive Bewertung und Interpretation"],r:[0,1,2]},
-// Neue Fragen aus CSV importiert
-{id:"F100",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
-{id:"F101",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Impact/Dringlichkeit, Engpass zuerst.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"F102",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","konkret, zeitnah, verhaltensbezogen."],r:[3]},
-{id:"F103",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: eine erfahrene Fachkraft die Prozesse ignoriert. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Reifegrad einschätzen und Führungsstil anpassen.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"F104",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein neues Team übernimmt und die Rollen unklar sind. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","konkret, zeitnah, verhaltensbezogen."],r:[3]},
-{id:"F105",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein High Performer toxisches Verhalten zeigt. Was ist der sinnvollste erste Schritt?",a:["Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
-{id:"F106",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt? (Variante 7)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Reifegrad einschätzen und Führungsstil anpassen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"F107",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Projekt in Verzug gerät und der Sponsor Druck macht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","konkret, zeitnah, verhaltensbezogen.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"F108",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["konkret, zeitnah, verhaltensbezogen.","Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"F109",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Reifegrad einschätzen und Führungsstil anpassen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"F110",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein wichtiger Kunde kurzfristig Änderungen verlangt. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Reifegrad einschätzen und Führungsstil anpassen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[1]},
-{id:"F111",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Reifegrad einschätzen und Führungsstil anpassen."],r:[3]},
-{id:"F112",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: eine erfahrene Fachkraft die Prozesse ignoriert. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","SMART Erwartungen, Verantwortlichkeiten, Deadlines."],r:[3]},
-{id:"F113",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein neues Team übernimmt und die Rollen unklar sind. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Impact/Dringlichkeit, Engpass zuerst."],r:[3]},
-{id:"F114",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Teammitglied ständig zusagt, aber nicht liefert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","konkret, zeitnah, verhaltensbezogen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"F115",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Teammitglied ständig zusagt, aber nicht liefert. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Impact/Dringlichkeit, Engpass zuerst."],r:[3]},
-{id:"F116",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: eine erfahrene Fachkraft die Prozesse ignoriert. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"F117",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","konkret, zeitnah, verhaltensbezogen."],r:[3]},
-{id:"F118",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein Teammitglied ständig zusagt, aber nicht liefert. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[1]},
-{id:"F119",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein neues Team übernimmt und die Rollen unklar sind. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
-{id:"F120",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt?",a:["Impact/Dringlichkeit, Engpass zuerst.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
-{id:"F121",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: zwei Teammitglieder unterschiedliche Prioritäten setzen. Was ist der sinnvollste erste Schritt? (Variante 22)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Impact/Dringlichkeit, Engpass zuerst.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"F122",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein wichtiger Kunde kurzfristig Änderungen verlangt. Was ist der sinnvollste erste Schritt? (Variante 23)",a:["Impact/Dringlichkeit, Engpass zuerst.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"F123",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein High Performer toxisches Verhalten zeigt. Was ist der sinnvollste erste Schritt? (Variante 24)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Impact/Dringlichkeit, Engpass zuerst."],r:[3]},
-{id:"F124",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt? (Variante 25)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Reifegrad einschätzen und Führungsstil anpassen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"F125",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: ein wichtiger Kunde kurzfristig Änderungen verlangt. Was ist der sinnvollste erste Schritt? (Variante 26)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden."],r:[3]},
-{id:"F126",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du remote führst und Missverständnisse zunehmen. Was ist der sinnvollste erste Schritt? (Variante 27)",a:["Impact/Dringlichkeit, Engpass zuerst.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[0]},
-{id:"F127",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 28)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Beteiligte einbeziehen, Ziele klären, dann entscheiden.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"F128",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: die Leistung im Team seit Wochen sinkt. Was ist der sinnvollste erste Schritt? (Variante 29)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","SMART Erwartungen, Verantwortlichkeiten, Deadlines."],r:[3]},
-{id:"F129",k:"Führung",farbe:"#2471A3",q:"In deiner Rolle als Führungskraft: du eine Veränderung (Change) einführen musst. Was ist der sinnvollste erste Schritt? (Variante 30)",a:["Die Verantwortung vollständig an eine andere Person abgeben","SMART Erwartungen, Verantwortlichkeiten, Deadlines.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"K130",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Rahmen setzen, Regeln, nacheinander sprechen.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"K131",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","RACI/Zuständigkeiten fixieren."],r:[3]},
-{id:"K132",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: zwei Abteilungen sich gegenseitig blockieren. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
-{id:"K133",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Konflikt um Ressourcen entsteht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"K134",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Kunde sich über Tonfall beschwert. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Bedürfnisse klären, gemeinsame Ziele definieren."],r:[3]},
-{id:"K135",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt?",a:["Rahmen setzen, Regeln, nacheinander sprechen.","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"K136",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Mitarbeiter sich unfair behandelt fühlt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Bedürfnisse klären, gemeinsame Ziele definieren.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"K137",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
-{id:"K138",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","RACI/Zuständigkeiten fixieren.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"K139",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"K140",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Ich-Botschaften, konkrete Beispiele, Vereinbarung.","Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"K141",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen."],r:[3]},
-{id:"K142",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: es wiederholt zu Missverständnissen kommt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"K143",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: Gerüchte im Team die Stimmung kippen lassen. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Ich-Botschaften, konkrete Beispiele, Vereinbarung."],r:[3]},
-{id:"K144",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: über Zuständigkeiten gestritten wird. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","RACI/Zuständigkeiten fixieren.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
-{id:"K145",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Kunde sich über Tonfall beschwert. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Rahmen setzen, Regeln, nacheinander sprechen."],r:[3]},
-{id:"K146",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Mitarbeiter sich unfair behandelt fühlt. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","RACI/Zuständigkeiten fixieren.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"K147",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Bedürfnisse klären, gemeinsame Ziele definieren.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"K148",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Streit in einem Meeting eskaliert. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Pause, Emotionen benennen, Sachebene herstellen."],r:[3]},
-{id:"K149",k:"Konflikt",farbe:"#E74C3C",q:"In deiner Rolle als Führungskraft: ein Teammitglied passiv-aggressiv reagiert. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Pause, Emotionen benennen, Sachebene herstellen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"M150",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","konkret loben, Erfolge sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"M151",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"M152",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 3)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben","Beitrag zum Ganzen sichtbar machen."],r:[3]},
-{id:"M153",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Zielerreichung nur noch über Druck funktioniert. Was ist der sinnvollste erste Schritt?",a:["konkret loben, Erfolge sichtbar machen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"M154",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: Mikromanagement die Eigeninitiative tötet. Was ist der sinnvollste erste Schritt?",a:["Beitrag zum Ganzen sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
-{id:"M155",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Teammitglied innerlich gekündigt wirkt. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Handlungsspielräume geben, Verantwortung übertragen.","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
-{id:"M156",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: nach einer Umstrukturierung Unsicherheit herrscht. Was ist der sinnvollste erste Schritt?",a:["konkret loben, Erfolge sichtbar machen.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M157",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt? (Variante 8)",a:["Beitrag zum Ganzen sichtbar machen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"M158",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 9)",a:["Training/Coaching, klare Lernziele, Feedback.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M159",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: zu viele parallele Aufgaben Überforderung erzeugen. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
-{id:"M160",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Arbeit monoton ist und Fehler steigen. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","konkret loben, Erfolge sichtbar machen.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"M161",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Teammitglied innerlich gekündigt wirkt. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["realistische Ziele, Prioritäten, Fokus.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M162",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein Bonus gestrichen wurde und Frust entsteht. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","konkret loben, Erfolge sichtbar machen."],r:[3]},
-{id:"M163",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: die Zielerreichung nur noch über Druck funktioniert. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","realistische Ziele, Prioritäten, Fokus."],r:[3]},
-{id:"M164",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein sinnvoller Zweck (Purpose) fehlt. Was ist der sinnvollste erste Schritt?",a:["realistische Ziele, Prioritäten, Fokus.","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"M165",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: das Team zu wenig Anerkennung bekommt. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","realistische Ziele, Prioritäten, Fokus.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"M166",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein neuer Kollege nicht integriert wird. Was ist der sinnvollste erste Schritt? (Variante 17)",a:["Handlungsspielräume geben, Verantwortung übertragen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"M167",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: zu viele parallele Aufgaben Überforderung erzeugen. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","realistische Ziele, Prioritäten, Fokus.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"M168",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: ein sinnvoller Zweck (Purpose) fehlt. Was ist der sinnvollste erste Schritt? (Variante 19)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Handlungsspielräume geben, Verantwortung übertragen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
-{id:"M169",k:"Motivation",farbe:"#1E8449",q:"In deiner Rolle als Führungskraft: nach einer Umstrukturierung Unsicherheit herrscht. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Training/Coaching, klare Lernziele, Feedback.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"KO170",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Missverständnis per Chat eskaliert. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Wirkung schildern statt Vorwurf.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"KO171",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt?",a:["kurz, faktenbasiert, freundlich, klar.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"KO172",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","offene Fragen, Verständnis sichern.","Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"KO173",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","offene Fragen, Verständnis sichern.","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[2]},
-{id:"KO174",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt? (Variante 5)",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Sofort eine Entscheidung allein treffen und kommunizieren","Wirkung schildern statt Vorwurf.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"KO175",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du eine Präsentation für Führungsebene hältst. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Wirkung schildern statt Vorwurf.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"KO176",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du Erwartungen an Qualität kommunizieren musst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","paraphrasieren, nachfragen, bestätigen.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"KO177",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Kernaussage, Gründe, nächste Schritte.","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"KO178",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein wichtiges Change-Update kommuniziert werden muss. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Wirkung schildern statt Vorwurf.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben"],r:[1]},
-{id:"KO179",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","paraphrasieren, nachfragen, bestätigen."],r:[3]},
-{id:"KO180",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","paraphrasieren, nachfragen, bestätigen."],r:[3]},
-{id:"KO181",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Stakeholder-Meeting mit Widerstand ansteht. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren","kurz, faktenbasiert, freundlich, klar.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"KO182",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["kurz, faktenbasiert, freundlich, klar.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
-{id:"KO183",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["paraphrasieren, nachfragen, bestätigen.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[0]},
-{id:"KO184",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Missverständnis per Chat eskaliert. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Kernaussage, Gründe, nächste Schritte.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"KO185",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du zwischen zwei Parteien vermitteln musst. Was ist der sinnvollste erste Schritt? (Variante 16)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","offene Fragen, Verständnis sichern.","Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[1]},
-{id:"KO186",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: remote Meetings ineffektiv sind. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Kernaussage, Gründe, nächste Schritte.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"KO187",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du negatives Feedback geben musst. Was ist der sinnvollste erste Schritt? (Variante 18)",a:["Kernaussage, Gründe, nächste Schritte.","Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"KO188",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: du eine Entscheidung transparent erklären musst. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren","kurz, faktenbasiert, freundlich, klar."],r:[3]},
-{id:"KO189",k:"Kommunikation",farbe:"#117A65",q:"In deiner Rolle als Führungskraft: ein Teammitglied kaum spricht und Infos fehlen. Was ist der sinnvollste erste Schritt? (Variante 20)",a:["Sofort eine Entscheidung allein treffen und kommunizieren","kurz, faktenbasiert, freundlich, klar.","Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[1]},
-{id:"P190",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt?",a:["Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Kriterien offenlegen, Gleichbehandlung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"P191",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt?",a:["Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Fakten sammeln, sauber dokumentieren.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"P192",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Probezeitentscheidung getroffen werden muss. Was ist der sinnvollste erste Schritt?",a:["klar, respektvoll, lösungsorientiert.","Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"P193",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt? (Variante 4)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Maßnahmenplan, Meilensteine, Follow-up.","Die Verantwortung vollständig an eine andere Person abgeben"],r:[2]},
-{id:"P194",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: du ein Bewerbungsgespräch führst. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Sofort eine Entscheidung allein treffen und kommunizieren","Kriterien offenlegen, Gleichbehandlung."],r:[3]},
-{id:"P195",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Leistungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","HR einbinden, Regeln einhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"P196",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt? (Variante 7)",a:["Maßnahmenplan, Meilensteine, Follow-up.","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[0]},
-{id:"P197",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Probezeitentscheidung getroffen werden muss. Was ist der sinnvollste erste Schritt? (Variante 8)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Fakten sammeln, sauber dokumentieren.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"P198",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: ein Konflikt mit Betriebsrat absehbar ist. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","HR einbinden, Regeln einhalten.","Das Thema vertagen, bis es sich von selbst beruhigt","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[1]},
-{id:"P199",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: Schichtplanung zu Unzufriedenheit führt. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","klar, respektvoll, lösungsorientiert."],r:[3]},
-{id:"P200",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Leistungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Maßnahmenplan, Meilensteine, Follow-up.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"P201",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Weiterbildung geplant werden soll. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Einzelne Schuldige benennen, um ein Exempel zu statuieren","klar, respektvoll, lösungsorientiert."],r:[3]},
-{id:"P202",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: ein Teammitglied Versetzungswunsch äußert. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Kriterien offenlegen, Gleichbehandlung.","Das Thema vertagen, bis es sich von selbst beruhigt"],r:[2]},
-{id:"P203",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Weiterbildung geplant werden soll. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","Fakten sammeln, sauber dokumentieren.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"P204",k:"Personal",farbe:"#7D3C98",q:"In deiner Rolle als Führungskraft: eine Abmahnung im Raum steht. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Das Thema vertagen, bis es sich von selbst beruhigt","klar, respektvoll, lösungsorientiert.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"B205",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Sofort eine Entscheidung allein treffen und kommunizieren","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Belastungen identifizieren und Ursachen reduzieren."],r:[3]},
-{id:"B206",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: ein BGM-Programm eingeführt werden soll. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","Arbeitsbedingungen + individuelles Verhalten."],r:[3]},
-{id:"B207",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt? (Variante 3)",a:["frühzeitig ansprechen, Angebote vermitteln.","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren"],r:[0]},
-{id:"B208",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt?",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Arbeitsbedingungen + individuelles Verhalten.","Sofort eine Entscheidung allein treffen und kommunizieren","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
-{id:"B209",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt?",a:["Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","frühzeitig ansprechen, Angebote vermitteln."],r:[3]},
-{id:"B210",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: die Fehlzeiten im Team stark steigen. Was ist der sinnvollste erste Schritt? (Variante 6)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Einzelne Schuldige benennen, um ein Exempel zu statuieren","Das Thema vertagen, bis es sich von selbst beruhigt","Pausen, Prioritäten, Ressourcenausgleich."],r:[3]},
-{id:"B211",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: eine Gefährdungsbeurteilung ansteht. Was ist der sinnvollste erste Schritt?",a:["Sofort eine Entscheidung allein treffen und kommunizieren","Das Thema vertagen, bis es sich von selbst beruhigt","frühzeitig ansprechen, Angebote vermitteln.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"B212",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: viele Überstunden anfallen. Was ist der sinnvollste erste Schritt?",a:["frühzeitig ansprechen, Angebote vermitteln.","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[0]},
-{id:"B213",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt?",a:["Das Thema vertagen, bis es sich von selbst beruhigt","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Pausen, Prioritäten, Ressourcenausgleich.","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[2]},
-{id:"B214",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt? (Variante 10)",a:["Belastungen identifizieren und Ursachen reduzieren.","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Die Verantwortung vollständig an eine andere Person abgeben"],r:[0]},
-{id:"B215",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Ergonomie am Arbeitsplatz schlecht ist. Was ist der sinnvollste erste Schritt? (Variante 11)",a:["Die Verantwortung vollständig an eine andere Person abgeben","Sofort eine Entscheidung allein treffen und kommunizieren","Plan, Abstimmung, Schonung.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen"],r:[2]},
-{id:"B216",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt? (Variante 12)",a:["Arbeitsbedingungen + individuelles Verhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"B217",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt? (Variante 13)",a:["Belastungen identifizieren und Ursachen reduzieren.","Das Thema vertagen, bis es sich von selbst beruhigt","Die Verantwortung vollständig an eine andere Person abgeben","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"B218",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: psychische Belastung durch Dauerstress sichtbar wird. Was ist der sinnvollste erste Schritt? (Variante 14)",a:["Plan, Abstimmung, Schonung.","Das Thema vertagen, bis es sich von selbst beruhigt","Sofort eine Entscheidung allein treffen und kommunizieren","Mit Druck/Deadline arbeiten, ohne Ursachen zu klären"],r:[0]},
-{id:"B219",k:"BGM",farbe:"#D68910",q:"In deiner Rolle als Führungskraft: Rückkehrgespräche nach Krankheit geführt werden müssen. Was ist der sinnvollste erste Schritt? (Variante 15)",a:["Mit Druck/Deadline arbeiten, ohne Ursachen zu klären","Arbeitsbedingungen + individuelles Verhalten.","Das Problem primär per E-Mail/Chat klären, um Zeit zu sparen","Einzelne Schuldige benennen, um ein Exempel zu statuieren"],r:[1]},
+const DB = [
+  // ── FÜHRUNG (18) ──────────────────────────────────────────────────────────
+  {id:"F01",k:"Führung",s:"leicht",q:"Was beschreibt situative Führung nach Hersey & Blanchard?",
+   a:["Der Führungsstil wird an den Reifegrad (Kompetenz + Motivation) des MA angepasst.","Ein einheitlicher Stil ist für alle MA am effektivsten.","Es gibt 4 Reifegrade (R1–R4) und 4 Führungsstile (S1–S4).","R1 (niedrige Kompetenz, niedrige Motivation) → S1 Directing/Anweisen."],
+   r:[0,2,3],e:"Hersey/Blanchard: R1→S1 (Anweisen), R2→S2 (Coaching), R3→S3 (Partizipieren), R4→S4 (Delegieren). Kein 'one size fits all'. Reifegrad = Kompetenz + Motivation."},
+
+  {id:"F02",k:"Führung",s:"leicht",q:"Was kennzeichnet den kooperativen Führungsstil?",
+   a:["MA werden aktiv in Entscheidungen einbezogen.","Die FK trifft alle Entscheidungen allein.","Offener Informationsaustausch und Transparenz sind Merkmale.","Eigenverantwortung der MA wird gezielt gefördert."],
+   r:[0,2,3],e:"Kooperativ: MA-Beteiligung, Transparenz, Eigenverantwortung. Gegenteil: autoritär. Optimal für R3-MA (hohe Kompetenz, schwankende Motivation)."},
+
+  {id:"F03",k:"Führung",s:"leicht",q:"Was beschreibt der autoritäre Führungsstil?",
+   a:["FK entscheidet allein und gibt klare Anweisungen.","MA gestalten Prozesse aktiv mit.","Informationen werden selektiv weitergegeben.","Disziplin und enge Kontrolle stehen im Vordergrund."],
+   r:[0,2,3],e:"Autoritär: FK-Entscheidung, selektive Info, Kontrolle. Sinnvoll bei R1-MA (Neueinsteiger) oder in Krisensituationen — nicht als Dauerstil."},
+
+  {id:"F04",k:"Führung",s:"mittel",q:"Was ist das Leader-Leader-Modell nach David Marquet?",
+   a:["FK gibt Kontrolle ab und schafft Führung auf allen Ebenen (Intent-Based Leadership).","MA werden befähigt, eigene Entscheidungen zu treffen.","Kompetenz und Klarheit sind Voraussetzungen für Delegation.","Zentralisierung aller Entscheidungen beim Top-Management."],
+   r:[0,1,2],e:"Marquet ('Turn the Ship Around!'): Statt Leader-Follower → Leader-Leader. MA sagen 'Ich beabsichtige…' statt zu warten. Voraussetzung: Kompetenz + Klarheit (Ziele/Werte)."},
+
+  {id:"F05",k:"Führung",s:"mittel",q:"Was sind Merkmale transformationaler Führung?",
+   a:["FK inspiriert durch Vision und persönliche Vorbildfunktion.","MA werden intrinsisch motiviert (über reine Aufgabenerfüllung hinaus).","Fokus liegt auf kurzfristiger Aufgabenerfüllung und Kontrolle.","Individuelle Förderung und Entwicklung jedes MA."],
+   r:[0,1,3],e:"Bass/Burns 4 I's: Idealisierter Einfluss (Charisma), Inspirierende Motivation (Vision), Intellektuelle Stimulierung, Individuelle Wertschätzung. Gegenteil: transaktionale Führung (Belohnung/Bestrafung)."},
+
+  {id:"F06",k:"Führung",s:"mittel",q:"Was beschreibt psychologische Sicherheit nach Amy Edmondson?",
+   a:["Teammitglieder können Fehler, Ideen und Bedenken ohne Angst vor Konsequenzen äußern.","Psychologische Sicherheit bedeutet: keine Konflikte im Team.","Voraussetzung für Innovation, Lernbereitschaft und Hochleistung.","FK schafft sie durch Offenheit und keine Schuldzuweisungen bei Fehlern."],
+   r:[0,2,3],e:"Edmondson/Google Project Aristotle: Wichtigster Faktor für Teamleistung. FK: Fehler als Lernchance behandeln, Meinungen einfordern, keine Bloßstellung. ≠ Komfort oder Konfliktfreiheit."},
+
+  {id:"F07",k:"Führung",s:"mittel",q:"Was beschreibt das Johari-Fenster?",
+   a:["4 Felder: öffentlich bekannt, blinder Fleck, privat/verborgen, unbewusst.","Selbstbild und Fremdbild können erheblich voneinander abweichen.","Feedback von anderen verkleinert den blinden Fleck.","Das Johari-Fenster ist ein reines Konfliktlösungs-Tool."],
+   r:[0,1,2],e:"Luft/Ingham: Öffentlich | Blinder Fleck (andere kennen, ich nicht) | Privat (ich kenne, andere nicht) | Unbewusst. Feedback → Blinder Fleck kleiner. Selbstoffenbarung → Privater Bereich kleiner."},
+
+  {id:"F08",k:"Führung",s:"leicht",q:"Was sind SMART-Ziele?",
+   a:["Spezifisch: klar und eindeutig formuliert, kein Interpretationsspielraum.","Messbar: Fortschritt und Zielerreichung sind überprüfbar.","Attraktiv/Achievable: für den MA bedeutsam und erreichbar.","Realistisch und Terminiert: erreichbar mit konkretem Zeitrahmen."],
+   r:[0,1,2,3],e:"SMART = Spezifisch, Messbar, Attraktiv, Realistisch, Terminiert. Alle 5 Kriterien müssen erfüllt sein. Ziele ohne Termin sind Wünsche. OEE-Ziel mit Datum = SMART."},
+
+  {id:"F09",k:"Führung",s:"schwer",q:"Was beschreibt Kotter's 8-Stufen-Modell des Change Managements?",
+   a:["Dringlichkeit erzeugen und eine starke Führungskoalition aufbauen.","Eine klare Vision entwickeln und sie konsequent kommunizieren.","Kurzfristige Erfolge (Quick Wins) sichtbar machen.","Veränderung dauerhaft in der Unternehmenskultur verankern."],
+   r:[0,1,2,3],e:"Kotter 8 Stufen: 1)Dringlichkeit 2)Koalition 3)Vision 4)Kommunikation 5)Hindernisse 6)Quick Wins 7)Konsolidieren 8)Verankern. Häufigster Fehler: Stufe 1 überspringen."},
+
+  {id:"F10",k:"Führung",s:"schwer",q:"Was beschreibt das 3-Phasen-Modell nach Lewin?",
+   a:["Auftauen (Unfreeze): Ist-Situation hinterfragen, Veränderungsdruck erzeugen.","Verändern (Change): neue Verhaltensweisen einüben, MA einbeziehen.","Einfrieren (Refreeze): neue Strukturen stabilisieren, Prozesse sichern.","Die drei Phasen können in beliebiger Reihenfolge durchlaufen werden."],
+   r:[0,1,2],e:"Lewin: Unfreeze → Change → Refreeze. Reihenfolge ist zwingend. Häufiger Fehler: Einfrieren vergessen → Rückfall ins alte Verhalten. Neue KVP-Methode erst nach 'Einfrieren' stabil."},
+
+  {id:"F11",k:"Führung",s:"leicht",q:"Was sind Aufgaben der Führungskraft im Change Management?",
+   a:["Veränderungen klar kommunizieren und verständlich begründen.","Widerstände ernst nehmen und aktiv bearbeiten statt ignorieren.","MA in Veränderungsprozesse einbeziehen und Partizipation ermöglichen.","Veränderungen geheim halten bis zur vollständigen Implementierung."],
+   r:[0,1,2],e:"FK im Change: Kommunizieren (Warum?), Widerstand als Signal (nicht bekämpfen), MA einbeziehen (20-60-20-Regel). Geheimhaltung zerstört Vertrauen."},
+
+  {id:"F12",k:"Führung",s:"mittel",q:"Was beschreibt die 20-60-20-Regel bei Veränderungen?",
+   a:["~20% Bewahrer: Widerstand, Status quo verteidigen.","~60% Unentschlossene: Abwarten, beobachten, dann folgen.","~20% Befürworter: Neugier, Chancen sehen, mitziehen.","Die Mehrheit begrüßt Veränderungen erfahrungsgemäß von Anfang an."],
+   r:[0,1,2],e:"Strategie: Befürworter (20%) aktivieren, Unentschlossene (60%) gewinnen — nicht auf Bewahrer fokussieren. Im Shopfloor: neue Maschinenbedienung = gleiche Verteilung."},
+
+  {id:"F13",k:"Führung",s:"mittel",q:"Was kennzeichnet gute Feedbackkultur?",
+   a:["Feedback ist konkret, zeitnah und verhaltensorientiert (nicht persönlichkeitsbezogen).","Positives Feedback wird regelmäßig und spezifisch gegeben.","Feedback ist eine Einbahnstraße ausschließlich von oben nach unten.","Kritisches Feedback wird unter vier Augen und respektvoll übermittelt."],
+   r:[0,1,3],e:"Gute Feedbackkultur: konkret ('Du hast X getan' ≠ 'Du bist X'), zeitnah (max. 48h), bidirektional, 4-Augen bei Kritik. SBI-Modell: Situation → Behavior → Impact."},
+
+  {id:"F14",k:"Führung",s:"leicht",q:"Was ist das Ziel von Delegation?",
+   a:["Aufgaben, Kompetenzen UND Verantwortung gemeinsam übertragen.","MA entlasten, entwickeln und Eigenverantwortung stärken.","Die FK behält bei echter Delegation alle Entscheidungsrechte.","Delegation schafft FK-Kapazität für strategische Führungsaufgaben."],
+   r:[0,1,3],e:"Delegation = Aufgabe + Kompetenz + Verantwortung (alle drei!). Ohne Kompetenzübertragung = nur Aufgaben = Frustration. Marquet-Prinzip: Intent-Based = höchste Delegationsstufe."},
+
+  {id:"F15",k:"Führung",s:"schwer",q:"Was sind Burnout-Warnsignale bei Mitarbeitenden?",
+   a:["Chronische Erschöpfung trotz ausreichend Erholung.","Zunehmender Zynismus und emotionale Distanzierung von der Arbeit.","Nachlassende Leistungsfähigkeit und steigende Fehlerrate.","Plötzlich gesteigertes Engagement als mögliches Frühzeichen."],
+   r:[0,1,2],e:"Freudenberger-Phasen: Enthusiasmus→Stagnation→Frustration→Apathie. FK muss spätestens bei Phase 2 (Zynismus, Distanz) eingreifen. Gesteigerte Produktivität = Phase 1 (Überengagement) = auch Warnsignal."},
+
+  {id:"F16",k:"Führung",s:"mittel",q:"Was beschreibt MbWA (Management by Walking Around)?",
+   a:["FK ist regelmäßig im direkten Arbeitsprozess präsent und ansprechbar.","Informeller Informationsaustausch und frühzeitige Problemerkennung.","Vertrauensaufbau durch sichtbare, physische Präsenz der FK.","MbWA ersetzt formale Mitarbeitergespräche vollständig."],
+   r:[0,1,2],e:"MbWA (Peters/Waterman): FK geht zu den MA. Früherkennung, Vertrauen, Realitätsnähe. Ergänzt (ersetzt nicht!) formale Gespräche. Im Shopfloor = Gemba Walk."},
+
+  {id:"F17",k:"Führung",s:"mittel",q:"Was unterscheidet fachliche von disziplinarischer Führung?",
+   a:["Fachliche Führung: Steuerung der inhaltlichen Aufgaben und Methoden.","Disziplinarische Führung: Weisungsbefugnis in personellen Angelegenheiten (Urlaub, Abmahnung).","Beide Rollen können bei einer FK liegen oder aufgeteilt sein.","In Matrixorganisationen sind fachliche und disziplinarische Führung immer identisch."],
+   r:[0,1,2],e:"Fachlich = WAS und WIE der Arbeit (auch ohne Personalverantwortung). Disziplinarisch = Personalverantwortung (Einstellung, Abmahnung, Kündigung). In Matrix-Orgs häufig getrennt."},
+
+  {id:"F18",k:"Führung",s:"schwer",q:"Was beschreibt Hochleistungskultur in Organisationen?",
+   a:["Klare, hohe Standards kombiniert mit echter Wertschätzung.","Fehlerkultur: Fehler als Lernchance nutzen, nicht bestrafen.","Ausschließlich externer Leistungsdruck erzeugt dauerhaft Hochleistung.","Intrinsische Motivation durch sinnstiftende Arbeit und Autonomie."],
+   r:[0,1,3],e:"Hochleistungskultur: Hohe Standards + psychologische Sicherheit (kein Widerspruch!). Externe Drucksteuerung → kurzfristig Leistung, langfristig Burnout. SDT: Autonomie, Kompetenz, Eingebundenheit."},
+
+  // ── KOMMUNIKATION (12) ────────────────────────────────────────────────────
+  {id:"K01",k:"Kommunikation",s:"leicht",q:"Was besagen die Kommunikationsaxiome nach Watzlawick?",
+   a:["Man kann nicht NICHT kommunizieren — auch Schweigen ist Kommunikation.","Kommunikation hat immer einen Inhalts- UND einen Beziehungsaspekt.","Kommunikation ist symmetrisch oder komplementär.","Kommunikation findet ausschließlich verbal statt."],
+   r:[0,1,2],e:"Watzlawick 5 Axiome: 1)Nicht-Kommunikation unmöglich 2)Inhalts+Beziehungsaspekt 3)Interpunktion 4)Digital+analog 5)Symmetrisch/komplementär. Axiom 4 widerlegt D: auch nonverbal ist Kommunikation."},
+
+  {id:"K02",k:"Kommunikation",s:"leicht",q:"Was beschreibt das 4-Ohren-Modell nach Schulz von Thun?",
+   a:["Jede Nachricht hat vier Seiten: Sachinhalt, Selbstoffenbarung, Beziehung, Appell.","Sender sendet immer alle vier Seiten gleichzeitig — bewusst oder unbewusst.","Missverständnisse entstehen, wenn Sender und Empfänger verschiedene Seiten betonen.","Der Empfänger hört ausschließlich den Sachinhalt."],
+   r:[0,1,2],e:"Schulz von Thun: 'Der Tank ist leer': Sach=kein Benzin, Selbst=ich sah's nicht, Beziehung=du fährst planlos, Appell=tank bitte. Empfänger wählt unbewusst das 'Ohr'."},
+
+  {id:"K03",k:"Kommunikation",s:"mittel",q:"Was beschreibt Gewaltfreie Kommunikation (GFK) nach Rosenberg?",
+   a:["4 Schritte: Beobachtung (ohne Bewertung), Gefühl, Bedürfnis, Bitte.","Trennung von Beobachtung und Bewertung ist ein Kernprinzip.","GFK zielt auf echte Verbindung und gegenseitiges Verständnis.","GFK-Bitten sind Forderungen und müssen erfüllt werden."],
+   r:[0,1,2],e:"GFK: Beobachtung ('Du warst 3× zu spät') ≠ Bewertung ('Du bist unzuverlässig'). Gefühl → Bedürfnis → Bitte (≠ Forderung: Nein muss akzeptiert werden)."},
+
+  {id:"K04",k:"Kommunikation",s:"leicht",q:"Was kennzeichnet eine wirksame Ich-Botschaft?",
+   a:["Beschreibt eigene Wahrnehmung, Gefühl und Bedürfnis ohne Schuldzuweisung.","Vermeidet Du-Vorwürfe, die Abwehr beim Gegenüber auslösen.","Fördert Verständnis und öffnet einen konstruktiven Dialog.","Ich-Botschaften und Du-Vorwürfe haben die gleiche Wirkung."],
+   r:[0,1,2],e:"Ich-Botschaft: 'Wenn ich sehe, dass X, fühle ich Y, weil Z wichtig ist.' Du-Vorwurf: 'Du machst immer…' → löst Verteidigung aus. Ich-Botschaft → öffnet Gespräch."},
+
+  {id:"K05",k:"Kommunikation",s:"mittel",q:"Was ist das SBI-Modell für konstruktives Feedback?",
+   a:["S = Situation: konkrete Situation beschreiben (wann, wo).","B = Behavior: beobachtetes Verhalten benennen (nicht interpretieren).","I = Impact: die konkrete Wirkung/Auswirkung schildern.","SBI = Subjektive Bewertung und Interpretation."],
+   r:[0,1,2],e:"SBI (Center for Creative Leadership): Situation + Behavior + Impact. Kein Angriff auf Persönlichkeit. Beispiel: 'In der Besprechung gestern hast du 2 Kollegen unterbrochen → ihre Ideen wurden nicht gehört.'"},
+
+  {id:"K06",k:"Kommunikation",s:"leicht",q:"Was kennzeichnet aktives Zuhören?",
+   a:["Paraphrasieren: das Gehörte in eigenen Worten wiedergeben.","Nachfragen bei Unklarheiten ohne zu unterbrechen.","Nonverbale Signale des Gesprächspartners wahrnehmen.","Aktives Zuhören bedeutet: sofort Lösungsvorschläge machen."],
+   r:[0,1,2],e:"Aktives Zuhören: Paraphrasieren ('Du meinst also…'), offene Fragen, nonverbale Signale (Augenkontakt, Nicken). Lösung erst NACH vollständigem Verstehen."},
+
+  {id:"K07",k:"Kommunikation",s:"mittel",q:"Was beschreibt nonverbale Kommunikation?",
+   a:["Körperhaltung, Gestik, Mimik und Blickkontakt sind Hauptelemente.","Macht ca. 55–65% der Kommunikationswirkung aus (Mehrabian).","Widerspruch zwischen verbal und nonverbal erzeugt Misstrauen.","Nonverbale Kommunikation ist stets bewusst kontrollierbar."],
+   r:[0,1,2],e:"Mehrabian: 55% Körpersprache, 38% Stimme, 7% Worte (in emotionalen Situationen). Nonverbal ist oft unbewusst und schwer kontrollierbar — Kongruenz ist deshalb wichtig."},
+
+  {id:"K08",k:"Kommunikation",s:"mittel",q:"Was sind Merkmale eines wirksamen Kritikgesprächs?",
+   a:["Unter vier Augen — nie öffentlich vor dem Team.","Zeitnah nach dem Ereignis — nicht Wochen später.","Verhalten ansprechen, nicht Persönlichkeit.","Wertschätzungsrahmen setzen, dann konkretes Verhalten ansprechen."],
+   r:[0,1,2,3],e:"Kritikgespräch: 4-Augen, zeitnah (max. 48-72h), verhaltensorientiert, Feedback-Sandwich. Öffentliche Kritik verletzt Würde und löst kollektive Abwehr aus."},
+
+  {id:"K09",k:"Kommunikation",s:"schwer",q:"Was ist ein Elevator Pitch?",
+   a:["Kurze, prägnante Selbst- oder Ideenpräsentation in ca. 30–90 Sekunden.","Kernelemente: Problem/Situation, Lösung/Wert, Handlungsaufforderung.","Soll Interesse wecken und zu weiterem Austausch einladen.","Je länger, desto überzeugender."],
+   r:[0,1,2],e:"Elevator Pitch: Hook → Problem → Lösung → Alleinstellungsmerkmal → Call to Action. Max. 90 Sekunden. 'Erzählen Sie von sich' im Interview = Elevator Pitch-Moment."},
+
+  {id:"K10",k:"Kommunikation",s:"mittel",q:"Was unterscheidet symmetrische von komplementärer Kommunikation?",
+   a:["Symmetrisch: beide Partner verhalten sich spiegelbildlich ähnlich (Augenhöhe).","Komplementär: unterschiedliche, sich ergänzende Positionen (z.B. FK–MA).","Symmetrische Eskalation kann zu Konflikten führen (Rüstungsspirale).","Beide Formen sind immer dysfunktional."],
+   r:[0,1,2],e:"Watzlawick Axiom 5: Symmetrisch = Gleichheit, Komplementär = Unterschiedlichkeit. Beide können funktional sein. Probleme: Symmetrisch → 'Wettstreit', Komplementär → Abhängigkeit."},
+
+  {id:"K11",k:"Kommunikation",s:"leicht",q:"Was sind Ursachen für Kommunikationskonflikte?",
+   a:["Unterschiedliche Bedeutung von Wörtern und Fachbegriffen.","Nonverbale Widersprüche und missverstandene Körpersprache.","Unterschiedliche Kommunikationsstile und kulturelle Hintergründe.","Zu viel direkte, offene Kommunikation führt zu Konflikten."],
+   r:[0,1,2],e:"Kommunikationskonflikte: semantische Unterschiede, nonverbale Widersprüche, Stildifferenzen (direkt vs. indirekt), kulturelle Unterschiede. Direkte Kommunikation reduziert Konflikte!"},
+
+  {id:"K12",k:"Kommunikation",s:"schwer",q:"Was beschreibt das AINAM-Modell für Präsentationen?",
+   a:["Attention: Aufmerksamkeit durch starken Einstieg wecken.","Interest: Interesse durch relevante Informationen erzeugen.","Need: Bedarf oder Problem klar benennen.","Action/Message: klare Botschaft und Handlungsaufforderung am Ende."],
+   r:[0,1,2,3],e:"AINAM: Strukturierter Aufbau für Pitches und Präsentationen. Attention = Hook. Interest = Relevanz. Need = Problem. Action = Was soll passieren? Message = Kernaussage."},
+
+  // ── MOTIVATION (10) ───────────────────────────────────────────────────────
+  {id:"M01",k:"Motivation",s:"leicht",q:"Was unterscheidet Hygienefaktoren von Motivatoren nach Herzberg?",
+   a:["Hygienefaktoren (Gehalt, Arbeitsbedingungen) vermeiden Unzufriedenheit, erzeugen aber keine Motivation.","Motivatoren (Anerkennung, Verantwortung, Wachstum) erzeugen aktive Motivation.","Beide Faktoren haben die gleiche Wirkung auf Leistung.","Gehalt ist nach Herzberg der stärkste Motivator."],
+   r:[0,1],e:"Herzberg Zwei-Faktoren: Hygienefaktoren (Kontext) → Fehlen = Unzufriedenheit, Vorhandensein = kein Schmerz aber keine Freude. Motivatoren (Inhalt: Leistung, Anerkennung, Verantwortung) → aktive Motivation."},
+
+  {id:"M02",k:"Motivation",s:"leicht",q:"Welche Faktoren sind nach Herzberg Hygienefaktoren (keine Motivatoren)?",
+   a:["Gehalt und finanzielle Vergütung.","Arbeitsbedingungen und Arbeitsplatzsicherheit.","Unternehmenspolitik und Führungsstil des Vorgesetzten.","Leistungserfolge und persönliches Wachstum."],
+   r:[0,1,2],e:"Hygienefaktoren: Gehalt, Arbeitsbedingungen, Sicherheit, Unternehmenspolitik, Führungsstil, Beziehungen. Leistungserfolg und Wachstum = Motivatoren. Prüfungsklassiker: Gehalt ≠ Motivator!"},
+
+  {id:"M03",k:"Motivation",s:"leicht",q:"Was beschreibt die Bedürfnispyramide nach Maslow?",
+   a:["Fünf hierarchische Stufen: Physiologisch, Sicherheit, Sozial, Wertschätzung, Selbstverwirklichung.","Befriedigte Bedürfnisse verlieren ihre Wirkung — außer Selbstverwirklichung.","Unterste Stufe muss weitgehend befriedigt sein, bevor nächste Stufe wirkt.","Selbstverwirklichung ist vollständig erreichbar und verliert dann ihre Wirkung."],
+   r:[0,1,2],e:"Maslow: Hierarchisch, Sättigungseffekt (außer Selbstverwirklichung). Kritik: empirisch nicht belegt. Herzberg ↔ Maslow: Physiologisch+Sicherheit = Hygienefaktoren."},
+
+  {id:"M04",k:"Motivation",s:"mittel",q:"Was beschreibt die Equity Theory (Gerechtigkeitstheorie) nach Adams?",
+   a:["Menschen vergleichen ihr Input/Output-Verhältnis mit anderen.","Wahrgenommene Ungerechtigkeit → Spannungszustand → Verhaltensänderung.","Unterbezahlung demotiviert, Überbezahlung kann Schuldgefühle erzeugen.","Das absolute Gehalt ist entscheidend — Vergleiche spielen keine Rolle."],
+   r:[0,1,2],e:"Adams: Input (Arbeit, Zeit) / Output (Gehalt, Anerkennung) vs. Referenzpersonen. Ungleichgewicht → Ausgleich durch: Leistung reduzieren, mehr fordern, Referenz ändern, kündigen."},
+
+  {id:"M05",k:"Motivation",s:"mittel",q:"Was sind die drei Grundbedürfnisse der Selbstbestimmungstheorie (SDT) nach Deci & Ryan?",
+   a:["Autonomie: das Gefühl, Handlungen selbst zu bestimmen.","Kompetenz: das Erleben von Wirksamkeit und Meisterschaft.","Eingebundenheit: das Gefühl, zu einer Gemeinschaft zu gehören.","Materielle Belohnung ist der wichtigste Faktor für intrinsische Motivation."],
+   r:[0,1,2],e:"SDT: Autonomie + Kompetenz + Eingebundenheit = intrinsische Motivation. Micro-Management untergräbt Autonomie. FK kann alle 3 fördern: Handlungsspielräume, Lernziele, Teamkultur."},
+
+  {id:"M06",k:"Motivation",s:"schwer",q:"Was beschreibt Flow nach Csikszentmihalyi?",
+   a:["Zustand völliger Aufmerksamkeit und Vertiefung in eine Tätigkeit.","Flow entsteht wenn Anforderung und Fähigkeit im Gleichgewicht sind.","Flow geht mit Zeitvergessenheit und intrinsischer Befriedigung einher.","Flow tritt nur bei einfachen, monotonen Routineaufgaben auf."],
+   r:[0,1,2],e:"Flow: Anforderung zu hoch → Angst. Zu niedrig → Langeweile. Gleichgewicht → Flow. FK-Aufgabe: Aufgaben im Flow-Kanal halten (leicht über aktuellem Können). Monotone Arbeit verhindert Flow."},
+
+  {id:"M07",k:"Motivation",s:"mittel",q:"Was unterscheidet intrinsische von extrinsischer Motivation?",
+   a:["Intrinsisch: Motivation kommt aus dem Inneren (Interesse, Sinn, Freude).","Extrinsisch: Motivation durch äußere Anreize (Gehalt, Prämie, Status).","Übermäßige extrinsische Belohnung kann intrinsische Motivation untergraben.","Intrinsische Motivation ist immer stärker als extrinsische."],
+   r:[0,1,2],e:"Korrumpierungseffekt (Deci): Wenn intrinsisch motivierte Tätigkeit extern belohnt wird, sinkt intrinsische Motivation. Beispiel: Kind malt gerne → bekommt Geld → malt nicht mehr ohne Geld."},
+
+  {id:"M08",k:"Motivation",s:"schwer",q:"Was beschreibt die X-Y-Theorie nach McGregor?",
+   a:["Theorie X: MA sind grundsätzlich träge, vermeiden Verantwortung, müssen kontrolliert werden.","Theorie Y: MA sind motiviert, suchen Verantwortung, wollen Ziele erreichen.","Beide Theorien sind bewiesene Tatsachen über menschliche Natur.","Theorie Y-Führung fördert Eigenverantwortung und intrinsische Motivation."],
+   r:[0,1,3],e:"McGregor: Beide sind Annahmen/Menschenbilder, keine Fakten. Theorie X → autoritärer Stil. Selbsterfüllende Prophezeiung: X-Annahme → X-Verhalten beim MA."},
+
+  {id:"M09",k:"Motivation",s:"leicht",q:"Was beschreibt Sinnhaftigkeit (Purpose) als Motivationsfaktor?",
+   a:["MA sind langfristig motivierter, wenn sie den Sinn ihrer Arbeit verstehen.","Purpose verbindet individuelle Aufgaben mit dem größeren Organisationsziel.","FK kommunizieren aktiv das 'Warum' von Aufgaben.","Gehalt ist empirisch stets wichtiger als Sinnhaftigkeit."],
+   r:[0,1,2],e:"Purpose: Stärkster Langzeit-Motivator (Seligman PERMA, Frankl, Sinek Golden Circle). FK: Warum → Wie → Was. 'Warum' motiviert, 'Was' nicht. Qualitätsziel mit Kundenbezug = mehr Sinn."},
+
+  {id:"M10",k:"Motivation",s:"mittel",q:"Was ist Prokrastination und welche Maßnahmen helfen?",
+   a:["Aufschieben von Aufgaben trotz negativer Konsequenzen.","Kleinstschritte: Aufgabe in sehr kleine Einheiten zerlegen.","Klare Prioritäten und Deadlines reduzieren Prokrastination.","Prokrastination ist immer ein Zeichen von Faulheit."],
+   r:[0,1,2],e:"Prokrastination ≠ Faulheit. Ursachen: Überforderung, Angst vor Versagen, Perfektionismus, Unklarheit. Gegenmittel: Aufgabe konkretisieren, ersten Schritt winzig machen, Ablenkungen eliminieren."},
+
+  // ── KONFLIKT (10) ─────────────────────────────────────────────────────────
+  {id:"KO01",k:"Konflikt",s:"leicht",q:"Was sind die drei Eskalationsphasen nach Glasl?",
+   a:["Phase 1 (Stufen 1–3): Win-Win möglich, Sachebene, intern lösbar.","Phase 2 (Stufen 4–6): Win-Lose, Beziehungsebene, externer Mediator empfohlen.","Phase 3 (Stufen 7–9): Lose-Lose, Zerstörungsebene, externe Machtinstanz nötig.","Alle Stufen können durch die FK allein intern gelöst werden."],
+   r:[0,1,2],e:"Glasl 9 Stufen in 3 Phasen: 1-3 → Win-Win. 4-6 → Win-Lose. 7-9 → Lose-Lose. Ab Stufe 4: Mediator nötig. FK kann bis Stufe 3 moderieren."},
+
+  {id:"KO02",k:"Konflikt",s:"mittel",q:"Was sind die vier Grundprinzipien des Harvard-Modells (Fisher/Ury)?",
+   a:["Menschen und Probleme trennen: sachlich verhandeln, Beziehung schonen.","Interessen statt Positionen verhandeln: 'Warum' statt 'Was'.","Optionen zum beiderseitigen Vorteil entwickeln.","Objektive Beurteilungskriterien als Maßstab verwenden."],
+   r:[0,1,2,3],e:"Harvard: Position = was jemand fordert. Interesse = warum. Beispiel: Beide wollen die Orange. Einer braucht Saft, einer die Schale → beide können gewinnen (Win-Win)."},
+
+  {id:"KO03",k:"Konflikt",s:"leicht",q:"Was unterscheidet Konflikte von Mobbing nach Leymann?",
+   a:["Mobbing: systematisch, wiederholt (mind. 1×/Woche), über längere Zeit (mind. 6 Monate).","Konflikt: kann einmalig oder situativ sein, kein systematisches Muster.","Mobbing beinhaltet immer ein Machtgefälle zwischen Täter und Opfer.","Mobbing und Konflikt sind rechtlich identisch zu behandeln."],
+   r:[0,1,2],e:"Leymann-Definition: Mobbing = Systematik + Häufigkeit (≥1×/Woche) + Dauer (≥6 Monate) + Machtgefälle. FK-Pflicht: bei Mobbingverdacht sofort handeln (Dokumentation, HR)."},
+
+  {id:"KO04",k:"Konflikt",s:"mittel",q:"Was kennzeichnet Mediation?",
+   a:["Freiwilliges, strukturiertes Verfahren mit allparteilichem Dritten.","Der Mediator moderiert den Prozess, entscheidet aber NICHT für die Parteien.","Parteien erarbeiten gemeinsam eine selbstverantwortete Lösung.","Mediation ist nur bei gerichtlichen Streitigkeiten anwendbar."],
+   r:[0,1,2],e:"Mediation: Freiwilligkeit + allparteilicher Mediator + Selbstverantwortung. Nachhaltiger als Urteil (eigene Lösung = mehr Commitment). Anwendbar in Betrieb, Familie, Nachbarschaft."},
+
+  {id:"KO05",k:"Konflikt",s:"mittel",q:"Was sind Merkmale eines konstruktiven Konfliktgesprächs?",
+   a:["Ich-Botschaften statt Du-Vorwürfe verwenden.","Konkrete Verhaltensweisen ansprechen, nicht Persönlichkeit.","Alle alten Konflikte sammeln und gemeinsam abarbeiten.","Gemeinsam nach Lösungen suchen statt Schuldige zu finden."],
+   r:[0,1,3],e:"Konstruktives Gespräch: Ich-Botschaften, verhaltensorientiert, lösungsfokussiert. Fehler: Altlasten auflisten ('immer', 'nie'). Ein Thema pro Gespräch."},
+
+  {id:"KO06",k:"Konflikt",s:"leicht",q:"Was sind typische Konfliktursachen in Organisationen?",
+   a:["Kompetenzkonflikte: Unklarheit darüber, wer was entscheiden darf.","Sachkonflikte: unterschiedlicher Wissensstand oder Informationen.","Beziehungskonflikte: persönliche Abneigungen oder Vertrauensbrüche.","Konflikte sind immer auf persönliche Antipathie zurückzuführen."],
+   r:[0,1,2],e:"Konfliktarten: Sach-, Werte-, Beziehungs-, Interessen-, Struktur-, Verteilungskonflikte. Nur ~20% sind 'echte' Beziehungskonflikte — die meisten sind Struktur- oder Sachkonflikte."},
+
+  {id:"KO07",k:"Konflikt",s:"mittel",q:"Was beschreibt das Kaizen-Prinzip?",
+   a:["KAI = Veränderung, ZEN = gut → permanenter Verbesserungsprozess.","Kaizen umfasst ALLE Unternehmensbereiche, nicht nur Produktion.","Qualität von Anfang an (Fehlervermeidung statt -korrektur) ist Kernziel.","Kaizen bezeichnet ausschließlich radikale Innovationssprünge."],
+   r:[0,1,2],e:"Kaizen: Kein einmaliges Projekt, sondern Haltung. Gegenteil: Kaikaku = radikaler Wandel. Im Shopfloor = KVP. Jeder MA = Verbesserungssucher."},
+
+  {id:"KO08",k:"Konflikt",s:"schwer",q:"Was sind wirksame Deeskalationsmaßnahmen?",
+   a:["Pause einlegen und emotionalen Abstand gewinnen.","Gemeinsamkeiten betonen statt Unterschiede verstärken.","Neutral und ohne Verallgemeinerungen ('immer', 'nie') formulieren.","Vorwürfe und Schuldzuweisungen systematisch dokumentieren."],
+   r:[0,1,2],e:"Deeskalation: Pause (Emotionen brauchen Zeit), Gemeinsamkeiten suchen ('Wir wollen beide, dass das Projekt gelingt'), neutrale Sprache ('Ich beobachte…'). Vorwürfe dokumentieren = Eskalation."},
+
+  {id:"KO09",k:"Konflikt",s:"mittel",q:"Was ist der Unterschied zwischen Position und Interesse?",
+   a:["Position = was jemand fordert (die sichtbare Oberfläche).","Interesse = warum jemand etwas fordert (tiefer liegende Motivation).","Das Harvard-Modell empfiehlt: Interessen verhandeln, nicht Positionen.","Positionen und Interessen sind in Verhandlungen identisch."],
+   r:[0,1,2],e:"Orange-Beispiel: Beide wollen die ganze Orange (Position). Einer braucht Saft, der andere die Schale (Interessen). Wenn man Interessen kennt → Win-Win möglich."},
+
+  {id:"KO10",k:"Konflikt",s:"leicht",q:"Was sind Anzeichen eines latenten (verdeckten) Konflikts?",
+   a:["Zurückgehaltene Meinungen und nur oberflächliche Zustimmung.","Passiv-aggressives Verhalten und unterschwellige Sticheleien.","Sinkendes Engagement und innere Kündigung.","Offene, laute und täglich sichtbare Auseinandersetzungen."],
+   r:[0,1,2],e:"Latenter Konflikt: 'false consensus' (alle nicken, keiner meint es ernst), passiv-aggressiv, Rückzug. Offene Konflikte sind leichter lösbar als latente."},
+
+  // ── PERSONAL (10) ─────────────────────────────────────────────────────────
+  {id:"P01",k:"Personal",s:"leicht",q:"Was umfasst der vollständige Personalmanagementprozess?",
+   a:["Personalplanung, Beschaffung und Auswahl.","Einarbeitung (Onboarding), Entwicklung und Beurteilung.","Vergütung, Verwaltung und Freisetzung/Kündigung.","Personalmanagement ist ausschließlich Aufgabe der HR-Abteilung."],
+   r:[0,1,2],e:"PM-Kreislauf: Planung → Beschaffung → Auswahl → Einarbeitung → Entwicklung → Beurteilung → Vergütung → Freisetzung. FK ist in fast allen Phasen beteiligt, HR ist Unterstützung."},
+
+  {id:"P02",k:"Personal",s:"mittel",q:"Was sind Inhalte einer vollständigen Stellenbeschreibung?",
+   a:["Stellenbezeichnung und Einordnung in die Organisationsstruktur.","Aufgaben, Kompetenzen (Befugnisse) und Verantwortung.","Fachliches und persönliches Anforderungsprofil.","Persönliche Meinung des Vorgesetzten über den idealen Kandidaten."],
+   r:[0,1,2],e:"Stellenbeschreibung: Was (Aufgaben) + Wie (Kompetenzen) + Wofür (Verantwortung) + Womit (Anforderungen). AGG beachten: keine Alters-, Geschlechts-, Herkunftsmerkmale."},
+
+  {id:"P03",k:"Personal",s:"mittel",q:"Was sind Beurteilungsfehler in der Personalbeurteilung?",
+   a:["Halo-Effekt: eine herausragende Eigenschaft überstrahlt alle anderen.","Tendenz zur Mitte: alle MA werden durchschnittlich bewertet.","Recency-Effekt: nur kürzlich Erlebtes wird für die Beurteilung genutzt.","Objektive Beurteilung ist bei menschlichen Beurteilern automatisch gegeben."],
+   r:[0,1,2],e:"Beurteilungsfehler: Halo, Milde/Strenge, Tendenz zur Mitte, Recency (jüngst Erlebtes), Primacy (erster Eindruck), Ähnlichkeit (wer ähnlich ist, wird besser bewertet). Gegenmittel: strukturierte Bögen."},
+
+  {id:"P04",k:"Personal",s:"leicht",q:"Was ist Onboarding und warum ist es wichtig?",
+   a:["Systematische Einarbeitung und Integration neuer Mitarbeitender.","Verkürzt die Zeit bis zur vollen Leistungsfähigkeit (Time-to-Productivity).","Reduziert Fluktuation in der Probezeit und erhöht Commitment.","Onboarding ist abgeschlossen, sobald der erste Arbeitstag beendet ist."],
+   r:[0,1,2],e:"Gutes Onboarding: Preboarding, strukturierter Tag 1, erste 90 Tage geplant. Kosten einer Neubesetzung: 50–150% des Jahresgehalts. Onboarding endet frühestens nach 6–12 Monaten."},
+
+  {id:"P05",k:"Personal",s:"mittel",q:"Was kennzeichnet ein strukturiertes Auswahlinterview?",
+   a:["Einheitliche Fragen für alle Kandidaten sichern Vergleichbarkeit.","Verhaltensbasierte Fragen zeigen vergangenes Verhalten (bester Prädiktor).","Bauchgefühl des Interviewers ist die zuverlässigste Methode.","Strukturierte Interviews erhöhen Objektivität und rechtliche Sicherheit."],
+   r:[0,1,3],e:"Strukturiertes Interview: Gleiche Fragen (Vergleichbarkeit), verhaltensbasiert (Vergangenheit = bester Prädiktor für Zukunft), Bewertungsbogen. Bauchgefühl = Sympathiefehler = rechtlich problematisch."},
+
+  {id:"P06",k:"Personal",s:"mittel",q:"Was beschreibt Personalentwicklung als Führungsaufgabe?",
+   a:["Training on the Job: Lernen direkt im Arbeitsprozess (Rotation, Unterweisung).","Coaching und Mentoring: individuelle Begleitung und Förderung.","Externe Seminare ergänzen die interne Entwicklung.","Personalentwicklung ist ausschließlich für Führungskräfte relevant."],
+   r:[0,1,2],e:"PE: on the job (Training, Rotation) = günstig, transfersicher. Near the job (Qualitätszirkel, KVP). Off the job (Seminare). FK-Aufgabe: Entwicklungsgespräch, Lernziele, Transfersicherung."},
+
+  {id:"P07",k:"Personal",s:"leicht",q:"Was sind Ziele des Mitarbeitergesprächs (MAG)?",
+   a:["Regelmäßiger, strukturierter Austausch zwischen FK und MA.","Ziele vereinbaren, bewerten und Abweichungen besprechen.","Entwicklungsperspektiven und Förderbedarf ermitteln.","Im MAG spricht ausschließlich die FK, der MA hört zu."],
+   r:[0,1,2],e:"MAG: Rückblick (Zielerreichung) + Vorschau (neue Ziele) + Entwicklung. MA-Anteil sollte 50%+ sein. Jahres-MAG ≠ ersetzt laufendes Feedback. Dokumentation = rechtliche Absicherung."},
+
+  {id:"P08",k:"Personal",s:"schwer",q:"Was beschreibt das Betriebliche Eingliederungsmanagement (BEM)?",
+   a:["Gesetzlich verpflichtendes Verfahren nach mehr als 6 Wochen Fehlzeit in 12 Monaten (§167 SGB IX).","Ziel: Arbeitsfähigkeit erhalten, Beschäftigung sichern, Fehlzeiten vorbeugen.","Für den Arbeitnehmer ist die Teilnahme freiwillig.","BEM ist eine reine Kontrollmaßnahme."],
+   r:[0,1,2],e:"BEM: Pflicht des AG (ab 6 Wochen in 12 Monaten), freiwillig für AN. Betriebsrat hat Mitbestimmungsrecht. Ablehnung darf keine Nachteile haben. Wichtig: FK-Frühwarnsystem bei häufigen Fehlzeiten."},
+
+  {id:"P09",k:"Personal",s:"mittel",q:"Was sind Maßnahmen zur Mitarbeiterbindung (Retention)?",
+   a:["Entwicklungsperspektiven und sichtbare Karrieremöglichkeiten.","Faire Vergütung kombiniert mit echter Wertschätzung.","Sinnstiftung: Arbeit mit Bedeutung und Unternehmenskultur.","Gehalt ist der einzige und entscheidende Bindungsfaktor."],
+   r:[0,1,2],e:"Gallup-Studie: Häufigster Kündigungsgrund = schlechte FK, nicht schlechtes Gehalt. Bindungsfaktoren: Entwicklung, Flexibilität, Führung, Kultur, Sinn. Gehalt = Hygienefaktor (Herzberg)."},
+
+  {id:"P10",k:"Personal",s:"mittel",q:"Was ist Employer Branding?",
+   a:["Systematischer Aufbau und Pflege einer attraktiven Arbeitgebermarke.","Zielt auf Gewinnung qualifizierter Bewerber und Bindung vorhandener MA.","Authentizität ist entscheidend: gelebte Kultur muss Versprechen entsprechen.","Employer Branding ist ausschließlich externe Werbung für Bewerber."],
+   r:[0,1,2],e:"Employer Branding: interne UND externe Dimension. Intern: Kultur leben, MA zu Botschaftern machen. Falsches EB (verspricht mehr als gelebt) = Boomerang: hohe Fluktuation."},
+
+  // ── BGM (10) ──────────────────────────────────────────────────────────────
+  {id:"B01",k:"BGM",s:"leicht",q:"Was ist Betriebliches Gesundheitsmanagement (BGM)?",
+   a:["Systematischer Ansatz zur Erhaltung und Förderung der MA-Gesundheit.","Maßnahmen auf Verhaltens- UND Verhältnisebene (nicht nur Einzelmaßnahmen).","BGM ist ausschließlich gesetzliche Pflicht ohne wirtschaftlichen Nutzen.","Reduziert nachweislich Fehlzeiten und steigert Produktivität."],
+   r:[0,1,3],e:"BGM: Verhaltensebene (Sport, Ernährung) + Verhältnisebene (Ergonomie, Führungskultur). ROI: 1 Euro BGM → 2,70 Euro Einsparung. BGM ≈ TPM für Menschen: präventiv statt reaktiv."},
+
+  {id:"B02",k:"BGM",s:"mittel",q:"Welche Lärmgrenzwerte gelten am Arbeitsplatz?",
+   a:["55 dB(A): Richtwert für Tätigkeiten mit hohen Konzentrationsanforderungen.","Ab 80 dB(A): Gehörschutz muss bereitgestellt werden (unterer Auslösewert).","Ab 85 dB(A): Tragen von Gehörschutz ist Pflicht (oberer Auslösewert).","Lärm unter 100 dB(A) ist generell unbedenklich."],
+   r:[0,1,2],e:"Lärm-Vibrations-ArbSchV: 80 dB(A) = Bereitstellen (freiwillig). 85 dB(A) = Pflicht. 87 dB(A) = nie überschreiten. Büro: 55 dB(A) Empfehlung. Ab 65 dB(A) = erhöhtes Herzkreislaufrisiko."},
+
+  {id:"B03",k:"BGM",s:"leicht",q:"Was beschreibt Resilienz am Arbeitsplatz?",
+   a:["Fähigkeit, mit Belastungen und Rückschlägen umzugehen und sich zu erholen.","Resilienz ist keine angeborene Eigenschaft — sie kann trainiert werden.","FK können Teamresilienz aktiv fördern.","Resiliente MA leiden nie unter Stress oder Erschöpfung."],
+   r:[0,1,2],e:"Resilienz (7 Säulen: Emotionsregulation, Optimismus, Kausalanalyse, Empathie, Selbstwirksamkeit, Zielorientierung, Impulskontrolle): Trainierbar durch Achtsamkeit, Netzwerke, Routinen. Resiliente erholen sich SCHNELLER."},
+
+  {id:"B04",k:"BGM",s:"mittel",q:"Was sind die Burnout-Phasen nach Freudenberger/Edelwich & Brodsky?",
+   a:["Phase 1: Enthusiasmus und Überengagement — oft starkes Eingangszeichen.","Phase 2: Stagnation, Desillusionierung — erste Warnzeichen für FK.","Phase 3: Frustration, Zynismus und erste psychosomatische Symptome.","Burnout entsteht plötzlich und ohne jede Vorwarnung."],
+   r:[0,1,2],e:"Phasen: Enthusiasmus → Stagnation → Frustration → Apathie. FK muss spätestens bei Phase 2 (Zynismus, Distanz) eingreifen. Burnout beginnt oft mit zu viel Engagement (Phase 1) — das Paradoxon."},
+
+  {id:"B05",k:"BGM",s:"mittel",q:"Was ist der Unterschied zwischen Eustress und Distress?",
+   a:["Eustress: positiver, leistungssteigernder Stress (Herausforderung, Motivation).","Distress: negativer, krankmachender chronischer Stress (Überforderung, Kontrollverlust).","Eustress fördert Leistungsbereitschaft und kann Flow auslösen.","Beide Stressformen haben identische Auswirkungen."],
+   r:[0,1,2],e:"Selye: Stress ist nicht per se negativ. Eustress = Prüfung, sportliche Herausforderung. Distress = chronische Überforderung. Gleicher Stressor kann Eustress oder Distress sein — abhängig von Ressourcen."},
+
+  {id:"B06",k:"BGM",s:"schwer",q:"Was ist Salutogenese nach Aaron Antonovsky?",
+   a:["Fragt: Was hält Menschen gesund? (≠ Pathogenese: Was macht krank?).","Kohärenzgefühl = Verstehbarkeit + Handhabbarkeit + Bedeutsamkeit.","Starkes Kohärenzgefühl fördert Gesundheit und Resilienz.","Salutogenese und Pathogenese sind Synonyme."],
+   r:[0,1,2],e:"Antonovsky: Kohärenzgefühl: Verstehe ich was passiert? (Verstehbarkeit) Kann ich damit umgehen? (Handhabbarkeit) Hat es Sinn, Energie zu investieren? (Bedeutsamkeit). FK: Sinn kommunizieren = Kohärenz stärken."},
+
+  {id:"B07",k:"BGM",s:"mittel",q:"Was sind Rollen der Führungskraft im BGM?",
+   a:["Frühzeitiges Erkennen von Überlastungszeichen bei MA.","Vorbildfunktion: eigenes Gesundheitsverhalten ist sichtbar.","Aktives Ansprechen von Belastungen ohne zu warten bis Fehlzeiten entstehen.","BGM liegt ausschließlich bei Betriebsarzt und HR."],
+   r:[0,1,2],e:"FK im BGM: Beobachten (Verhaltensänderungen), Ansprechen (zeitnah, ohne Diagnose zu stellen), Weitervermitteln (Betriebsarzt, EAP). Fürsorgepflicht §618 BGB. Vorbildfunktion: Pausen machen!"},
+
+  {id:"B08",k:"BGM",s:"leicht",q:"Was sind Belastungsfaktoren am Arbeitsplatz?",
+   a:["Körperliche Faktoren: Heben, Tragen, Lärm, ungünstige Haltungen.","Psychische Faktoren: Zeitdruck, Monotonie, Verantwortungsdruck.","Umgebungsfaktoren: Beleuchtung, Temperatur, Vibration, Chemikalien.","Ergonomie ist ausschließlich für körperliche Tätigkeiten relevant."],
+   r:[0,1,2],e:"Gefährdungsbeurteilung (§5 ArbSchG): Pflicht des AG. Psychische Belastungen seit 2013 ausdrücklich eingeschlossen. Büro-Belastungen (Homeoffice, Reizüberflutung) = genauso zu beurteilen wie Hebelasten."},
+
+  {id:"B09",k:"BGM",s:"mittel",q:"Was sind Ziele von Gesundheitszirkeln im Betrieb?",
+   a:["MA erkennen gemeinsam gesundheitliche Belastungen und entwickeln Lösungen.","Partizipation: Betroffene werden zu Beteiligten (Bottom-up).","Nachhaltige Verbesserung der Arbeitsbedingungen durch MA-Expertise.","Gesundheitszirkel ersetzen den Betriebsarzt."],
+   r:[0,1,2],e:"Gesundheitszirkel: Moderierter Austausch von MA über Belastungen und Ideen. Vorteil: MA-Wissen nutzen, Commitment durch Beteiligung. Ergänzt Betriebsarzt und GBU — ersetzt sie nicht."},
+
+  {id:"B10",k:"BGM",s:"schwer",q:"Was ist das PERMA-Modell nach Martin Seligman?",
+   a:["Positive Emotions, Engagement (Flow), Relationships (tragende Beziehungen).","Meaning (Sinn/Bedeutung), Achievement (Leistungserfolge).","FK können durch Führungsverhalten alle 5 PERMA-Elemente fördern.","PERMA beschreibt ausschließlich Maßnahmen gegen körperliche Erkrankungen."],
+   r:[0,1,2],e:"Seligman (Positive Psychologie): PERMA = Wohlbefinden. FK als 'Klima-Architekt': Wertschätzung (P), Flow-Aufgaben (E), Teamkultur (R), Sinn kommunizieren (M), Erfolge sichtbar machen (A)."},
 ]
 
-const KATEGORIEN = [...new Set(ALLE_FRAGEN.map(f => f.k))]
-
-function shuffle(arr: any[]) {
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function shuffle<T>(arr: T[]): T[] {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
   }
   return a
 }
 
-// ============================================================================
-// TYPES
-// ============================================================================
-type Screen = "login" | "register" | "home" | "quiz" | "result" | "stats" | "kategorie" | "admin"
+const KATEGORIEN = [...new Set(DB.map(f => f.k))]
+const FARBEN: Record<string, string> = {
+  "Führung": "#3B82F6", "Kommunikation": "#10B981", "Motivation": "#F59E0B",
+  "Konflikt": "#EF4444", "Personal": "#8B5CF6", "BGM": "#EC4899",
+}
+const SCHWFARBE: Record<string, string> = { leicht: "#10B981", mittel: "#F59E0B", schwer: "#EF4444" }
+
+// ── TYPES ──────────────────────────────────────────────────────────────────
+type Screen = "home" | "quiz" | "result" | "stats"
 type Mode = "pruefung" | "lern" | "schwach"
 
-interface User {
-  id: string
-  email: string
-  name: string
-  role: string
-  questionsAnswered?: number
-}
-
 interface Frage {
-  id: string
-  k: string
-  farbe: string
-  q: string
-  a: string[]
-  r: number[]
+  id: string; k: string; s: string; q: string; a: string[]; r: number[]; e: string
+}
+interface ShuffledFrage extends Frage {
+  sa: string[]; // shuffled answers
+  im: number[]; // index map: sa[i] = original a[im[i]]
+}
+interface Ergebnis { id: string; korrekt: boolean }
+interface CatStat { correct: number; wrong: number }
+interface LocalStats {
+  totalCorrect: number; totalWrong: number
+  byQuestion: Record<string, { correct: number; wrong: number }>
+  byCat: Record<string, CatStat>
 }
 
-interface Ergebnis {
-  id: string
-  korrekt: boolean
+function prepFrage(f: Frage): ShuffledFrage {
+  const indices = f.a.map((_, i) => i)
+  const shuffled = shuffle(indices)
+  return { ...f, sa: shuffled.map(i => f.a[i]), im: shuffled }
 }
 
-interface UserStats {
-  totalCorrect: number
-  totalWrong: number
-  totalAnswers: number
-  percentage: number
-  categoryStats: Record<string, { correct: number; wrong: number; total: number }>
-  recentSessions: any[]
-  questionCount: number
+function loadStats(): LocalStats {
+  if (typeof window === 'undefined') return { totalCorrect: 0, totalWrong: 0, byQuestion: {}, byCat: {} }
+  try {
+    const raw = localStorage.getItem('cle_stats')
+    if (raw) return JSON.parse(raw)
+  } catch {}
+  return { totalCorrect: 0, totalWrong: 0, byQuestion: {}, byCat: {} }
 }
 
-// ============================================================================
-// MAIN COMPONENT
-// ============================================================================
+function saveStats(stats: LocalStats) {
+  try { localStorage.setItem('cle_stats', JSON.stringify(stats)) } catch {}
+}
+
+// ── ICONS (inline SVG to avoid import issues) ─────────────────────────────
+const Icon = {
+  brain: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>,
+  play: <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+  chart: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  check: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><polyline points="20 6 9 17 4 12"/></svg>,
+  x: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  back: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="15 18 9 12 15 6"/></svg>,
+  next: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polyline points="9 18 15 12 9 6"/></svg>,
+  home: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+  zap: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+  book: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+  clock: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+  bulb: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>,
+  trophy: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-10 h-10"><polyline points="8 21 12 21 12 11"/><path d="M20 3H4v10c0 4.418 3.582 8 8 8s8-3.582 8-8V3z"/><path d="M20 3c0 0 1 2 1 5s-1 5-1 5"/><path d="M4 3c0 0-1 2-1 5s1 5 1 5"/></svg>,
+  filter: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>,
+  trash: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+}
+
+// ── MAIN ──────────────────────────────────────────────────────────────────
 export default function App() {
-  const [screen, setScreen] = useState<Screen>("login")
+  const [screen, setScreen] = useState<Screen>("home")
   const [mode, setMode] = useState<Mode>("pruefung")
-  const [kat, setKat] = useState<string>("Alle")
-  const [fragen, setFragen] = useState<Frage[]>([])
+  const [katFilter, setKatFilter] = useState("Alle")
+  const [schwFilter, setSchwFilter] = useState("Alle")
+  const [fragen, setFragen] = useState<ShuffledFrage[]>([])
   const [idx, setIdx] = useState(0)
   const [sel, setSel] = useState<number[]>([])
-  const [best, setBest] = useState(false)
+  const [confirmed, setConfirmed] = useState(false)
   const [erg, setErg] = useState<Ergebnis[]>([])
   const [t0, setT0] = useState<number | null>(null)
   const [elapsed, setElapsed] = useState(0)
-  
-  // Auth state
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  
-  // Form state
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [name, setName] = useState("")
-  const [error, setError] = useState("")
-  
-  // Stats state
-  const [userStats, setUserStats] = useState<UserStats | null>(null)
-  const [adminStats, setAdminStats] = useState<any>(null)
-  
-  // Premium state (für später)
-  const [premiumUsers, setPremiumUsers] = useState<any[]>([])
+  const [showExpl, setShowExpl] = useState(false)
+  const [stats, setStats] = useState<LocalStats>({ totalCorrect: 0, totalWrong: 0, byQuestion: {}, byCat: {} })
 
-  // Check session on mount
-  useEffect(() => {
-    fetch('/api/auth/session')
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          setUser(data.user)
-          setScreen("home")
-        }
-        setLoading(false)
-      })
-      .catch(() => setLoading(false))
-  }, [])
+  useEffect(() => { setStats(loadStats()) }, [])
 
-  // Timer
   useEffect(() => {
-    let t: NodeJS.Timeout
+    let t: ReturnType<typeof setInterval>
     if (screen === "quiz" && t0) {
-      t = setInterval(() => setElapsed(Math.floor((Date.now() - t0) / 1000)), 1000)
+      t = setInterval(() => setElapsed(Math.floor((Date.now() - t0!) / 1000)), 1000)
     }
     return () => clearInterval(t)
   }, [screen, t0])
 
-  // Load user stats when user changes
-  useEffect(() => {
-    if (user && screen === "home") {
-      fetch('/api/quiz/stats')
-        .then(res => res.json())
-        .then(data => setUserStats(data))
-        .catch(console.error)
-    }
-  }, [user, screen])
-
-  // Auth functions
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
-      
-      const data = await res.json()
-      
-      if (!res.ok) {
-        setError(data.error || 'Fehler beim Anmelden')
-        return
-      }
-      
-      setUser(data.user)
-      setScreen("home")
-      setEmail("")
-      setPassword("")
-    } catch (err) {
-      setError('Ein Fehler ist aufgetreten')
-    }
-  }
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    
-    if (password.length < 6) {
-      setError('Passwort muss mindestens 6 Zeichen haben')
-      return
-    }
-    
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name })
-      })
-      
-      const data = await res.json()
-      
-      if (!res.ok) {
-        setError(data.error || 'Fehler beim Registrieren')
-        return
-      }
-      
-      setUser(data.user)
-      setScreen("home")
-      setEmail("")
-      setPassword("")
-      setName("")
-    } catch (err) {
-      setError('Ein Fehler ist aufgetreten')
-    }
-  }
-
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' })
-    setUser(null)
-    setUserStats(null)
-    setScreen("login")
-  }
+  const wrongIds = Object.entries(stats.byQuestion)
+    .filter(([, v]) => (v as {correct:number;wrong:number}).wrong > (v as {correct:number;wrong:number}).correct)
+    .map(([k]) => k)
 
   const start = useCallback(() => {
-    let pool = kat === "Alle" ? ALLE_FRAGEN : ALLE_FRAGEN.filter(f => f.k === kat)
-    
-    if (mode === "schwach" && userStats) {
-      // Get questions that were answered wrong
-      const wrongQuestions = Object.entries(userStats.categoryStats)
-        .flatMap(([cat, stats]) => {
-          if (stats.wrong > 0) {
-            return ALLE_FRAGEN.filter(f => 
-              f.k === cat || 
-              (cat === 'Konflikt' && f.k === 'Konflikt') ||
-              (cat === 'Kommunikation' && f.k === 'Kommunikation')
-            )
-          }
-          return []
-        })
-      
-      if (wrongQuestions.length > 0) {
-        pool = wrongQuestions
-      }
+    let pool = DB as Frage[]
+    if (katFilter !== "Alle") pool = pool.filter(f => f.k === katFilter)
+    if (schwFilter !== "Alle") pool = pool.filter(f => f.s === schwFilter)
+    if (mode === "schwach" && wrongIds.length > 0) {
+      const wp = pool.filter(f => wrongIds.includes(f.id))
+      if (wp.length > 0) pool = wp
     }
-    
     const s = shuffle(pool)
-    setFragen(s.slice(0, mode === "pruefung" ? Math.min(30, s.length) : s.length))
-    setIdx(0)
-    setSel([])
-    setBest(false)
-    setErg([])
-    setT0(Date.now())
-    setElapsed(0)
+    const count = mode === "pruefung" ? Math.min(30, s.length) : s.length
+    setFragen(s.slice(0, count).map(prepFrage))
+    setIdx(0); setSel([]); setConfirmed(false); setErg([])
+    setT0(Date.now()); setElapsed(0); setShowExpl(false)
     setScreen("quiz")
-  }, [mode, kat, userStats, user])
+  }, [mode, katFilter, schwFilter, wrongIds])
 
-  const toggle = (i: number) => {
-    if (best) return
-    setSel(p => (p.includes(i) ? p.filter(x => x !== i) : [...p, i]))
-  }
+  const toggle = (i: number) => { if (confirmed) return; setSel(p => p.includes(i) ? p.filter(x => x !== i) : [...p, i]) }
 
   const confirm = () => {
-    if (!sel.length) return
+    if (!sel.length || confirmed) return
     const f = fragen[idx]
+    const origSel = sel.map(si => f.im[si])
     const ok = new Set(f.r)
-    const as = new Set(sel)
+    const as = new Set(origSel)
     const korrekt = [...ok].every(r => as.has(r)) && [...as].every(a => ok.has(a))
-    setBest(true)
+    setConfirmed(true)
     setErg(e => [...e, { id: f.id, korrekt }])
-  }
-
-  const saveQuizResults = async () => {
-    const total = erg.length
-    const correct = erg.filter(e => e.korrekt).length
-    
-    await fetch('/api/quiz/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mode,
-        category: kat,
-        totalQuestions: total,
-        correctAnswers: correct,
-        duration: elapsed,
-        questionResults: erg.map(e => ({
-          questionId: e.id,
-          correct: e.korrekt
-        }))
-      })
+    // Update stats immediately
+    setStats(prev => {
+      const bq = { ...prev.byQuestion }
+      const entry = bq[f.id] || { correct: 0, wrong: 0 }
+      bq[f.id] = { correct: entry.correct + (korrekt ? 1 : 0), wrong: entry.wrong + (korrekt ? 0 : 1) }
+      const bc = { ...prev.byCat }
+      const cat = bc[f.k] || { correct: 0, wrong: 0 }
+      bc[f.k] = { correct: cat.correct + (korrekt ? 1 : 0), wrong: cat.wrong + (korrekt ? 0 : 1) }
+      const next = {
+        totalCorrect: prev.totalCorrect + (korrekt ? 1 : 0),
+        totalWrong: prev.totalWrong + (korrekt ? 0 : 1),
+        byQuestion: bq, byCat: bc
+      }
+      saveStats(next)
+      return next
     })
   }
 
   const next = () => {
-    if (idx + 1 >= fragen.length) {
-      saveQuizResults()
-      setScreen("result")
-    } else {
-      setIdx(i => i + 1)
-      setSel([])
-      setBest(false)
-    }
+    if (idx + 1 >= fragen.length) { setScreen("result") }
+    else { setIdx(i => i + 1); setSel([]); setConfirmed(false); setShowExpl(false) }
   }
-
-  const loadAdminStats = async () => {
-    const res = await fetch('/api/admin/stats')
-    if (res.ok) {
-      const data = await res.json()
-      setAdminStats(data)
-    }
-  }
-  
-  const loadPremiumUsers = async () => {
-    const res = await fetch('/api/admin/premium')
-    if (res.ok) {
-      const data = await res.json()
-      setPremiumUsers(data.users || [])
-    }
-  }
-  
-  const togglePremium = async (targetUserId: string, isPremium: boolean) => {
-    const res = await fetch('/api/admin/premium', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ targetUserId, isPremium })
-    })
-    if (res.ok) {
-      loadPremiumUsers()
-      loadAdminStats()
-    }
-  }
-  
-  
 
   const frage = fragen[idx]
   const mm = Math.floor(elapsed / 60).toString().padStart(2, "0")
   const ss = (elapsed % 60).toString().padStart(2, "0")
 
-  const getAnswerStatus = (i: number): "correct" | "wrong" | "missed" | "neutral" | "selected" => {
-    if (!best) return sel.includes(i) ? "selected" : "neutral"
-    const isCorrect = frage.r.includes(i)
-    const isSelected = sel.includes(i)
-    if (isCorrect && isSelected) return "correct"
-    if (!isCorrect && isSelected) return "wrong"
-    if (isCorrect && !isSelected) return "missed"
-    return "neutral"
+  const getStatus = (si: number) => {
+    if (!confirmed) return sel.includes(si) ? "sel" : "neu"
+    const oi = frage.im[si]
+    const isC = frage.r.includes(oi)
+    const isS = sel.includes(si)
+    if (isC && isS) return "ok"
+    if (!isC && isS) return "bad"
+    if (isC && !isS) return "miss"
+    return "neu"
   }
 
-  // Loading screen
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 animate-pulse">
-            <Brain className="w-8 h-8 text-white" />
+  const totalAnswered = stats.totalCorrect + stats.totalWrong
+  const pctGlobal = totalAnswered > 0 ? Math.round((stats.totalCorrect / totalAnswered) * 100) : 0
+
+  // ── HOME ─────────────────────────────────────────────────────────────────
+  if (screen === "home") return (
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)", color: "white", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 16px" }}>
+
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <div style={{ width: 72, height: 72, borderRadius: 20, background: "linear-gradient(135deg, #3B82F6, #06B6D4)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px", boxShadow: "0 0 40px #3B82F630" }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" style={{ width: 40, height: 40 }}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
           </div>
-          <p className="mt-4 text-slate-400">Wird geladen...</p>
+          <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: -1 }}>CLE Quiz</div>
+          <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>Certified Leadership Expert · IHK · {DB.length} Fragen</div>
         </div>
-      </div>
-    )
-  }
 
-  // ==========================================================================
-  // LOGIN SCREEN
-  // ==========================================================================
-  if (screen === "login") {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-slate-900/50 border-slate-800 backdrop-blur">
-          <CardHeader className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
-              <Brain className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl">CLE Quiz</CardTitle>
-            <CardDescription>Bitte melde dich an, um fortzufahren</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@beispiel.de"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
+        {/* Stats bar */}
+        {totalAnswered > 0 && (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
+            {[
+              { v: totalAnswered, l: "Beantwortet", c: "#3B82F6" },
+              { v: `${pctGlobal}%`, l: "Quote", c: pctGlobal >= 70 ? "#10B981" : "#F59E0B" },
+              { v: wrongIds.length, l: "Schwächen", c: "#EF4444" },
+            ].map(s => (
+              <div key={s.l} style={{ background: "rgba(255,255,255,0.04)", borderRadius: 14, padding: "10px 0", border: "1px solid rgba(255,255,255,0.06)", textAlign: "center" }}>
+                <div style={{ fontSize: 20, fontWeight: 900, color: s.c }}>{s.v}</div>
+                <div style={{ fontSize: 11, color: "#475569" }}>{s.l}</div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Passwort</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
-                <LogIn className="w-4 h-4 mr-2" />
-                Anmelden
-              </Button>
-            </form>
-            <div className="mt-6 text-center">
-              <p className="text-slate-400 text-sm">
-                Noch kein Konto?{' '}
-                <button
-                  onClick={() => { setScreen("register"); setError("") }}
-                  className="text-cyan-400 hover:underline"
-                >
-                  Registrieren
-                </button>
-              </p>
-            </div>
-          </CardContent>
-          <div className="text-center pb-4 text-xs text-slate-600">
-            Ersteller: A.Neu
+            ))}
           </div>
-        </Card>
-      </div>
-    )
-  }
+        )}
 
-  // ==========================================================================
-  // REGISTER SCREEN
-  // ==========================================================================
-  if (screen === "register") {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-slate-900/50 border-slate-800 backdrop-blur">
-          <CardHeader className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mx-auto mb-4">
-              <UserPlus className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl">Konto erstellen</CardTitle>
-            <CardDescription>Registriere dich, um deine Statistiken zu speichern</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleRegister} className="space-y-4">
-              {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 text-red-400 text-sm">
-                  {error}
-                </div>
-              )}
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="Dein Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="bg-slate-800 border-slate-700"
-                />
+        {/* Mode */}
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>Modus</div>
+          {([
+            { id: "pruefung" as Mode, icon: Icon.clock, label: "Prüfungs-Simulation", desc: "30 Fragen · IHK-Format · 70% zum Bestehen", c: "#3B82F6" },
+            { id: "lern" as Mode, icon: Icon.book, label: "Lern-Modus", desc: "Alle Fragen mit Erklärung nach jeder Antwort", c: "#10B981" },
+            { id: "schwach" as Mode, icon: Icon.zap, label: "Schwächen-Training", desc: `${wrongIds.length} falsch beantwortete Fragen wiederholen`, c: "#F59E0B" },
+          ] as const).map(m => (
+            <button key={m.id} onClick={() => setMode(m.id)}
+              style={{ width: "100%", padding: "12px 14px", borderRadius: 14, border: `1px solid ${mode === m.id ? m.c + "60" : "rgba(255,255,255,0.06)"}`, background: mode === m.id ? m.c + "15" : "rgba(255,255,255,0.02)", color: "white", cursor: "pointer", display: "flex", alignItems: "center", gap: 12, marginBottom: 6, textAlign: "left" }}>
+              <div style={{ width: 32, height: 32, borderRadius: 10, background: m.c + "20", display: "flex", alignItems: "center", justifyContent: "center", color: m.c, flexShrink: 0 }}>{m.icon}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 13, fontWeight: 700 }}>{m.label}</div>
+                <div style={{ fontSize: 11, color: "#64748B" }}>{m.desc}</div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="reg-email">Email</Label>
-                <Input
-                  id="reg-email"
-                  type="email"
-                  placeholder="name@beispiel.de"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="reg-password">Passwort</Label>
-                <Input
-                  id="reg-password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="bg-slate-800 border-slate-700"
-                />
-                <p className="text-xs text-slate-500">Mindestens 6 Zeichen</p>
-              </div>
-              <Button type="submit" className="w-full py-6 bg-gradient-to-r from-cyan-500 to-teal-500">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Registrieren
-              </Button>
-            </form>
-            <div className="mt-6 text-center">
-              <p className="text-slate-400 text-sm">
-                Bereits registriert?{' '}
-                <button
-                  onClick={() => { setScreen("login"); setError("") }}
-                  className="text-cyan-400 hover:underline"
-                >
-                  Anmelden
-                </button>
-              </p>
-            </div>
-          </CardContent>
-          <div className="text-center pb-4 text-xs text-slate-600">
-            Ersteller: A.Neu
-          </div>
-        </Card>
-      </div>
-    )
-  }
-
-  // ==========================================================================
-  // HOME SCREEN
-  // ==========================================================================
-  if (screen === "home") {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 mb-4 shadow-lg shadow-cyan-500/25">
-              <Brain className="w-10 h-10 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold mb-2">CLE Quiz</h1>
-            <p className="text-slate-400 text-sm">Certified Leadership Expert · IHK</p>
-            
-            {/* User info */}
-            <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
-              <Badge variant="secondary" className="bg-slate-800 text-slate-300 border-slate-700">
-                {user?.name || user?.email}
-              </Badge>
-              {user?.role === 'admin' && (
-                <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/50">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Admin
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          {/* Stats Overview */}
-          {userStats && userStats.totalAnswers > 0 && (
-            <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-cyan-400">{userStats.totalAnswers}</div>
-                    <div className="text-xs text-slate-500">Antworten</div>
-                  </div>
-                  <div>
-                    <div className={`text-2xl font-bold ${userStats.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}`}>
-                      {userStats.percentage}%
-                    </div>
-                    <div className="text-xs text-slate-500">Quote</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-white">{userStats.questionCount}</div>
-                    <div className="text-xs text-slate-500">Fragen</div>
-                  </div>
-                </div>
-                <Progress value={userStats.percentage} className="mt-4 h-2" />
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Mode Selection */}
-          <Card className="bg-slate-900/50 border-slate-800 mb-4 backdrop-blur">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-400">MODUS WÄHLEN</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {[
-                { id: "pruefung" as Mode, icon: Clock, label: "Prüfungs-Simulation", desc: "30 Fragen · 60 Min · wie die echte IHK", color: "cyan" },
-                { id: "lern" as Mode, icon: BookOpen, label: "Lern-Modus", desc: "Alle Fragen · sofortiges Feedback", color: "emerald" },
-                { id: "schwach" as Mode, icon: Zap, label: "Schwächen-Training", desc: "Falsch beantwortete wiederholen", color: "amber" },
-              ].map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => setMode(m.id)}
-                  className="w-full p-4 rounded-xl border transition-all duration-200 text-left flex items-center gap-3"
-                  style={{
-                    backgroundColor: mode === m.id 
-                      ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.1)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.1)" : "rgba(245, 158, 11, 0.1)")
-                      : "rgba(30, 41, 59, 0.5)",
-                    borderColor: mode === m.id 
-                      ? (m.color === "cyan" ? "rgba(6, 182, 212, 0.5)" : m.color === "emerald" ? "rgba(16, 185, 129, 0.5)" : "rgba(245, 158, 11, 0.5)")
-                      : "rgba(71, 85, 105, 0.5)",
-                    color: mode === m.id ? "white" : "#94a3b8"
-                  }}
-                >
-                  <m.icon className="w-5 h-5 flex-shrink-0" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />
-                  <div className="flex-1">
-                    <div className="font-semibold">{m.label}</div>
-                    <div className="text-xs text-slate-400">{m.desc}</div>
-                  </div>
-                  {mode === m.id && <CheckCircle2 className="w-5 h-5" style={{ color: m.color === "cyan" ? "#06b6d4" : m.color === "emerald" ? "#10b981" : "#f59e0b" }} />}
-                </button>
-              ))}
-            </CardContent>
-          </Card>
-
-          {/* Category Selection */}
-          <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-slate-400">THEMA (optional)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {["Alle", ...KATEGORIEN].map((k) => {
-                  const fc = ALLE_FRAGEN.find(f => f.k === k)?.farbe || "#06b6d4"
-                  const count = k === "Alle" ? ALLE_FRAGEN.length : ALLE_FRAGEN.filter(f => f.k === k).length
-                  const active = kat === k
-                  return (
-                    <button
-                      key={k}
-                      onClick={() => setKat(k)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
-                      style={{
-                        backgroundColor: active ? `${fc}20` : "rgba(30, 41, 59, 0.5)",
-                        border: `1px solid ${active ? fc : "rgba(71, 85, 105, 0.5)"}`,
-                        color: active ? fc : "#94a3b8",
-                      }}
-                    >
-                      {k} <span className="opacity-60">({count})</span>
-                    </button>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={start}
-              className="w-full py-6 text-lg font-bold bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 shadow-lg shadow-cyan-500/25"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Quiz starten
-            </Button>
-            
-            <Button
-              onClick={() => setScreen("stats")}
-              variant="outline"
-              className="w-full py-5 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white"
-            >
-              <BarChart3 className="w-5 h-5 mr-2" />
-              Meine Statistik
-            </Button>
-
-            {user?.role === 'admin' && (
-              <Button
-                onClick={() => { loadAdminStats(); setScreen("admin") }}
-                variant="outline"
-                className="w-full py-5 border-amber-500/50 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20"
-              >
-                <Shield className="w-5 h-5 mr-2" />
-                Admin Dashboard
-              </Button>
-            )}
-
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              className="w-full py-4 text-slate-400 hover:text-white"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Abmelden
-            </Button>
-          </div>
-          
-          {/* Ersteller-Hinweis */}
-          <div className="text-center mt-8 text-xs text-slate-600">
-            Ersteller: A.Neu
-          </div>
+              {mode === m.id && <div style={{ color: m.c }}>{Icon.check}</div>}
+            </button>
+          ))}
         </div>
-      </div>
-    )
-  }
 
-  // ==========================================================================
-  // QUIZ SCREEN
-  // ==========================================================================
-  if (screen === "quiz" && frage) {
-    const progress = ((idx + 1) / fragen.length) * 100
-    const correctCount = erg.filter(e => e.korrekt).length
-
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
-            <div className="px-4 py-3 flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScreen("home")}
-                className="text-slate-400 hover:text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              
-              <div className="text-center">
-                <div className="font-bold">
-                  {idx + 1} <span className="text-slate-500 font-normal">/ {fragen.length}</span>
-                </div>
-                {mode === "pruefung" && (
-                  <div className="text-xs text-slate-500 flex items-center gap-1 justify-center">
-                    <Clock className="w-3 h-3" />
-                    {mm}:{ss}
-                  </div>
-                )}
-              </div>
-              
-              <Badge
-                style={{
-                  backgroundColor: `${frage.farbe}20`,
-                  color: frage.farbe,
-                  borderColor: `${frage.farbe}50`,
-                }}
-                variant="outline"
-              >
-                {frage.k}
-              </Badge>
-            </div>
-            
-            <div className="px-4 pb-3">
-              <Progress value={progress} className="h-1.5" />
-              {erg.length > 0 && (
-                <div className="text-xs text-slate-500 mt-1 text-center">
-                  ✓ {correctCount} / {erg.length} richtig
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Question */}
-          <div className="px-4 py-6">
-            <Badge variant="outline" className="text-xs text-slate-500 border-slate-700 mb-3">
-              [{frage.id}] · MEHRERE ANTWORTEN MÖGLICH
-            </Badge>
-            <h2 className="text-lg font-semibold leading-relaxed">{frage.q}</h2>
-          </div>
-
-          {/* Answers */}
-          <div className="px-4 space-y-2">
-            {frage.a.map((a, i) => {
-              const status = getAnswerStatus(i)
+        {/* Filters */}
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, display: "flex", alignItems: "center", gap: 4 }}>{Icon.filter} Filter (optional)</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 6 }}>
+            {["Alle", ...KATEGORIEN].map(k => {
+              const c = FARBEN[k] || "#3B82F6"
+              const active = katFilter === k
               return (
-                <button
-                  key={i}
-                  onClick={() => toggle(i)}
-                  disabled={best}
-                  className={`w-full p-4 rounded-xl border transition-all duration-200 text-left flex items-start gap-3 ${
-                    status === "correct"
-                      ? "bg-emerald-500/10 border-emerald-500/50"
-                      : status === "wrong"
-                      ? "bg-red-500/10 border-red-500/50"
-                      : status === "missed"
-                      ? "bg-emerald-500/5 border-emerald-500/30 border-dashed"
-                      : status === "selected"
-                      ? "bg-cyan-500/10 border-cyan-500/50"
-                      : "bg-slate-800/50 border-slate-700 hover:bg-slate-800"
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      status === "correct"
-                        ? "bg-emerald-500 border-emerald-500"
-                        : status === "wrong"
-                        ? "bg-red-500 border-red-500"
-                        : status === "missed"
-                        ? "border-emerald-500 bg-emerald-500/20"
-                        : status === "selected"
-                        ? "bg-cyan-500 border-cyan-500"
-                        : "border-slate-600"
-                    }`}
-                  >
-                    {status === "correct" && <CheckCircle2 className="w-3 h-3 text-white" />}
-                    {status === "wrong" && <XCircle className="w-3 h-3 text-white" />}
-                    {status === "missed" && <span className="text-emerald-500 text-xs">→</span>}
-                    {status === "selected" && !best && <div className="w-2 h-2 rounded-full bg-white" />}
-                  </div>
-                  <span
-                    className={`text-sm leading-relaxed ${
-                      status === "correct"
-                        ? "text-emerald-300"
-                        : status === "wrong"
-                        ? "text-red-300"
-                        : status === "missed"
-                        ? "text-emerald-400/70"
-                        : "text-slate-300"
-                    }`}
-                  >
-                    {a}
-                  </span>
+                <button key={k} onClick={() => setKatFilter(k)}
+                  style={{ padding: "5px 10px", borderRadius: 8, border: `1px solid ${active ? c + "70" : "rgba(255,255,255,0.08)"}`, background: active ? c + "20" : "rgba(255,255,255,0.03)", color: active ? c : "#64748B", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                  {k} {k !== "Alle" && `(${DB.filter(f => f.k === k).length})`}
                 </button>
               )
             })}
           </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            {["Alle", "leicht", "mittel", "schwer"].map(s => {
+              const c = SCHWFARBE[s] || "#3B82F6"
+              const active = schwFilter === s
+              return (
+                <button key={s} onClick={() => setSchwFilter(s)}
+                  style={{ flex: 1, padding: "5px 0", borderRadius: 8, border: `1px solid ${active ? c + "70" : "rgba(255,255,255,0.08)"}`, background: active ? c + "20" : "rgba(255,255,255,0.03)", color: active ? c : "#64748B", fontSize: 11, fontWeight: 600, cursor: "pointer" }}>
+                  {s === "leicht" ? "🟢 leicht" : s === "mittel" ? "🟡 mittel" : s === "schwer" ? "🔴 schwer" : "Alle"}
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
-          {/* Feedback (Lern-Modus) */}
-          {best && mode === "lern" && (
-            <div className="px-4 mt-4">
-              <Card
-                className={`${
-                  erg[erg.length - 1]?.korrekt
-                    ? "bg-emerald-500/10 border-emerald-500/30"
-                    : "bg-red-500/10 border-red-500/30"
-                }`}
-              >
-                <CardContent className="pt-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    {erg[erg.length - 1]?.korrekt ? (
-                      <>
-                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                        <span className="font-semibold text-emerald-400">Richtig!</span>
-                      </>
-                    ) : (
-                      <>
-                        <XCircle className="w-5 h-5 text-red-500" />
-                        <span className="font-semibold text-red-400">Nicht vollständig</span>
-                      </>
+        {/* Buttons */}
+        <button onClick={start}
+          style={{ width: "100%", padding: "16px 0", borderRadius: 16, background: "linear-gradient(135deg, #3B82F6, #06B6D4)", color: "white", fontSize: 15, fontWeight: 800, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 8px 30px #3B82F630", marginBottom: 8 }}>
+          {Icon.play} Quiz starten
+        </button>
+        <button onClick={() => setScreen("stats")}
+          style={{ width: "100%", padding: "13px 0", borderRadius: 16, background: "rgba(255,255,255,0.04)", color: "#94A3B8", fontSize: 13, fontWeight: 600, border: "1px solid rgba(255,255,255,0.08)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+          {Icon.chart} Statistik
+        </button>
+
+        <div style={{ textAlign: "center", marginTop: 20, fontSize: 11, color: "#1E293B" }}>Ersteller: A.Neu</div>
+      </div>
+    </div>
+  )
+
+  // ── QUIZ ─────────────────────────────────────────────────────────────────
+  if (screen === "quiz" && frage) {
+    const progress = ((idx + 1) / fragen.length) * 100
+    const fc = FARBEN[frage.k] || "#3B82F6"
+    const correctSoFar = erg.filter(e => e.korrekt).length
+    const lastKorrekt = erg[erg.length - 1]?.korrekt
+
+    return (
+      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", color: "white", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+        <div style={{ maxWidth: 480, margin: "0 auto" }}>
+
+          {/* Top bar */}
+          <div style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(15,23,42,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "12px 16px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+              <button onClick={() => setScreen("home")} style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(255,255,255,0.06)", border: "none", color: "#94A3B8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Icon.back}</button>
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 14, fontWeight: 800 }}>{idx + 1} <span style={{ color: "#475569", fontWeight: 400 }}>/ {fragen.length}</span></div>
+                {mode === "pruefung" && <div style={{ fontSize: 11, color: "#475569" }}>{mm}:{ss}</div>}
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 700 }}>
+                <span style={{ color: "#10B981" }}>{correctSoFar}</span>
+                <span style={{ color: "#475569" }}> /{erg.length}</span>
+              </div>
+            </div>
+            <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 99, overflow: "hidden" }}>
+              <div style={{ height: "100%", borderRadius: 99, background: `linear-gradient(90deg, ${fc}, ${fc}88)`, width: `${progress}%`, transition: "width 0.3s" }} />
+            </div>
+          </div>
+
+          <div style={{ padding: "20px 16px" }}>
+            {/* Meta badges */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+              <span style={{ padding: "3px 10px", borderRadius: 7, fontSize: 11, fontWeight: 700, background: fc + "20", color: fc, border: `1px solid ${fc}40` }}>{frage.k}</span>
+              <span style={{ padding: "3px 8px", borderRadius: 7, fontSize: 11, fontWeight: 600, background: SCHWFARBE[frage.s] + "15", color: SCHWFARBE[frage.s], border: `1px solid ${SCHWFARBE[frage.s]}30` }}>
+                {frage.s === "leicht" ? "🟢" : frage.s === "mittel" ? "🟡" : "🔴"} {frage.s}
+              </span>
+              <span style={{ fontSize: 11, color: "#334155", marginLeft: "auto", alignSelf: "center" }}>[{frage.id}]</span>
+            </div>
+
+            {/* Question */}
+            <div style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.5, marginBottom: 6 }}>{frage.q}</div>
+            <div style={{ fontSize: 11, color: "#475569", marginBottom: 18 }}>
+              {frage.r.length === 1 ? "Eine richtige Antwort" : `${frage.r.length} richtige Antworten möglich`}
+            </div>
+
+            {/* Answers */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+              {frage.sa.map((a, i) => {
+                const st = getStatus(i)
+                const bc = st === "ok" ? "#10B981" : st === "bad" ? "#EF4444" : st === "miss" ? "#F59E0B" : st === "sel" ? fc : "rgba(255,255,255,0.08)"
+                const bg = st === "ok" ? "#10B98112" : st === "bad" ? "#EF444412" : st === "miss" ? "#F59E0B10" : st === "sel" ? fc + "15" : "rgba(255,255,255,0.02)"
+                const tc = st === "ok" ? "#6EE7B7" : st === "bad" ? "#FCA5A5" : st === "miss" ? "#FCD34D" : "#CBD5E1"
+                return (
+                  <button key={i} onClick={() => toggle(i)} disabled={confirmed}
+                    style={{ padding: "14px", borderRadius: 14, border: `1.5px solid ${bc}`, background: bg, color: tc, cursor: confirmed ? "default" : "pointer", display: "flex", alignItems: "flex-start", gap: 12, textAlign: "left", transition: "all 0.15s" }}>
+                    <div style={{ width: 20, height: 20, borderRadius: "50%", border: `2px solid ${bc}`, background: (st === "ok" || st === "bad" || st === "sel") ? bc : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1, color: "white" }}>
+                      {st === "ok" && Icon.check}
+                      {st === "bad" && Icon.x}
+                      {st === "miss" && <span style={{ fontSize: 10, fontWeight: 900 }}>!</span>}
+                      {st === "sel" && !confirmed && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "white" }} />}
+                    </div>
+                    <span style={{ fontSize: 13, lineHeight: 1.5 }}>{a}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Feedback */}
+            {confirmed && (
+              <div style={{ borderRadius: 14, border: `1px solid ${lastKorrekt ? "#10B98140" : "#EF444440"}`, background: lastKorrekt ? "#10B98110" : "#EF444410", padding: "14px", marginBottom: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: showExpl ? 10 : 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ color: lastKorrekt ? "#10B981" : "#EF4444", fontSize: 16 }}>{lastKorrekt ? "✓" : "✗"}</span>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: lastKorrekt ? "#10B981" : "#EF4444" }}>{lastKorrekt ? "Richtig!" : "Nicht vollständig korrekt"}</span>
+                  </div>
+                  <button onClick={() => setShowExpl(p => !p)}
+                    style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#F59E0B", background: "#F59E0B15", border: "none", cursor: "pointer", padding: "4px 8px", borderRadius: 6 }}>
+                    {Icon.bulb} {showExpl ? "Schließen" : "Erklärung"}
+                  </button>
+                </div>
+                {showExpl && (
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.6, borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: 10 }}>
+                    {frage.e}
+                    {!lastKorrekt && (
+                      <div style={{ marginTop: 8, fontSize: 11, color: "#FCD34D" }}>
+                        ✓ Richtig: {frage.r.map(ri => frage.sa[frage.im.indexOf(ri)]).join(" | ")}
+                      </div>
                     )}
                   </div>
-                  {!erg[erg.length - 1]?.korrekt && (
-                    <div className="text-sm text-slate-300">
-                      Richtige Antworten:{" "}
-                      <span className="text-emerald-400 font-semibold">
-                        {frage.r.map(r => String.fromCharCode(65 + r)).join(", ")}
-                      </span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Action Buttons */}
-          <div className="px-4 py-6">
-            {!best ? (
-              <Button
-                onClick={confirm}
-                disabled={!sel.length}
-                className={`w-full py-6 text-lg font-bold ${
-                  sel.length
-                    ? "bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-                    : "bg-slate-800 text-slate-500"
-                }`}
-              >
-                Antwort bestätigen
-              </Button>
-            ) : (
-              <Button
-                onClick={next}
-                className="w-full py-6 text-lg font-bold bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-              >
-                {idx + 1 >= fragen.length ? "Ergebnis anzeigen" : "Nächste Frage"}
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+                )}
+                {mode === "lern" && !showExpl && (
+                  <div style={{ marginTop: 8, fontSize: 11, color: "#CBD5E1", lineHeight: 1.6 }}>{frage.e}</div>
+                )}
+              </div>
             )}
+
+            {/* Action button */}
+            {!confirmed
+              ? <button onClick={confirm} disabled={!sel.length}
+                  style={{ width: "100%", padding: "15px 0", borderRadius: 16, background: sel.length ? `linear-gradient(135deg, ${fc}, ${fc}88)` : "rgba(255,255,255,0.04)", color: sel.length ? "white" : "#475569", fontSize: 14, fontWeight: 800, border: "none", cursor: sel.length ? "pointer" : "default", boxShadow: sel.length ? `0 6px 20px ${fc}30` : "none" }}>
+                  Antwort bestätigen
+                </button>
+              : <button onClick={next}
+                  style={{ width: "100%", padding: "15px 0", borderRadius: 16, background: "linear-gradient(135deg, #3B82F6, #06B6D4)", color: "white", fontSize: 14, fontWeight: 800, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, boxShadow: "0 6px 20px #3B82F630" }}>
+                  {idx + 1 >= fragen.length ? "Ergebnis anzeigen" : "Nächste Frage"} {Icon.next}
+                </button>
+            }
           </div>
         </div>
       </div>
     )
   }
 
-  // ==========================================================================
-  // RESULT SCREEN
-  // ==========================================================================
+  // ── RESULT ────────────────────────────────────────────────────────────────
   if (screen === "result") {
     const total = erg.length
     const correct = erg.filter(e => e.korrekt).length
     const pct = Math.round((correct / total) * 100)
     const passed = pct >= 70
-    const wrong = fragen.filter(f => erg.find(e => e.id === f.id && !e.korrekt))
+    const wrongFragen = fragen.filter(f => erg.find(e => e.id === f.id && !e.korrekt))
 
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto px-4 py-8">
-          {/* Result Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-4">
-              {pct >= 85 ? (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25">
-                  <Trophy className="w-12 h-12 text-white" />
-                </div>
-              ) : passed ? (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                  <CheckCircle2 className="w-12 h-12 text-white" />
-                </div>
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center">
-                  <BookOpen className="w-12 h-12 text-white" />
-                </div>
-              )}
+      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", color: "white", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+        <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 16px" }}>
+
+          {/* Score header */}
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div style={{ width: 100, height: 100, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", background: pct >= 85 ? "linear-gradient(135deg, #F59E0B, #D97706)" : passed ? "linear-gradient(135deg, #10B981, #059669)" : "linear-gradient(135deg, #334155, #1E293B)", boxShadow: pct >= 85 ? "0 0 40px #F59E0B40" : passed ? "0 0 40px #10B98140" : "none" }}>
+              {pct >= 85 ? Icon.trophy : passed
+                ? <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" style={{ width: 48, height: 48 }}><polyline points="20 6 9 17 4 12"/></svg>
+                : <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" style={{ width: 48, height: 48 }}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>}
             </div>
-            
-            <div className={`text-6xl font-black ${passed ? "text-emerald-400" : "text-red-400"}`}>
-              {pct}%
+            <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1, color: passed ? "#10B981" : "#EF4444" }}>{pct}%</div>
+            <div style={{ color: "#64748B", marginTop: 4, fontSize: 14 }}>{correct} von {total} richtig · {mm}:{ss}</div>
+            <div style={{ display: "inline-block", marginTop: 10, padding: "6px 16px", borderRadius: 99, fontSize: 13, fontWeight: 700, background: pct >= 85 ? "#F59E0B20" : passed ? "#10B98120" : "#EF444420", color: pct >= 85 ? "#F59E0B" : passed ? "#10B981" : "#EF4444", border: `1px solid ${pct >= 85 ? "#F59E0B40" : passed ? "#10B98140" : "#EF444440"}` }}>
+              {pct >= 85 ? "🎯 Exzellent — Note GUT!" : passed ? "✓ Bestanden" : "📖 Noch nicht bestanden — weiter üben!"}
             </div>
-            <div className="text-lg font-semibold mt-2">
-              {correct} von {total} Fragen richtig
-            </div>
-            
-            <Badge
-              className={`mt-4 text-sm py-1.5 ${
-                passed
-                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/50"
-                  : "bg-red-500/20 text-red-400 border-red-500/50"
-              }`}
-              variant="outline"
-            >
-              {pct >= 85 ? "Exzellent — Note GUT! 🎯" : passed ? "Bestanden ✓" : "Noch nicht bestanden"}
-            </Badge>
           </div>
 
-          {/* Stats Card */}
-          <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-xl font-bold">{mm}:{ss}</div>
-                  <div className="text-xs text-slate-500">Zeit</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold">{correct}/{total}</div>
-                  <div className="text-xs text-slate-500">Richtig</div>
-                </div>
-                <div>
-                  <div className={`text-xl font-bold ${passed ? "text-emerald-400" : "text-red-400"}`}>{pct}%</div>
-                  <div className="text-xs text-slate-500">Quote</div>
-                </div>
+          {/* Thresholds */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 20 }}>
+            {[{ l: "70% Bestehen", v: 70 }, { l: "85% Ziel 'Gut'", v: 85 }].map(({ l, v }) => (
+              <div key={v} style={{ background: pct >= v ? "#10B98110" : "rgba(255,255,255,0.03)", border: `1px solid ${pct >= v ? "#10B98140" : "rgba(255,255,255,0.06)"}`, borderRadius: 12, padding: "10px 12px", textAlign: "center" }}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: pct >= v ? "#10B981" : "#475569" }}>{pct >= v ? "✓" : "✗"}</div>
+                <div style={{ fontSize: 11, color: "#64748B" }}>{l}</div>
               </div>
-            </CardContent>
-          </Card>
+            ))}
+          </div>
 
-          {/* Wrong Answers */}
-          {wrong.length > 0 && (
-            <Card className="bg-slate-900/50 border-slate-800 mb-6 backdrop-blur">
-              <CardHeader>
-                <CardTitle className="text-sm text-red-400 flex items-center gap-2">
-                  <XCircle className="w-4 h-4" />
-                  {wrong.length} falsch beantwortet
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-64">
-                  <div className="space-y-4">
-                    {wrong.map((f) => (
-                      <div
-                        key={f.id}
-                        className="border-l-2 pl-3"
-                        style={{ borderColor: f.farbe }}
-                      >
-                        <div className="text-xs text-slate-500">[{f.id}] {f.k}</div>
-                        <div className="text-sm font-medium mt-1">{f.q}</div>
-                        <div className="text-xs text-emerald-400 mt-2">
-                          ✓ {f.r.map(r => f.a[r]).join(" | ")}
-                        </div>
-                      </div>
-                    ))}
+          {/* Wrong answers */}
+          {wrongFragen.length > 0 && (
+            <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 16, border: "1px solid rgba(255,255,255,0.06)", marginBottom: 20, overflow: "hidden" }}>
+              <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 12, fontWeight: 700, color: "#EF4444", display: "flex", alignItems: "center", gap: 6 }}>
+                ✗ {wrongFragen.length} falsch beantwortet
+              </div>
+              <div style={{ maxHeight: 220, overflowY: "auto" }}>
+                {wrongFragen.map(f => (
+                  <div key={f.id} style={{ padding: "10px 16px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <div style={{ fontSize: 10, color: FARBEN[f.k] || "#3B82F6", fontWeight: 700, marginBottom: 3 }}>{f.k} [{f.id}]</div>
+                    <div style={{ fontSize: 12, color: "#CBD5E1", marginBottom: 4 }}>{f.q}</div>
+                    <div style={{ fontSize: 11, color: "#10B981" }}>✓ {f.r.map(ri => f.a[ri]).join(" | ")}</div>
                   </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
+                ))}
+              </div>
+            </div>
           )}
 
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={() => setScreen("home")}
-              className="w-full py-6 text-lg font-bold bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600"
-            >
-              <Home className="w-5 h-5 mr-2" />
-              Zurück zum Start
-            </Button>
-            
-            {wrong.length > 0 && (
-              <Button
-                onClick={() => {
-                  setMode("schwach")
-                  start()
-                }}
-                variant="outline"
-                className="w-full py-5 border-slate-700 bg-slate-800/50 text-slate-300 hover:bg-slate-800 hover:text-white"
-              >
-                <Zap className="w-5 h-5 mr-2" />
-                Schwächen nochmal üben
-              </Button>
-            )}
-          </div>
+          {/* Buttons */}
+          <button onClick={() => setScreen("home")}
+            style={{ width: "100%", padding: "15px 0", borderRadius: 16, background: "linear-gradient(135deg, #3B82F6, #06B6D4)", color: "white", fontSize: 14, fontWeight: 800, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 8, boxShadow: "0 6px 20px #3B82F630" }}>
+            {Icon.home} Zurück zum Start
+          </button>
+          {wrongFragen.length > 0 && (
+            <button onClick={() => { setMode("schwach"); start() }}
+              style={{ width: "100%", padding: "13px 0", borderRadius: 16, background: "rgba(255,255,255,0.04)", color: "#F59E0B", fontSize: 13, fontWeight: 700, border: "1px solid #F59E0B30", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              {Icon.zap} Falsche nochmal üben
+            </button>
+          )}
         </div>
       </div>
     )
   }
 
-  // ==========================================================================
-  // STATS SCREEN
-  // ==========================================================================
-  if (screen === "stats") {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-md mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
-            <div className="px-4 py-3 flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScreen("home")}
-                className="text-slate-400 hover:text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <h1 className="font-bold text-lg">Meine Statistik</h1>
-            </div>
-          </div>
-
-          {userStats && userStats.totalAnswers > 0 ? (
+  // ── STATS ─────────────────────────────────────────────────────────────────
+  if (screen === "stats") return (
+    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", color: "white", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+      <div style={{ maxWidth: 420, margin: "0 auto" }}>
+        <div style={{ position: "sticky", top: 0, background: "rgba(15,23,42,0.97)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "12px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={() => setScreen("home")} style={{ width: 32, height: 32, borderRadius: 10, background: "rgba(255,255,255,0.06)", border: "none", color: "#94A3B8", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>{Icon.back}</button>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>Meine Statistik</span>
+          <button onClick={() => { if (window.confirm("Statistik wirklich zurücksetzen?")) { const empty: LocalStats = { totalCorrect: 0, totalWrong: 0, byQuestion: {}, byCat: {} }; saveStats(empty); setStats(empty) } }}
+            style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#EF4444", background: "#EF444415", border: "1px solid #EF444430", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>
+            {Icon.trash} Reset
+          </button>
+        </div>
+        <div style={{ padding: "20px 16px" }}>
+          {totalAnswered > 0 ? (
             <>
-              {/* Overview */}
-              <div className="px-4 py-6">
-                <Card className="bg-slate-900/50 border-slate-800 mb-4">
-                  <CardContent className="pt-6">
-                    <div className="text-center mb-4">
-                      <div className="text-5xl font-black text-cyan-400">{userStats.percentage}%</div>
-                      <div className="text-sm text-slate-500">Gesamtergebnis</div>
+              <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 18, border: "1px solid rgba(255,255,255,0.06)", padding: "20px", marginBottom: 16, textAlign: "center" }}>
+                <div style={{ fontSize: 52, fontWeight: 900, color: "#3B82F6" }}>{pctGlobal}%</div>
+                <div style={{ fontSize: 12, color: "#475569" }}>Gesamtergebnis</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginTop: 16 }}>
+                  {[["✓", "#10B981", stats.totalCorrect, "Richtig"], ["✗", "#EF4444", stats.totalWrong, "Falsch"], ["∑", "#3B82F6", totalAnswered, "Gesamt"]].map(([ic, cl, v, lb]) => (
+                    <div key={lb as string}>
+                      <div style={{ fontSize: 22, fontWeight: 900, color: cl as string }}>{v}</div>
+                      <div style={{ fontSize: 11, color: "#475569" }}>{lb}</div>
                     </div>
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      <div>
-                        <div className="text-xl font-bold text-emerald-400">{userStats.totalCorrect}</div>
-                        <div className="text-xs text-slate-500">Richtig</div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: 18, border: "1px solid rgba(255,255,255,0.06)", padding: "16px" }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#475569", textTransform: "uppercase", letterSpacing: 1, marginBottom: 14 }}>Nach Kategorie</div>
+                {KATEGORIEN.map(cat => {
+                  const bc = stats.byCat[cat] || { correct: 0, wrong: 0 }
+                  const total = bc.correct + bc.wrong
+                  const p = total > 0 ? Math.round((bc.correct / total) * 100) : 0
+                  const c = FARBEN[cat] || "#3B82F6"
+                  return (
+                    <div key={cat} style={{ marginBottom: 14 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4, fontSize: 12 }}>
+                        <span style={{ color: c, fontWeight: 700 }}>{cat}</span>
+                        <span style={{ color: p >= 70 ? "#10B981" : "#F59E0B", fontWeight: 800 }}>{total > 0 ? `${p}%` : "—"}</span>
                       </div>
-                      <div>
-                        <div className="text-xl font-bold text-red-400">{userStats.totalWrong}</div>
-                        <div className="text-xs text-slate-500">Falsch</div>
+                      <div style={{ height: 5, background: "rgba(255,255,255,0.06)", borderRadius: 99, overflow: "hidden" }}>
+                        {total > 0 && <div style={{ height: "100%", width: `${p}%`, background: c, borderRadius: 99 }} />}
                       </div>
-                      <div>
-                        <div className="text-xl font-bold">{userStats.questionCount}</div>
-                        <div className="text-xs text-slate-500">Fragen</div>
-                      </div>
+                      <div style={{ fontSize: 10, color: "#334155", marginTop: 3 }}>✓ {bc.correct} · ✗ {bc.wrong} · {DB.filter(f => f.k === cat).length} Fragen gesamt</div>
                     </div>
-                  </CardContent>
-                </Card>
-
-                {/* Category Stats */}
-                <Card className="bg-slate-900/50 border-slate-800">
-                  <CardHeader>
-                    <CardTitle className="text-sm text-slate-400">Nach Kategorie</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    {Object.entries(userStats.categoryStats).map(([cat, stats]) => {
-                      const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0
-                      const fc = ALLE_FRAGEN.find(f => f.k === cat)?.farbe || "#06b6d4"
-                      
-                      return (
-                        <div key={cat} className="space-y-1">
-                          <div className="flex justify-between text-sm">
-                            <span style={{ color: fc }}>{cat}</span>
-                            <span className={pct >= 70 ? "text-emerald-400" : "text-amber-400"}>{pct}%</span>
-                          </div>
-                          <Progress value={pct} className="h-1.5" />
-                          <div className="text-xs text-slate-500">
-                            ✓ {stats.correct} · ✗ {stats.wrong}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </CardContent>
-                </Card>
+                  )
+                })}
               </div>
             </>
           ) : (
-            <div className="text-center py-20 text-slate-500">
-              <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>Noch keine Fragen beantwortet.</p>
-              <Button
-                onClick={() => setScreen("home")}
-                className="mt-4"
-                variant="outline"
-              >
-                Quiz starten
-              </Button>
+            <div style={{ textAlign: "center", padding: "60px 0", color: "#334155" }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>📊</div>
+              <div style={{ fontSize: 14 }}>Noch keine Statistik vorhanden.</div>
+              <button onClick={() => setScreen("home")} style={{ marginTop: 16, padding: "10px 24px", borderRadius: 12, background: "#3B82F6", color: "white", border: "none", cursor: "pointer", fontWeight: 700 }}>Quiz starten</button>
             </div>
           )}
         </div>
       </div>
-    )
-  }
-
-  // ==========================================================================
-  // ADMIN SCREEN
-  // ==========================================================================
-  if (screen === "admin" && adminStats) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-        <div className="max-w-2xl mx-auto">
-          {/* Header */}
-          <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800">
-            <div className="px-4 py-3 flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScreen("home")}
-                className="text-slate-400 hover:text-white"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <h1 className="font-bold text-lg">Admin Dashboard</h1>
-              <Badge className="ml-auto bg-amber-500/20 text-amber-400 border-amber-500/50">
-                <Shield className="w-3 h-3 mr-1" />
-                Admin
-              </Badge>
-            </div>
-          </div>
-
-          <div className="px-4 py-6 space-y-4">
-            {/* Overview Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Card className="bg-slate-900/50 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <Users className="w-6 h-6 mx-auto text-cyan-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.totalUsers}</div>
-                  <div className="text-xs text-slate-500">Benutzer</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-slate-900/50 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <Activity className="w-6 h-6 mx-auto text-emerald-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.dailyActiveUsers}</div>
-                  <div className="text-xs text-slate-500">Heute aktiv</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-slate-900/50 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <Target className="w-6 h-6 mx-auto text-amber-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.totalSessions}</div>
-                  <div className="text-xs text-slate-500">Sessions</div>
-                </CardContent>
-              </Card>
-              <Card className="bg-slate-900/50 border-slate-800">
-                <CardContent className="pt-4 text-center">
-                  <BarChart3 className="w-6 h-6 mx-auto text-purple-400 mb-2" />
-                  <div className="text-2xl font-bold">{adminStats.weeklySessions}</div>
-                  <div className="text-xs text-slate-500">Diese Woche</div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Total Answers */}
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardContent className="pt-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="text-sm text-slate-400">Insgesamt beantwortet</div>
-                    <div className="text-2xl font-bold">
-                      {adminStats.totalCorrect + adminStats.totalWrong} Fragen
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-emerald-400">✓ {adminStats.totalCorrect}</div>
-                    <div className="text-red-400">✗ {adminStats.totalWrong}</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Users List */}
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-sm text-slate-400 flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Benutzer ({adminStats.users.length})
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-80">
-                  <div className="space-y-2">
-                    {adminStats.users.map((u: any) => (
-                      <div
-                        key={u.id}
-                        className="p-3 rounded-lg bg-slate-800/50 flex items-center gap-3"
-                      >
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center text-white font-bold">
-                          {(u.name || u.email || '?').charAt(0).toUpperCase()}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">
-                            {u.name || u.email}
-                          </div>
-                          <div className="text-xs text-slate-500">{u.email}</div>
-                          <div className="text-xs text-slate-500">
-                            {u.questionsAnswered || 0} Fragen beantwortet
-                          </div>
-                        </div>
-                        <div className="text-right text-xs">
-                          <div className="text-slate-400">{u.sessionCount} Sessions</div>
-                          <div className={u.percentage >= 70 ? "text-emerald-400" : "text-amber-400"}>
-                            {u.percentage}% richtig
-                          </div>
-                        </div>
-                        {u.role === 'admin' && (
-                          <Badge className="bg-purple-500/20 text-purple-400">Admin</Badge>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card className="bg-slate-900/50 border-slate-800">
-              <CardHeader>
-                <CardTitle className="text-sm text-slate-400 flex items-center gap-2">
-                  <Activity className="w-4 h-4" />
-                  Letzte Aktivität
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-60">
-                  <div className="space-y-2">
-                    {adminStats.recentActivity.map((a: any, i: number) => (
-                      <div key={i} className="flex items-center gap-3 py-2 border-b border-slate-800 last:border-0">
-                        <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs">
-                          {a.action === 'login' && <LogIn className="w-4 h-4 text-emerald-400" />}
-                          {a.action === 'register' && <UserPlus className="w-4 h-4 text-cyan-400" />}
-                          {a.action === 'quiz_complete' && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
-                          {a.action === 'logout' && <LogOut className="w-4 h-4 text-slate-400" />}
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-sm">{a.userName}</div>
-                          <div className="text-xs text-slate-500">{a.action}</div>
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          {new Date(a.createdAt).toLocaleString('de-DE')}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    )
-  }
+    </div>
+  )
 
   return null
 }
