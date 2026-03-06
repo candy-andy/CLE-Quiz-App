@@ -291,6 +291,334 @@ const DB = [
   {id:"B10",k:"BGM",s:"schwer",q:"Was ist das PERMA-Modell nach Martin Seligman?",
    a:["Positive Emotions, Engagement (Flow), Relationships (tragende Beziehungen).","Meaning (Sinn/Bedeutung), Achievement (Leistungserfolge).","FK können durch Führungsverhalten alle 5 PERMA-Elemente fördern.","PERMA beschreibt ausschließlich Maßnahmen gegen körperliche Erkrankungen."],
    r:[0,1,2],e:"Seligman (Positive Psychologie): PERMA = Wohlbefinden. FK als 'Klima-Architekt': Wertschätzung (P), Flow-Aufgaben (E), Teamkultur (R), Sinn kommunizieren (M), Erfolge sichtbar machen (A)."},
+
+  // ── FÜHRUNG ERWEITERT (F19–F30) ───────────────────────────────────────────
+  {id:"F19",k:"Führung",s:"mittel",q:"Was beschreibt das Konzept der dienenden Führung (Servant Leadership)?",
+   a:["FK versteht sich als Dienstleister für das Team, nicht als Befehlsgeber.","Bedürfnisse und Entwicklung der MA stehen im Mittelpunkt.","Servant Leader schaffen Rahmenbedingungen, damit MA erfolgreich sein können.","Servant Leadership bedeutet: FK erledigt alle Aufgaben selbst."],
+   r:[0,1,2],e:"Greenleaf (1970): Servant Leader fragt 'Was braucht mein Team, um erfolgreich zu sein?' statt 'Was will ich durchsetzen?'. Sehr wirksam für R3/R4-MA. Gegenteil von Micro-Management."},
+
+  {id:"F20",k:"Führung",s:"leicht",q:"Was sind Merkmale eines guten Leitbilds (Mission/Vision)?",
+   a:["Vision: beschreibt den angestrebten Zukunftszustand ('Wohin wollen wir?').","Mission: beschreibt den Zweck und Daseinsberechtigung der Organisation ('Warum existieren wir?').","Ein gutes Leitbild ist konkret, inspirierend und handlungsleitend.","Leitbilder sind ausschließlich für große Konzerne relevant."],
+   r:[0,1,2],e:"Vision = Nordstern (Zukunftsbild). Mission = Zweck (heutiger Auftrag). Werte = Spielregeln. Gutes Leitbild: kurz, merkbar, handlungsleitend — nicht Marketingphrase. Im Shopfloor: 'Zero Defects' als gelebte Vision."},
+
+  {id:"F21",k:"Führung",s:"schwer",q:"Was beschreibt das VUCA-Modell und welche Führungsimplikationen hat es?",
+   a:["VUCA = Volatility (Flüchtigkeit), Uncertainty (Unsicherheit), Complexity (Komplexität), Ambiguity (Mehrdeutigkeit).","VUCA-Welt erfordert agile, anpassungsfähige Führung statt starrer Strukturen.","Transparente Kommunikation und psychologische Sicherheit werden in VUCA wichtiger.","In VUCA-Umgebungen ist autoritäre Führung dauerhaft am effektivsten."],
+   r:[0,1,2],e:"VUCA (US-Militär, 1990er): Beschreibt moderne Umweltbedingungen. Antwort auf VUCA: Vision (gegen V), Understanding (gegen U), Clarity (gegen C), Agility (gegen A). FK braucht höhere Ambiguitätstoleranz."},
+
+  {id:"F22",k:"Führung",s:"mittel",q:"Was beschreibt das Prinzip 'Management by Objectives' (MbO)?",
+   a:["Führung durch Zielvereinbarung statt durch Anweisung.","MA und FK vereinbaren gemeinsam messbare Ziele.","MA erhalten Handlungsspielraum bei der Wahl der Mittel zur Zielerreichung.","MbO funktioniert ausschließlich mit rein quantitativen Zielen."],
+   r:[0,1,2],e:"MbO (Drucker, 1954): Ziele werden vereinbart (nicht verordnet). MA wählen selbst den Weg. Stärke: Eigenverantwortung. Schwäche: Kurzfristdenken wenn nur quantitative KPIs. Ergänzung: OKR (Objectives & Key Results)."},
+
+  {id:"F23",k:"Führung",s:"mittel",q:"Was sind Anzeichen eines dysfunktionalen Teams nach Lencioni?",
+   a:["Fehlendes Vertrauen: MA schützen sich statt offen zu sein.","Konfliktscheu: Themen werden nicht offen angesprochen.","Fehlende Verbindlichkeit: Entscheidungen werden nicht wirklich mitgetragen.","Zu viel Vertrauen und offene Kommunikation führen zu Teamdysfunktion."],
+   r:[0,1,2],e:"Lencioni '5 Dysfunctions': Fehlendes Vertrauen → Konfliktscheu → fehlende Verbindlichkeit → Verantwortungslosigkeit → Gleichgültigkeit ggü. Ergebnissen. Basis ist immer Vertrauen — ohne es kollabiert alles andere."},
+
+  {id:"F24",k:"Führung",s:"leicht",q:"Was ist der Unterschied zwischen Führung und Management?",
+   a:["Management: Planung, Organisation, Kontrolle von Strukturen und Prozessen.","Führung: Motivation, Inspiration, Ausrichtung von Menschen auf Ziele.","Beide Fähigkeiten sind für eine FK notwendig.","Führung und Management sind identisch und austauschbar."],
+   r:[0,1,2],e:"Kotter: Manager tun Dinge richtig (Effizienz), Leader tun die richtigen Dinge (Effektivität). Eine FK braucht beides: Management = Komplexität beherrschen, Leadership = Wandel gestalten."},
+
+  {id:"F25",k:"Führung",s:"schwer",q:"Was beschreibt das Konzept der emotionalen Intelligenz nach Goleman?",
+   a:["Selbstwahrnehmung: eigene Emotionen erkennen und verstehen.","Selbstregulation: Impulse kontrollieren und Emotionen steuern.","Empathie: Gefühle anderer wahrnehmen und darauf eingehen.","Soziale Kompetenz: Beziehungen gestalten und Netzwerke aufbauen."],
+   r:[0,1,2,3],e:"Goleman 5 Dimensionen: Selbstwahrnehmung, Selbstregulation, Motivation (intrinsisch), Empathie, soziale Kompetenz. EQ ist stärker als IQ als Prädiktor für Führungserfolg. Gute Nachricht: EQ ist trainierbar."},
+
+  {id:"F26",k:"Führung",s:"mittel",q:"Was beschreibt das Prinzip der Führung auf Distanz (Remote Leadership)?",
+   a:["Vertrauen ist wichtiger als Kontrolle — Ergebnisse statt Anwesenheit zählen.","Regelmäßige, strukturierte Kommunikation (Check-ins) ist entscheidend.","Digitale Tools ersetzen keine Beziehungsarbeit — persönlicher Kontakt bleibt wichtig.","Remote Arbeit erfordert ausschließlich mehr Kontrolle und engeres Monitoring."],
+   r:[0,1,2],e:"Remote Leadership: Output-Orientierung (Ergebnisse) statt Input-Kontrolle (Stunden). Kommunikationsfrequenz erhöhen (nicht verringern). Informelle Kanäle (Kaffee-Calls) gezielt schaffen. Psychologische Sicherheit über Distanz schwieriger — FK muss aktiver daran arbeiten."},
+
+  {id:"F27",k:"Führung",s:"leicht",q:"Was ist Unternehmenskultur und wie entsteht sie?",
+   a:["Summe der geteilten Werte, Überzeugungen und Verhaltensweisen einer Organisation.","Entsteht durch Vorbilder (besonders FK-Verhalten), Geschichte und Rituale.","Kulturwandel dauert lange — 3 bis 7 Jahre sind realistisch.","Unternehmenskultur kann durch ein einmaliges Workshop-Event grundlegend verändert werden."],
+   r:[0,1,2],e:"Schein: Kultur = sichtbare Artefakte + proklamierte Werte + Grundannahmen (tiefste Ebene, schwerst veränderbar). FK-Verhalten ist das stärkste Kultursignal — was FK toleriert oder bestraft, formt Kultur."},
+
+  {id:"F28",k:"Führung",s:"mittel",q:"Was beschreibt die Theorie U nach Otto Scharmer?",
+   a:["Prozess des tiefgreifenden Lernens und Wandels in 5 Phasen (U-Bewegung).","Kernprinzip: Aus der Zukunft heraus führen statt aus der Vergangenheit heraus zu reagieren.","Presencing: Tiefes Zuhören und Wahrnehmen als Voraussetzung für Innovation.","Theorie U ist ausschließlich für Einzelpersonen, nicht für Organisationen relevant."],
+   r:[0,1,2],e:"Scharmer (MIT): U-Bewegung: Downloading (Altes) → Seeing → Sensing → Presencing (Zukunft spüren) → Crystallizing → Prototyping → Performing. Relevant für komplexe Transformationsprozesse in Organisationen."},
+
+  {id:"F29",k:"Führung",s:"mittel",q:"Was sind typische Führungsfehler in der Praxis?",
+   a:["Micro-Management: zu enge Kontrolle untergräbt MA-Autonomie und Motivation.","Fehlende Wertschätzung: Leistungen werden nicht anerkannt.","Inkonsistenz: andere Maßstäbe für sich selbst als für das Team.","Zu viel Delegation und zu wenig Kontrolle ist der häufigste Führungsfehler."],
+   r:[0,1,2],e:"Häufigste Führungsfehler (Gallup): Micro-Management, fehlende Anerkennung, Inkonsistenz, schlechte Kommunikation, Schuldverschiebung. Delegation mit Nachverfolgung (nicht Kontrolle) ist Stärke, nicht Fehler."},
+
+  {id:"F30",k:"Führung",s:"schwer",q:"Was beschreibt agile Führung?",
+   a:["Iteratives Vorgehen: kurze Zyklen mit schnellem Feedback statt langer Planung.","Selbstorganisation von Teams als Ziel: FK moderiert statt dirigiert.","Fehlerkultur: schnelles Scheitern und Lernen ist erwünscht ('Fail fast, learn fast').","Agile Führung funktioniert ausschließlich in der IT und Softwareentwicklung."],
+   r:[0,1,2],e:"Agile Führung (Scrum, Kanban, OKR): Iterativ, inkrementell, selbstorganisiert. FK-Rolle wandelt sich: von Anweiser zu Enabler. Auch in Produktion anwendbar: Kanban-Boards, Sprint-Reviews für KVP-Teams."},
+
+  // ── KOMMUNIKATION ERWEITERT (K13–K20) ─────────────────────────────────────
+  {id:"K13",k:"Kommunikation",s:"mittel",q:"Was beschreibt das Konzept des Reframings in der Kommunikation?",
+   a:["Umdeutung: einer Situation oder Aussage einen neuen Bedeutungsrahmen geben.","Reframing verändert nicht die Fakten, aber die Perspektive darauf.","Wird gezielt eingesetzt, um Blockaden aufzulösen und neue Lösungsräume zu öffnen.","Reframing ist manipulativ und sollte in der FK-Kommunikation vermieden werden."],
+   r:[0,1,2],e:"Reframing (NLP, systemisches Coaching): 'Das Glas ist halb leer' → 'Das Glas ist halb voll.' Im Change Management: 'Problem' → 'Herausforderung' → 'Lernchance'. Wirksam bei Widerstand."},
+
+  {id:"K14",k:"Kommunikation",s:"leicht",q:"Was sind offene vs. geschlossene Fragen im Führungsgespräch?",
+   a:["Offene Fragen (W-Fragen) fördern Reflexion und ausführliche Antworten.","Geschlossene Fragen ermöglichen klare Ja/Nein-Entscheidungen.","Offene Fragen sind in der Diagnose und im Coaching vorzuziehen.","Geschlossene Fragen sind immer besser als offene Fragen."],
+   r:[0,1,2],e:"Offene Fragen: Wer, Was, Wie, Warum, Wann, Wozu → Gespräch öffnen. Geschlossene Fragen: 'Bist du einverstanden?' → Entscheidung herbeiführen. Taktik: Exploration zuerst (offen), dann Bestätigung (geschlossen)."},
+
+  {id:"K15",k:"Kommunikation",s:"mittel",q:"Was sind Störungen in der Kommunikation nach dem Sender-Empfänger-Modell?",
+   a:["Enkodierungsfehler: Sender formuliert Botschaft unklar oder missverständlich.","Übertragungsstörungen: Lärm, schlechtes Medium, Informationsüberflutung.","Dekodierungsfehler: Empfänger interpretiert Botschaft falsch.","Sender und Empfänger können nie misseinander missverstehen wenn sie dieselbe Sprache sprechen."],
+   r:[0,1,2],e:"Shannon/Weaver Modell: Sender → Kanal → Empfänger. Störquellen auf jeder Ebene. Lösung: Rückmeldung (Feedback-Schleife), klare Sprache, richtiges Medium wählen (Komplexes = persönlich, nicht E-Mail)."},
+
+  {id:"K16",k:"Kommunikation",s:"schwer",q:"Was beschreibt das Konzept der Metakommunikation?",
+   a:["Kommunikation über Kommunikation — Gespräch über den Gesprächsprozess selbst.","'Ich merke, wir reden aneinander vorbei — lass uns kurz innehalten.'","Metakommunikation hilft, festgefahrene Gespräche zu entsperren.","Metakommunikation ist nur in der Therapie, nicht im Führungsalltag anwendbar."],
+   r:[0,1,2],e:"Watzlawick: Beziehungsaspekt überlagert Inhaltsaspekt → Metakommunikation als Werkzeug. Satz: 'Ich möchte kurz darüber sprechen, wie wir gerade miteinander kommunizieren.' Sehr wirksam bei eskalierten Gesprächen."},
+
+  {id:"K17",k:"Kommunikation",s:"mittel",q:"Was sind Grundregeln für Meetings und Besprechungen?",
+   a:["Klare Agenda vorab — Ziel und Zeitrahmen jedes Tagesordnungspunktes.","Richtige Teilnehmerzahl: nur wer entscheiden oder beitragen kann.","Ergebnisprotokoll mit Maßnahmen, Verantwortlichen und Terminen (WANN-WER-WAS).","Je mehr Teilnehmer in einem Meeting, desto produktiver ist es."],
+   r:[0,1,2],e:"Meetings: Agenda = Pflicht. 'Two-Pizza-Rule' (Bezos): Team sollte von 2 Pizzen satt werden ≈ max 8 Personen. Protokoll: WANN-WER-WAS. Häufigster Fehler: Meeting ohne klares Ziel. Steh-Meetings verkürzen Dauer um ~34%."},
+
+  {id:"K18",k:"Kommunikation",s:"leicht",q:"Was ist der Unterschied zwischen asynchroner und synchroner Kommunikation?",
+   a:["Synchron: beide Parteien kommunizieren zeitgleich (Meeting, Telefon, Chat).","Asynchron: zeitversetzt (E-Mail, Nachricht, Video-Aufzeichnung).","Asynchrone Kommunikation ermöglicht durchdachtere Antworten und weniger Unterbrechungen.","Synchrone Kommunikation ist immer besser als asynchrone Kommunikation."],
+   r:[0,1,2],e:"Remote-Work-Erkenntnis: Asynchron = tiefere Arbeit möglich, weltweite Zusammenarbeit. Synchron = schnelle Entscheidungen, emotionale Verbindung. Faustregel: Komplex und emotional = synchron. Einfach und informativ = asynchron."},
+
+  {id:"K19",k:"Kommunikation",s:"mittel",q:"Was beschreibt Storytelling als Führungsinstrument?",
+   a:["Botschaften in Geschichten verpacken erhöht Merkfähigkeit und emotionale Wirkung.","Gute Stories haben Struktur: Ausgangslage → Herausforderung → Wendepunkt → Lösung.","Authentische, persönliche Geschichten wirken stärker als abstrakte Daten.","Storytelling ist nur in der Werbung und nicht in der Führungskommunikation relevant."],
+   r:[0,1,2],e:"Neurowissenschaft: Gehirn verarbeitet Geschichten 22× stärker als Fakten (Stanford-Studie). 'Daten informieren, Geschichten inspirieren.' FK-Anwendung: Veränderungen mit konkreten Beispielen erklären, nicht nur Folien zeigen."},
+
+  {id:"K20",k:"Kommunikation",s:"schwer",q:"Was sind typische Gesprächsfallen in schwierigen Führungsgesprächen?",
+   a:["Verallgemeinerungen: 'Immer', 'Nie', 'Alle' eskalieren Gespräche.","Ratschläge geben bevor das Problem vollständig verstanden ist.","Killerphrasen: 'Das haben wir noch nie so gemacht.' blockieren Entwicklung.","Direkte, konfrontative Gesprächsführung führt immer zu Konflikten."],
+   r:[0,1,2],e:"Gesprächsfallen: Verallgemeinerungen (schwer zu widerlegen), vorschnelle Ratschläge (MA fühlt sich nicht gehört), Killerphrasen (Kreativität töten), Weglachen. Direktheit ≠ Konfrontation — direkt UND respektvoll ist möglich und nötig."},
+
+  // ── MOTIVATION ERWEITERT (M11–M20) ────────────────────────────────────────
+  {id:"M11",k:"Motivation",s:"mittel",q:"Was beschreibt das GROW-Modell im Coaching?",
+   a:["G = Goal: Was ist das konkrete Ziel des Gesprächs?","R = Reality: Wie ist die aktuelle Situation realistisch?","O = Options: Welche Möglichkeiten gibt es?","W = Will/Way forward: Was wird konkret als nächstes getan?"],
+   r:[0,1,2,3],e:"GROW (Whitmore): Strukturiertes Coaching-Gespräch. FK als Coach statt als Problemlöser. Wichtig: FK stellt Fragen, gibt nicht die Antwort vor. GROW erhöht Eigenverantwortung des MA deutlich."},
+
+  {id:"M12",k:"Motivation",s:"leicht",q:"Was beschreibt Anerkennung als Motivationsinstrument?",
+   a:["Spezifisches Lob ('Du hast X getan und damit Y erreicht') wirkt stärker als pauschales Lob.","Anerkennung muss zeitnah nach der Leistung gegeben werden.","Öffentliches Lob vor dem Team kann starke Motivationswirkung haben.","Anerkennung verliert ihre Wirkung wenn sie zu häufig gegeben wird."],
+   r:[0,1,2],e:"Lob-Regeln: Spezifisch (nicht 'gut gemacht', sondern 'Du hast die Reklamation in 2h gelöst und den Kunden gehalten — das war ausgezeichnet.'), zeitnah, verhältnismäßig. Öffentliches Lob = Motivator für ganzes Team. Zu häufiges Lob ohne Substanz = Inflationierung."},
+
+  {id:"M13",k:"Motivation",s:"mittel",q:"Was sind Unterschiede zwischen kurzfristiger und langfristiger Motivation?",
+   a:["Kurzfristig: Prämien, Lob, Wettbewerbe — schnelle Wirkung, verpufft oft.","Langfristig: Sinn, Entwicklung, Autonomie — langsamer aufgebaut, nachhaltiger.","FK-Aufgabe: kurzfristige Impulse mit langfristigen Faktoren kombinieren.","Langfristige Motivation existiert nicht — Motivation ist immer kurzfristig."],
+   r:[0,1,2],e:"Pink (Drive): Für Routineaufgaben = externe Belohnung. Für kreative/komplexe Aufgaben = intrinsische Motivation (Autonomie, Meisterschaft, Sinn). Fehler: Instrumente verwechseln (Prämie für kreative Arbeit = Korrumpierungseffekt)."},
+
+  {id:"M14",k:"Motivation",s:"schwer",q:"Was beschreibt das Konzept 'Gamification' zur Motivationssteigerung?",
+   a:["Spielelemente (Punkte, Level, Ranglisten) in nicht-spielerischen Kontexten einsetzen.","Gamification nutzt intrinsische Motivationsmechanismen: Fortschritt, Wettbewerb, Mastery.","Wirksam wenn die Grundaufgabe sinnvoll ist — ersetzt keinen Sinn.","Gamification ist nur für junge Mitarbeitende unter 30 Jahren wirksam."],
+   r:[0,1,2],e:"Gamification: Fortschrittsbalken, Achievements, Bestenlisten. Wirkt weil Gehirn Belohnungssystem aktiviert wird. Risiko: Wenn Belohnung entfällt → Demotivation. Dauerhaft nur wirksam wenn Aufgabe selbst bedeutsam ist."},
+
+  {id:"M15",k:"Motivation",s:"mittel",q:"Was sind Anzeichen von innerer Kündigung bei Mitarbeitenden?",
+   a:["Dienst nach Vorschrift: minimale Leistung, keine Eigeninitiative mehr.","Rückzug aus informellen Gesprächen und Teamaktivitäten.","Keine Ideen mehr, keine Verbesserungsvorschläge, keine Kritik.","Vollständige Arbeitsverweigerung und offene Auseinandersetzung."],
+   r:[0,1,2],e:"Innere Kündigung ≠ formale Kündigung. Gallup: ~15% der deutschen Beschäftigten haben innerlich gekündigt (2023). Kostet ca. 13.000 Euro/MA/Jahr. Frühzeichen: keine Ideen + keine Kritik = gefährlicher als offene Kritik."},
+
+  {id:"M16",k:"Motivation",s:"leicht",q:"Was beschreibt das Konzept 'Job Crafting'?",
+   a:["MA gestalten ihre Rolle aktiv mit — passen Aufgaben und Beziehungen an eigene Stärken an.","Erhöht Engagement und Sinnerleben ohne formale Stellenänderung.","FK können Job Crafting aktiv fördern und als Entwicklungsinstrument nutzen.","Job Crafting ist unerwünschte Eigenmächtigkeit und sollte verhindert werden."],
+   r:[0,1,2],e:"Wrzesniewski/Dutton: MA die ihre Rolle aktiv gestalten (Task, Relationship, Cognitive Crafting) sind produktiver und zufriedener. FK: 'Was könntest du in deiner Rolle anders gestalten, um mehr Sinn zu erleben?' = starke Entwicklungsfrage."},
+
+  {id:"M17",k:"Motivation",s:"mittel",q:"Was beschreibt das Konzept 'Psychological Contract'?",
+   a:["Ungeschriebene gegenseitige Erwartungen zwischen MA und Arbeitgeber.","Verletzung des psychologischen Vertrags führt zu Vertrauensverlust und Demotivation.","Entsteht durch Versprechungen im Recruiting, Onboarding und alltägliches Führungsverhalten.","Der psychologische Vertrag ist rechtlich bindend und einklagbar."],
+   r:[0,1,2],e:"Rousseau: 'Ich gebe mehr als vereinbart, wenn ich Vertrauen habe — und weniger wenn es gebrochen ist.' Typische Verletzungen: versprochene Beförderung kommt nicht, Arbeitsklima-Versprechen nicht gehalten. Nicht einklagbar, aber hochgradig verhaltensrelevant."},
+
+  {id:"M18",k:"Motivation",s:"schwer",q:"Was ist der Zusammenhang zwischen Autonomie und Motivation?",
+   a:["Höhere Autonomie → höhere intrinsische Motivation und Eigenverantwortung.","SDT: Autonomie ist eines der drei Grundbedürfnisse für intrinsische Motivation.","Autonomie braucht Kompetenz als Voraussetzung — unkompetente Autonomie erzeugt Stress.","Vollständige Autonomie ohne jede Struktur ist immer optimal für alle MA."],
+   r:[0,1,2],e:"Deci/Ryan: Autonomy-Support = FK gibt Wahlmöglichkeiten, erklärt Warum, minimiert Druck. Aber: Autonomie ohne Kompetenz = Überforderung (R1-MA braucht Anweisung). Passend zu Hersey/Blanchard: Reifegrad bestimmt optimale Autonomiemenge."},
+
+  {id:"M19",k:"Motivation",s:"mittel",q:"Was sind wirksame Maßnahmen gegen demotivierendes Micro-Management?",
+   a:["Klare Ziele und Erwartungen kommunizieren statt Wege vorzuschreiben.","Regelmäßige, strukturierte Check-ins statt permanenter Kontrolle.","Vertrauen aufbauen durch kleine, schrittweise Delegation mit Erfolgserlebnissen.","Micro-Management ist in allen Situationen dysfunktional."],
+   r:[0,1,2],e:"Micro-Management entsteht oft aus Kontrollbedürfnis oder Angst vor Fehlern. Lösung: SMART-Ziele + vereinbarte Meilensteine = Kontrolle ohne Kontrolle. Ausnahme: R1-MA brauchen enge Begleitung (kein Micro-Management, aber strukturiertes Directing)."},
+
+  {id:"M20",k:"Motivation",s:"leicht",q:"Was sind die Grundlagen von Lob und Kritik als Führungsinstrumente?",
+   a:["Lob muss spezifisch, zeitnah und aufrichtig sein — nicht formelhaft.","Kritik wird konstruktiv wenn sie Verhalten (nicht Person) adressiert und lösungsorientiert ist.","Das Verhältnis von positivem zu kritischem Feedback sollte ca. 5:1 betragen.","Kritik sollte immer öffentlich ausgesprochen werden damit das Team davon lernt."],
+   r:[0,1,2],e:"Losada-Ratio (5:1): Hochleistungs-Teams haben ca. 5 positive auf 1 kritische Interaktion. Nicht nur Lob stapeln — Kritik ist wichtig aber im richtigen Rahmen. Öffentliche Kritik verletzt Würde und löst kollektive Abwehr aus."},
+
+  // ── KONFLIKT ERWEITERT (KO11–KO20) ────────────────────────────────────────
+  {id:"KO11",k:"Konflikt",s:"mittel",q:"Was sind die häufigsten Fehler im Umgang mit Konflikten als FK?",
+   a:["Zu langes Wegschauen: Konflikte früh ansprechen verhindert Eskalation.","Partei ergreifen: FK verliert Vertrauen beider Seiten wenn sie sich positioniert.","Schnelle Lösung oktroyieren statt Ursachen zu klären.","Konflikte sofort und ohne Vorbereitung ansprechen um Dynamik zu stoppen."],
+   r:[0,1,2],e:"FK-Fehler: Zuwarten (Konflikt eskaliert), Partei ergreifen (Vertrauensverlust), Pseudo-Lösung (symptomatisch statt kausal). Richtig: Früh ansprechen, allparteilich bleiben, Ursachen klären, dann gemeinsam lösen."},
+
+  {id:"KO12",k:"Konflikt",s:"leicht",q:"Was ist der Unterschied zwischen Konflikt und Meinungsverschiedenheit?",
+   a:["Meinungsverschiedenheit: sachliche Differenz ohne emotionale Eskalation.","Konflikt: emotionale Beteiligung, Beziehungsebene berührt, Verhalten ändert sich.","Meinungsverschiedenheiten können produktiv sein und zu besseren Entscheidungen führen.","Jede Meinungsverschiedenheit ist ein Konflikt und muss sofort gelöst werden."],
+   r:[0,1,2],e:"Gesunde Teams haben Meinungsverschiedenheiten — das ist Zeichen von psychologischer Sicherheit. Konflikt entsteht wenn Beziehungsebene verletzt wird. FK-Aufgabe: Sachkonflikte produktiv halten, Beziehungskonflikte früh bearbeiten."},
+
+  {id:"KO13",k:"Konflikt",s:"schwer",q:"Was beschreibt das Win-Win-Prinzip in der Konfliktlösung?",
+   a:["Beide Parteien gewinnen etwas — Lösung ist besser als bloßer Kompromiss.","Voraussetzung: Interessen statt Positionen in den Fokus nehmen.","Kreative Optionen entwickeln, die vorher nicht sichtbar waren.","Win-Win ist in der Praxis nicht realisierbar — immer gibt es Gewinner und Verlierer."],
+   r:[0,1,2],e:"Win-Win (Harvard-Modell): Kompromiss = beide geben etwas auf (50-50). Win-Win = beide gewinnen durch kreative Lösung. Voraussetzung: Vertrauen + Offenheit + Bereitschaft, Interessen zu teilen. Im Arbeitskontext möglich wenn Beziehung erhalten werden soll."},
+
+  {id:"KO14",k:"Konflikt",s:"mittel",q:"Was sind Merkmale einer konstruktiven Streitkultur im Team?",
+   a:["Sachkonflikte werden offen ausgetragen ohne persönliche Angriffe.","Unterschiedliche Meinungen werden als Bereicherung gesehen, nicht als Bedrohung.","Es gibt vereinbarte Spielregeln für Diskussionen (z.B. eine Person spricht).","In konstruktiven Teams gibt es keine Konflikte."],
+   r:[0,1,2],e:"Edmondson: Konstruktive Streitkultur = Zeichen von Reife und psychologischer Sicherheit. Teams ohne sichtbare Konflikte haben oft latente Konflikte oder Groupthink. FK-Aufgabe: Diskussion moderieren, Spielregeln setzen, Ergebnisse festhalten."},
+
+  {id:"KO15",k:"Konflikt",s:"leicht",q:"Was sind Phasen eines professionellen Konfliktgesprächs?",
+   a:["Vorbereitung: eigene Position und Ziele klären, ruhige Situation wählen.","Eröffnung: Gesprächsziel und Wertschätzungsrahmen setzen.","Problemdarstellung beider Seiten ohne Unterbrechung.","Lösungsfindung und verbindliche Vereinbarung mit konkreten Schritten."],
+   r:[0,1,2,3],e:"Konfliktgespräch-Ablauf: 1)Vorbereitung (Was will ich erreichen?) 2)Eröffnung (Rahmen setzen) 3)Zuhören (aktiv, ohne zu unterbrechen) 4)Problemanalyse 5)Lösungen entwickeln 6)Vereinbarung schriftlich fixieren 7)Nachfassen."},
+
+  {id:"KO16",k:"Konflikt",s:"schwer",q:"Was sind Anzeichen für Mobbing am Arbeitsplatz?",
+   a:["Systematisches Ausgrenzen: keine Informationen mehr erhalten, von Meetings ausgeschlossen.","Permanente ungerechtfertigte Kritik und Arbeitserschwernisse.","Gerüchte und Verleumdungen über die betroffene Person.","Einmalige harsche Kritik durch die FK ist bereits Mobbing."],
+   r:[0,1,2],e:"Leymann-Handlungen: Angriffe auf Kommunikation (ignorieren, unterbrechen), soziale Beziehungen (isolieren), Reputation (lächerlich machen), Berufsausübung (sinnlose Aufgaben), Gesundheit (körperliche Bedrohung). Einmalig = kein Mobbing."},
+
+  {id:"KO17",k:"Konflikt",s:"mittel",q:"Was sind FK-Pflichten bei Mobbingverdacht?",
+   a:["Sofortiges Handeln: abwarten verschlimmert die Situation.","Dokumentation: Vorfälle schriftlich festhalten (Datum, Beteiligte, Vorfall).","HR und ggf. Betriebsrat einschalten — nicht alleine lösen.","FK darf bei Mobbing zwischen Kollegen nicht eingreifen."],
+   r:[0,1,2],e:"Fürsorgepflicht (§618 BGB): FK muss bei Mobbingverdacht handeln. Schritte: Dokumentieren → Gespräch mit Betroffenen → HR/BR einschalten → ggf. externe Beratung. Nicht einzugreifen = Duldung = Haftungsrisiko für AG."},
+
+  {id:"KO18",k:"Konflikt",s:"mittel",q:"Was beschreibt Transaktionsanalyse (TA) im Kontext von Konflikten?",
+   a:["Drei Ich-Zustände: Eltern-Ich (normativ/fürsorglich), Erwachsenen-Ich (rational), Kind-Ich (spontan/rebellisch).","Konflikte entstehen oft durch 'überkreuzte Transaktionen' (Erwartetes Ich-Zustand wird nicht bedient).","Ziel in Führungsgesprächen: im Erwachsenen-Ich kommunizieren.","TA ist veraltet und hat keine praktische Relevanz mehr."],
+   r:[0,1,2],e:"Berne: Erwachsenen-Ich = sachlich, faktenbasiert, respektvoll. Häufige FK-Falle: Eltern-Ich ('Du musst…', 'Du solltest…') → provoziert Kind-Ich beim MA (Trotz oder Anpassung). Ziel: Erwachsener spricht mit Erwachsenem."},
+
+  {id:"KO19",k:"Konflikt",s:"leicht",q:"Was sind Merkmale eines fairen Verhandlungsprozesses?",
+   a:["Beide Seiten kommen vollständig zu Wort ohne Unterbrechung.","Argumente werden sachlich bewertet, nicht nach Status des Sprechers.","Ergebnisse werden schriftlich festgehalten und von beiden Seiten bestätigt.","Faire Verhandlungen erfordern immer einen externen Schiedsrichter."],
+   r:[0,1,2],e:"Faires Verfahren (Tyler): Prozessgerechtigkeit (fairer Prozess) oft wichtiger als Ergebnisgerechtigkeit. MA akzeptieren schlechte Entscheidungen leichter wenn der Prozess fair war. Dokumentation = Verbindlichkeit + Schutz."},
+
+  {id:"KO20",k:"Konflikt",s:"schwer",q:"Was ist Konfliktkompetenz als Führungsfähigkeit?",
+   a:["Fähigkeit, Konflikte frühzeitig zu erkennen und produktiv anzusprechen.","Allparteilichkeit: alle Perspektiven ernst nehmen ohne Partei zu ergreifen.","Deeskalations- und Moderationsfähigkeit in emotional aufgeladenen Situationen.","Konfliktkompetente FK haben selbst nie Konflikte."],
+   r:[0,1,2],e:"Konfliktkompetenz = proaktiv (früh erkennen) + allparteilich (nicht urteilen) + deeskalierend (Temperatur senken) + lösungsfokussiert. Nicht: Konflikte vermeiden oder immer schlichten. Manchmal muss FK entscheiden wenn Einigung nicht möglich."},
+
+  // ── PERSONAL ERWEITERT (P11–P20) ──────────────────────────────────────────
+  {id:"P11",k:"Personal",s:"leicht",q:"Was sind Grundsätze des AGG (Allgemeines Gleichbehandlungsgesetz)?",
+   a:["Verbot von Diskriminierung aufgrund von Geschlecht, Alter, Herkunft, Religion, Behinderung, sexueller Orientierung.","Gilt für Einstellung, Kündigung, Beförderung und Arbeitsbedingungen.","Arbeitgeber muss bei Verstößen Schadenersatz leisten.","AGG gilt ausschließlich für die Einstellungsphase, nicht für den laufenden Betrieb."],
+   r:[0,1,2],e:"AGG (2006): 8 Merkmale. Gilt für gesamte Beschäftigung. Beweislastumkehr: AG muss beweisen, dass keine Diskriminierung vorlag wenn MA Indizien vorträgt. FK-Pflicht: diskriminierende Stellenausschreibungen vermeiden."},
+
+  {id:"P12",k:"Personal",s:"mittel",q:"Was sind Aufgaben des Betriebsrats bei Personalentscheidungen?",
+   a:["Mitbestimmung bei Einstellungen, Versetzungen, Umgruppierungen.","Anhörungsrecht bei ordentlichen Kündigungen.","Mitbestimmung bei betrieblichen Regelungen (Arbeitszeit, Urlaub, Leistungsbeurteilung).","Der Betriebsrat kann Personalentscheidungen des AG einseitig treffen."],
+   r:[0,1,2],e:"BetrVG: Mitbestimmung (echtes Vetorecht) vs. Mitwirkung (Anhörung). Mitbestimmung: Einstellung, Versetzung, Kündigung (Anhörung), Arbeitszeit, Urlaub. FK muss BR frühzeitig einbinden — nachträgliche 'Beteiligung' ist rechtlich unwirksam."},
+
+  {id:"P13",k:"Personal",s:"schwer",q:"Was sind Merkmale einer rechtssicheren Abmahnung?",
+   a:["Konkreter Vorwurf: genau beschriebenes Fehlverhalten (Datum, Uhrzeit, Vorfall).","Rüge: klare Missbilligung des Verhaltens.","Androhung: bei Wiederholung wird das Arbeitsverhältnis gekündigt.","Abmahnungen dürfen nur mündlich ausgesprochen werden."],
+   r:[0,1,2],e:"Abmahnung: 3 Elemente zwingend (Bezeichnung, Rüge, Androhung). Schriftlich empfohlen (Beweissicherung). Nur verhaltensbedingte Verstöße (nicht personenbedingt). Veraltete Abmahnungen (>2 Jahre) verlieren Wirkung. Gegendarstellung des MA ins Personalakt."},
+
+  {id:"P14",k:"Personal",s:"mittel",q:"Was sind die Kündigungsarten im deutschen Arbeitsrecht?",
+   a:["Ordentliche Kündigung: fristgerecht, Kündigungsschutzgesetz greift (>10 MA, >6 Monate Betriebszugehörigkeit).","Außerordentliche (fristlose) Kündigung: nur bei wichtigem Grund möglich (§626 BGB).","Änderungskündigung: Kündigung verbunden mit Angebot neuer Vertragsbedingungen.","Arbeitgeber kann jederzeit ohne Begründung kündigen."],
+   r:[0,1,2],e:"Kündigungsschutz (KSchG): gilt ab 10 MA und 6 Monate. Kündigung braucht sozialen Rechtfertigungsgrund: personenbedingt (Krankheit), verhaltensbedingt (nach Abmahnung), betriebsbedingt (wirtschaftlich). Betriebsrat muss angehört werden (§102 BetrVG)."},
+
+  {id:"P15",k:"Personal",s:"mittel",q:"Was ist das 360-Grad-Feedback?",
+   a:["Feedback von FK, Kollegen, MA (Untergebenen) und ggf. Kunden gleichzeitig.","Liefert umfassendes Bild durch verschiedene Perspektiven.","Ziel: Entwicklung der beurteilten Person, nicht Sanktion.","360-Grad-Feedback eignet sich gut für Gehalts- und Beförderungsentscheidungen."],
+   r:[0,1,2],e:"360-Grad: Multi-Source-Feedback. Stärke: blinde Flecken sichtbar machen (Johari). Schwäche: Anonymität kann Ehrlichkeit erhöhen aber auch Verzerrungen einladen. Für Entwicklung: sehr wirksam. Für Gehalts-/Beförderungsentscheidungen: ungeeignet (Interessenkonflikte)."},
+
+  {id:"P16",k:"Personal",s:"leicht",q:"Was sind Ziele der Potenzialanalyse?",
+   a:["Zukünftige Leistungs- und Entwicklungsfähigkeit eines MA einschätzen.","Grundlage für Nachfolgeplanung und Entwicklungsinvestitionen.","Unterscheidet sich von Leistungsbeurteilung (Vergangenheit) durch Zukunftsorientierung.","Potenzialanalysen sind ausschließlich für externe Bewerber relevant."],
+   r:[0,1,2],e:"Potenzial ≠ Leistung. Leistungsbeurteilung: Was hat der MA bisher geleistet? Potenzialanalyse: Was kann der MA in Zukunft leisten? Tools: Assessment Center, strukturierte Interviews, psychometrische Tests. Basis für Talent Management."},
+
+  {id:"P17",k:"Personal",s:"schwer",q:"Was sind Grundsätze der leistungsorientierten Vergütung?",
+   a:["Variable Vergütungsanteile an messbare Ziele koppeln (MbO).","Transparenz: MA muss verstehen wie Vergütung berechnet wird.","Fairness: gleiche Leistung = gleiche Vergütung (Adams Equity Theory).","Leistungsorientierte Vergütung steigert immer die intrinsische Motivation."],
+   r:[0,1,2],e:"Leistungsvergütung: wirksam für einfache, messbare Tätigkeiten. Für komplexe/kreative Arbeit: Korrumpierungseffekt möglich (Pink/Deci). Wichtig: klare Ziele, faire Messung, Nachvollziehbarkeit. Betriebsrat hat Mitbestimmungsrecht bei Vergütungssystemen."},
+
+  {id:"P18",k:"Personal",s:"mittel",q:"Was beschreibt Talent Management in Organisationen?",
+   a:["Systematische Identifikation, Entwicklung und Bindung von Leistungsträgern.","Nachfolgeplanung: wer übernimmt Schlüsselpositionen wenn FK ausscheidet?","Talente brauchen besondere Förderung UND besondere Anforderungen.","Talent Management ist nur für das Senior Management relevant."],
+   r:[0,1,2],e:"Talent Management: High Potentials brauchen Herausforderung + Entwicklung + Perspektive. Fehler: Talente in Ruhe lassen weil sie gut laufen → innerliche Kündigung. Nachfolgeplanung: in Deutschland oft vernachlässigt → Wissensrisiko."},
+
+  {id:"P19",k:"Personal",s:"leicht",q:"Was sind Aufgaben der Personalplanung?",
+   a:["Bedarfsplanung: Wie viele MA mit welchen Qualifikationen werden künftig benötigt?","Deckungsplanung: Wie wird der Bedarf gedeckt (intern/extern)?","Maßnahmenplanung: Einstellung, Entwicklung, Freisetzung.","Personalplanung ist Aufgabe der Unternehmensführung und nicht der Linien-FK."],
+   r:[0,1,2],e:"Personalplanung: quantitativ (Anzahl) + qualitativ (Kompetenzen) + zeitlich (wann). Instrumente: Altersstrukturanalyse, Qualifikationsmatrix, Fluktuationsanalyse. Linien-FK liefert Input (Bedarfsplanung), HR koordiniert."},
+
+  {id:"P20",k:"Personal",s:"schwer",q:"Was sind Merkmale eines professionellen Trennungsgesprächs?",
+   a:["Klare, direkte Kommunikation der Entscheidung — keine falschen Hoffnungen wecken.","Würdevolle Behandlung: Leistungen anerkennen, mit Respekt trennen.","Rechtlich korrekt: Kündigungsschutz, Fristen, Zeugnisanspruch beachten.","Trennungsgespräche sollen möglichst aufgeschoben werden bis der MA selbst kündigt."],
+   r:[0,1,2],e:"Trennungsgespräch (Harvard-Prinzip): klar, kurz, korrekt, würdevoll. Fehler: Hinhaltetaktik (moralisch und rechtlich problematisch), falsche Freundlichkeit. 'Outplacement' als faire Unterstützung. Zeugnis: fristgerecht, wohlwollend."},
+
+  // ── BGM ERWEITERT (B11–B20) ───────────────────────────────────────────────
+  {id:"B11",k:"BGM",s:"mittel",q:"Was beschreibt das Konzept Work-Life-Balance?",
+   a:["Ausgewogenes Verhältnis zwischen beruflichen Anforderungen und privater Erholung.","Grenzen zwischen Arbeit und Privatleben schützen (Abschalten ermöglichen).","FK-Vorbildfunktion: keine E-Mails nach Feierabend erwarten, Urlaub respektieren.","Work-Life-Balance ist ausschließlich ein privates Problem jedes MA."],
+   r:[0,1,2],e:"Work-Life-Balance: AG-Verantwortung durch Arbeitszeitgesetz (ArbZG), betriebliche Regelungen. FK-Fehler: Erreichbarkeit 24/7 erwarten (implizit durch eigenes Verhalten). Neuerer Begriff: Work-Life-Integration (Grenzen flexibler, aber bewusst gesetzt)."},
+
+  {id:"B12",k:"BGM",s:"leicht",q:"Was sind ergonomische Grundsätze am Arbeitsplatz?",
+   a:["Bildschirmarbeit: Monitor auf Augenhöhe, 50–70 cm Abstand, kein Gegenlicht.","Sitzposition: 90° Hüftwinkel, Füße flach auf Boden, Unterarme auf Unterlage.","Regelmäßige Unterbrechungen: alle 45–60 Minuten Bewegungspausen.","Ergonomie ist ausschließlich für Büroarbeitsplätze relevant."],
+   r:[0,1,2],e:"Ergonomie (ArbStättV): Bildschirmarbeitsplatzverordnung regelt Monitor, Beleuchtung, Klima. Produktionsergonomie: Hebelasten (max. 25 kg für Männer, 15 kg für Frauen gelegentlich), Griffhöhen, Wiederholbewegungen (Muskel-Skelett-Erkrankungen = häufigste Fehlzeitenursache)."},
+
+  {id:"B13",k:"BGM",s:"mittel",q:"Was sind Symptome und Ursachen von chronischem Stress?",
+   a:["Symptome: Schlafstörungen, Konzentrationsprobleme, erhöhte Reizbarkeit, Magen-Darm-Beschwerden.","Ursachen: Überforderung, Kontrollverlust, soziale Konflikte, Rollenunklarheit.","Chronischer Stress erhöht das Risiko für Herz-Kreislauf-Erkrankungen, Depression, Burnout.","Stress ist ausschließlich durch medikamentöse Behandlung reduzierbar."],
+   r:[0,1,2],e:"Karasek-Modell: Stress entsteht wenn Anforderungen hoch UND Handlungsspielraum niedrig. Lösung: entweder Anforderungen reduzieren ODER Handlungsspielraum erhöhen. FK kann beides beeinflussen. Soziale Unterstützung puffert Stresswirkung."},
+
+  {id:"B14",k:"BGM",s:"schwer",q:"Was sind evidenzbasierte Stressbewältigungsstrategien?",
+   a:["Problemorientiertes Coping: Stressor direkt angehen und verändern.","Emotionsorientiertes Coping: eigene Reaktion auf Stressor regulieren.","Bewegung und Sport: nachweislich stressreduzierend durch Cortisolabbau.","Vermeidungscoping (Stressor ignorieren) ist langfristig die effektivste Strategie."],
+   r:[0,1,2],e:"Lazarus Coping: Problemorientiert wenn Stressor veränderbar, emotionsorientiert wenn nicht. Vermeidung = kurzfristig entlastend, langfristig problematisch. Bewegung: 30 Min/Tag moderate Aktivität reduziert Cortisol signifikant. Achtsamkeit (MBSR) = evidenzbasiert."},
+
+  {id:"B15",k:"BGM",s:"mittel",q:"Was beschreibt das Konzept 'Präsentismus'?",
+   a:["Krank oder eingeschränkt arbeitsfähig trotzdem zur Arbeit erscheinen.","Präsentismus kostet Unternehmen mehr als Absentismus (Fehlzeiten).","Ursachen: Arbeitsdruck, Angst vor Konsequenzen, fehlende Vertretungsregelungen.","Präsentismus ist ein positives Zeichen von hohem Engagement."],
+   r:[0,1,2],e:"Johns (2010): Präsentismus kostet ca. 2-3× mehr als Absentismus (Fehler, langsame Genesung, Ansteckung). FK-Signale die Präsentismus fördern: 'Du fehlst schon wieder', Lob für Kommen trotz Krankheit. BGM-Aufgabe: Präsentismus-Kultur abbauen."},
+
+  {id:"B16",k:"BGM",s:"leicht",q:"Was sind Aufgaben des Betriebsarztes?",
+   a:["Arbeitsmedizinische Vorsorgeuntersuchungen durchführen und bewerten.","Bei der Gefährdungsbeurteilung beraten und unterstützen.","Betriebsbegehungen zur Identifikation von Gesundheitsrisiken.","Der Betriebsarzt entscheidet ob ein MA arbeitsfähig ist oder nicht."],
+   r:[0,1,2],e:"Betriebsarzt (ASiG): beratende Funktion — trifft keine Entscheidungen über Arbeitsfähigkeit (das ist Aufgabe des behandelnden Arztes). Schweigepflicht gegenüber AG. FK darf Betriebsarzt nicht auffordern, MA-Diagnosen mitzuteilen."},
+
+  {id:"B17",k:"BGM",s:"mittel",q:"Was sind Faktoren einer gesundheitsförderlichen Führung?",
+   a:["Klare Kommunikation: Erwartungen, Ziele und Rahmenbedingungen transparent machen.","Wertschätzung: regelmäßige, echte Anerkennung von Leistungen.","Handlungsspielräume geben: MA Einfluss auf ihre Arbeit ermöglichen.","Gesunde Führung bedeutet: MA niemals kritisieren oder fordern."],
+   r:[0,1,2],e:"Gesundheitsförderliche Führung (Stadler/Spieß): Klarheit + Wertschätzung + Autonomie. Karasek: Handlungsspielraum puffert Stresswirkung. BGM-Studie: FK-Verhalten erklärt 30-40% der MA-Gesundheit im Betrieb."},
+
+  {id:"B18",k:"BGM",s:"schwer",q:"Was beschreibt das Demand-Control-Support-Modell nach Karasek/Johnson?",
+   a:["Hohe Anforderungen + niedriger Handlungsspielraum = höchstes Stress-/Erkrankungsrisiko.","Soziale Unterstützung durch FK und Kollegen puffert die Stresswirkung.","Aktive Arbeit (hohe Anforderungen + hoher Handlungsspielraum) = motivierend, Lernchance.","Stress entsteht ausschließlich durch zu viel Arbeit, nicht durch Handlungsspielraum."],
+   r:[0,1,2],e:"Karasek/Johnson-Modell: 4 Quadranten. High Strain (hohe Anforderung, niedrig Kontrolle) = höchstes Herzinfarktrisiko. Active Job (hoch/hoch) = motivierend. FK kann Kontrolle erhöhen durch Delegation + klare Ziele statt Micromanagement."},
+
+  {id:"B19",k:"BGM",s:"mittel",q:"Was sind Ziele einer Gefährdungsbeurteilung psychischer Belastungen?",
+   a:["Psychische Belastungen systematisch identifizieren (Arbeitsintensität, Emotionsarbeit, soziale Beziehungen).","Maßnahmen zur Reduzierung entwickeln und dokumentieren.","Wirksamkeit der Maßnahmen überprüfen (PDCA-Zyklus).","Psychische Gefährdungsbeurteilungen sind in Deutschland freiwillig."],
+   r:[0,1,2],e:"§5 ArbSchG: Pflicht des AG seit 2013 auch für psychische Belastungen. GBU-Psyche: Arbeitsintensität, Handlungsspielraum, soziale Unterstützung, Arbeitszeit, emotionale Anforderungen. Häufiger Fehler: GBU wird durchgeführt, Maßnahmen aber nicht umgesetzt."},
+
+  {id:"B20",k:"BGM",s:"leicht",q:"Was sind Angebote eines umfassenden BGM-Programms?",
+   a:["Verhaltensebene: Gesundheitskurse, Raucherentwöhnung, Ernährungsberatung.","Verhältnisebene: Ergonomie, Arbeitszeitgestaltung, Führungskräfteentwicklung.","Employee Assistance Program (EAP): externe Beratung für private und berufliche Probleme.","BGM-Programme sind ausschließlich für MA unter 40 Jahren wirksam."],
+   r:[0,1,2],e:"Ganzheitliches BGM: Verhalten (individuelle Maßnahmen) + Verhältnisse (strukturelle Maßnahmen) + Führung (FK als Gesundheitsarchitekt). EAP: externe, anonyme Beratung — niedrigschwellig und wirksam. ROI BGM: 1:2,70 bis 1:10 je nach Studie."},
+
+  // ── DIGITAL LEADERSHIP (D01–D15) — neue Kategorie ─────────────────────────
+  {id:"D01",k:"Digital Leadership",s:"leicht",q:"Was sind Kernkompetenzen eines Chief Digital Officers (CDO)?",
+   a:["Digitale Strategie entwickeln und implementieren.","Change Management: digitale Transformation mit Mitarbeitenden gestalten.","Technologie-Know-how kombiniert mit Führungs- und Kommunikationskompetenz.","CDO-Aufgabe ist ausschließlich die Beschaffung von IT-Hardware."],
+   r:[0,1,2],e:"CDO: 3 Kernkompetenzen = Digital Strategy (Was digitalisieren? Warum?) + Change (Wie Menschen mitnehmen?) + Technology Literacy (Möglichkeiten kennen ohne selbst programmieren zu müssen). FK-Rolle: Brücke zwischen Business und IT."},
+
+  {id:"D02",k:"Digital Leadership",s:"mittel",q:"Was beschreibt der Reifegrad-Ansatz der digitalen Transformation?",
+   a:["Unternehmen durchlaufen Stufen: Digitalisierung → Digitale Optimierung → Digitale Transformation.","Digitalisierung: analoge Prozesse digital abbilden (z.B. Papier → PDF).","Digitale Transformation: Geschäftsmodelle und Wertschöpfung grundlegend verändern.","Digitalisierung und digitale Transformation sind identisch."],
+   r:[0,1,2],e:"Reifegrade: 1)Digitization (analog → digital) 2)Digitalization (Prozesse optimieren mit digitalen Mitteln) 3)Digital Transformation (neues Geschäftsmodell, neue Wertschöpfung). Viele Unternehmen verwechseln Stufe 1 mit Stufe 3."},
+
+  {id:"D03",k:"Digital Leadership",s:"mittel",q:"Was sind typische Widerstände gegen Digitalisierung in Unternehmen?",
+   a:["Angst vor Jobverlust durch Automatisierung.","Komfortzonen: bewährte Prozesse aufzugeben kostet Überwindung.","Fehlende digitale Kompetenz erzeugt Unsicherheit und Abwehr.","Widerstand gegen Digitalisierung ist ausschließlich auf ältere MA über 50 beschränkt."],
+   r:[0,1,2],e:"Digitalisierungswiderstände sind altersunabhängig — viele Digital Natives zeigen Widerstand wenn ihr Arbeitsbereich betroffen ist. Strategie: Kompetenzaufbau (Schulung), Beteiligung (Co-Design), Kommunikation (Warum? Was ändert sich nicht?)."},
+
+  {id:"D04",k:"Digital Leadership",s:"leicht",q:"Was beschreibt OKR (Objectives & Key Results)?",
+   a:["Zielrahmenwerk: Objectives = ambitionierte qualitative Ziele, Key Results = messbare Ergebnisse.","Transparenz: OKRs sind für alle sichtbar (keine Silos).","Kurze Zyklen: OKRs werden quartalsweise (nicht jährlich) gesetzt.","OKR ersetzt vollständig die klassische Personalbeurteilung."],
+   r:[0,1,2],e:"OKR (Doerr/Google): Objective = inspirierende Richtung ('Wir werden der qualitativ beste Lieferant in Europa'). Key Result = messbar, zeitgebunden. 3–5 KRs pro Objective. 70% Zielerreichung = Erfolg (zu leichte Ziele sind falsch). OKR ergänzt MA-Gespräche."},
+
+  {id:"D05",k:"Digital Leadership",s:"mittel",q:"Was ist künstliche Intelligenz (KI) und welche Arten gibt es?",
+   a:["KI: Systeme die menschenähnliche kognitive Fähigkeiten simulieren (Lernen, Schlussfolgern).","Narrow AI: auf eine spezifische Aufgabe spezialisiert (z.B. Bilderkennung, Empfehlung).","Generative AI (z.B. ChatGPT): erzeugt neue Inhalte (Text, Bild, Code) basierend auf Training.","Aktuelle KI-Systeme haben allgemeines Bewusstsein und können jede menschliche Aufgabe erledigen."],
+   r:[0,1,2],e:"Narrow AI = heute verfügbar und weit verbreitet. General AI (AGI) = theoretisch, noch nicht realisiert. Generative KI: große Sprachmodelle (LLMs) wie GPT, Claude — erzeugen Texte durch Mustererkennung. Keine echte 'Intelligenz' oder Bewusstsein."},
+
+  {id:"D06",k:"Digital Leadership",s:"mittel",q:"Was sind Einsatzbereiche von KI in der Produktion (Industrie 4.0)?",
+   a:["Predictive Maintenance: Maschinenausfälle vorhersagen bevor sie eintreten.","Qualitätskontrolle: Bildverarbeitung erkennt Fehler schneller und zuverlässiger als Menschen.","Prozessoptimierung: KI optimiert Taktzeiten, Durchlaufzeiten, Rüstzeiten.","KI kann in der Produktion ausschließlich administrative Aufgaben übernehmen."],
+   r:[0,1,2],e:"Industrie 4.0 KI-Anwendungen: Predictive Maintenance (senkt ungeplante Stillstände um 30-50%), Qualitätskontrolle (Defect Detection >99% Genauigkeit), Prozessoptimierung (OEE-Steigerung). Shopfloor + KI = Andi's Kernkompetenz-Kombination."},
+
+  {id:"D07",k:"Digital Leadership",s:"leicht",q:"Was beschreibt Datenkompetenz (Data Literacy) als Führungsfähigkeit?",
+   a:["Fähigkeit, Daten zu lesen, zu interpretieren und für Entscheidungen zu nutzen.","Kritische Bewertung: Daten können manipuliert oder fehlinterpretiert sein.","Kommunikation von Daten: Erkenntnisse verständlich für nicht-technische Stakeholder.","Data Literacy erfordert, selbst programmieren zu können (Python, SQL)."],
+   r:[0,1,2],e:"Data Literacy ≠ Data Science. FK muss keine Algorithmen schreiben können, aber: KPIs verstehen, Diagramme interpretieren, Fehlschlüsse erkennen (Korrelation ≠ Kausalität). Im Shopfloor: OEE-Dashboard verstehen = bereits Data Literacy."},
+
+  {id:"D08",k:"Digital Leadership",s:"mittel",q:"Was sind Prinzipien agiler Methoden (Scrum, Kanban)?",
+   a:["Scrum: iterative Sprints (1–4 Wochen), Daily Standups, klare Rollen (PO, SM, Team).","Kanban: kontinuierlicher Fluss, WIP-Limits (Work in Progress), Engpässe sichtbar machen.","Beide Methoden: Transparenz über den Arbeitsstand für alle Beteiligten.","Agile Methoden sind ausschließlich für Softwareentwicklung geeignet."],
+   r:[0,1,2],e:"Scrum = strukturiert, iterativ (gut für neue Produkte). Kanban = fließend, kontinuierlich (gut für Support und Betrieb). Beide in Produktion: Kanban-Boards für KVP-Teams, Scrum für Digitalisierungsprojekte. Shopfloor-Management = analoges Kanban."},
+
+  {id:"D09",k:"Digital Leadership",s:"schwer",q:"Was beschreibt Design Thinking als Innovationsmethode?",
+   a:["Menschenzentrierter Ansatz: Nutzerbedürfnisse zuerst verstehen, dann lösen.","5 Phasen: Empathize → Define → Ideate → Prototype → Test.","Fehler früh und günstig machen (Prototyping) statt erst bei Markteinführung.","Design Thinking ist ausschließlich für Produktdesigner relevant."],
+   r:[0,1,2],e:"Design Thinking (IDEO/Stanford d.school): Empathy = Nutzer verstehen. Define = Problem präzise fassen. Ideate = divergent denken (Quantität vor Qualität). Prototype = schnell bauen. Test = validieren. Anwendbar auf Prozessprobleme im Shopfloor."},
+
+  {id:"D10",k:"Digital Leadership",s:"mittel",q:"Was sind Erfolgsfaktoren für digitale Transformationsprojekte?",
+   a:["Top-Management-Commitment: ohne Rückhalt von oben scheitern 70% aller Projekte.","MA-Einbindung: Betroffene zu Beteiligten machen (Co-Design statt Top-Down).","Quick Wins: frühe sichtbare Erfolge sichern Akzeptanz und Momentum.","Digitale Transformation kann vollständig an externe Berater delegiert werden."],
+   r:[0,1,2],e:"McKinsey: 70% digitaler Transformationen scheitern. Hauptursachen: fehlende Führung, Widerstand MA, unklare Strategie. Erfolgsfaktoren: Vision + Commitment + Kompetenz + Quick Wins + Kommunikation. Externe Berater können unterstützen, aber nicht führen."},
+
+  {id:"D11",k:"Digital Leadership",s:"leicht",q:"Was ist ein MVP (Minimum Viable Product) im agilen Kontext?",
+   a:["Kleinstmögliche Version eines Produkts/Prozesses mit der wichtigsten Funktionalität.","Ziel: schnell echtes Nutzer-Feedback erhalten bevor mehr investiert wird.","'Build-Measure-Learn'-Zyklus: bauen → messen → lernen → iteration.","MVP bedeutet: ein möglichst vollständiges, perfektes Produkt auf den Markt bringen."],
+   r:[0,1,2],e:"Ries (Lean Startup): MVP ≠ billiges Produkt. MVP = kleinste Einheit um wichtigste Hypothese zu testen. Im Shopfloor: Pilot-Linie für neue Digitallösung = MVP. Fehler vermeiden: zu lange entwickeln bevor getestet wird (Wasserfall-Falle)."},
+
+  {id:"D12",k:"Digital Leadership",s:"schwer",q:"Was sind ethische Herausforderungen beim KI-Einsatz in Unternehmen?",
+   a:["Bias: KI-Systeme können Diskriminierung aus Trainingsdaten reproduzieren und verstärken.","Transparenz: 'Black Box'-Entscheidungen sind für Betroffene nicht nachvollziehbar.","Datenschutz (DSGVO): personenbezogene Daten dürfen nicht ohne Rechtsgrundlage verarbeitet werden.","KI-Systeme sind immer objektiv und frei von Diskriminierung."],
+   r:[0,1,2],e:"KI-Ethik (EU AI Act): Hochrisiko-KI (z.B. in HR: Einstellungs-KI) = strenge Anforderungen. Bias-Beispiel: Amazon-Einstellungs-KI diskriminierte Frauen weil Trainingsdaten von historisch männlich dominierter Belegschaft stammten. DSGVO: Betriebsrat bei MA-Monitoring einbinden."},
+
+  {id:"D13",k:"Digital Leadership",s:"mittel",q:"Was beschreibt Lean Management in Verbindung mit Digitalisierung?",
+   a:["Digitalisierung schlechter Prozesse macht schlechte Prozesse schneller — zuerst optimieren.","Lean-Prinzipien (Verschwendung eliminieren) sind Grundlage für erfolgreiche Digitalisierung.","Digitale Tools (MES, ERP) unterstützen Lean-Prinzipien: Transparenz, Flussprinzip, Pull.","Lean und Digitalisierung widersprechen sich grundsätzlich."],
+   r:[0,1,2],e:"'Digitize, don't Leanize later' — häufiger Fehler. Lean first, then digital: Toyota-Prinzip. MES (Manufacturing Execution System) = digitales Shopfloor-Management. OEE-Monitoring in Echtzeit = Lean-Kennzahl + digitales Tool. Andi's Kernthema."},
+
+  {id:"D14",k:"Digital Leadership",s:"leicht",q:"Was beschreibt Cybersecurity als Führungsaufgabe?",
+   a:["MA-Sensibilisierung: Phishing, Social Engineering, Passwort-Hygiene.","Prozesse für Datensicherheit etablieren (wer darf auf was zugreifen).","Incident Response: klare Eskalationswege wenn Sicherheitsvorfälle auftreten.","Cybersecurity ist ausschließlich Aufgabe der IT-Abteilung."],
+   r:[0,1,2],e:"80% der Cyberangriffe nutzen menschliche Schwachstellen (Social Engineering, Phishing). FK-Aufgabe: Bewusstsein schaffen, Prozesse etablieren, Meldewege klären. 'Security by Design': Sicherheit von Anfang an mitdenken, nicht nachträglich."},
+
+  {id:"D15",k:"Digital Leadership",s:"schwer",q:"Was sind Kennzahlen (KPIs) für digitale Transformationen?",
+   a:["Prozess-KPIs: Durchlaufzeit-Reduktion, Fehlerquote, Automatisierungsgrad.","Mitarbeiter-KPIs: digitale Kompetenz-Score, Akzeptanzrate neuer Tools.","Business Impact KPIs: ROI der Digitalisierung, Umsatz durch neue digitale Kanäle.","Digitale Transformation kann nicht gemessen werden — nur qualitativ bewertet."],
+   r:[0,1,2],e:"KPI-Systematik für Digitalisierung: Input (Investition), Output (Automatisierungsgrad, Fehlerquote), Outcome (Kundenzufriedenheit, Durchlaufzeit) und Impact (ROI, strategischer Wettbewerbsvorteil). OEE = perfekter KPI für Produktionsdigitalisierung."},
+
+  // ── FÜHRUNG BONUS (F33–F37) ────────────────────────────────────────────────
+  {id:"F33",k:"Führung",s:"mittel",q:"Was beschreibt das Konzept der kollegialen Führung (Shared Leadership)?",
+   a:["Führungsaufgaben werden auf mehrere Schultern im Team verteilt.","Nicht eine Person führt — das Team übernimmt Führungsfunktionen situativ.","Voraussetzung: hoher Reifegrad aller Teammitglieder (R4 nach Hersey/Blanchard).","Shared Leadership ersetzt immer die formale Führungskraft vollständig."],
+   r:[0,1,2],e:"Shared Leadership: Teammitglied mit höchster Kompetenz für ein Thema übernimmt temporär die Führung. Selbstorganisierte Teams (Scrum, Holakratie). Voraussetzung: Vertrauen, Kompetenz, psychologische Sicherheit. FK-Rolle wandelt sich zum Coach/Enabler."},
+
+  {id:"F34",k:"Führung",s:"leicht",q:"Was sind Merkmale einer wirksamen Teambesprechung (Shopfloor-Meeting)?",
+   a:["Regelmäßig und zur festen Zeit (Ritualcharakter schafft Verbindlichkeit).","Kurz und fokussiert: stehend, Agenda, max. 15-20 Minuten.","Kennzahlen sichtbar machen: OEE, Fehler, Fehlzeiten — Fakten statt Meinungen.","Teamgespräche ohne Agenda und ohne Zeitlimit sind am effektivsten."],
+   r:[0,1,2],e:"Shopfloor Management: Tägliche Stand-ups vor Ort, Kennzahlen-Boards (visuelles Management), Probleme sofort ansprechen. Toyota-Prinzip: 'Geh hin, sieh selbst' (Gemba). MbWA auf Systemebene. Direkter Transfer zur täglichen Führungspraxis."},
+
+  {id:"F35",k:"Führung",s:"schwer",q:"Was beschreibt das Modell der 4 Disziplinen der Umsetzung (4DX)?",
+   a:["Fokus auf das Wichtigste (Wildly Important Goal, WIG): weniger ist mehr.","Handeln auf die Vorlaufindikatoren (Lead Measures), nicht die Ergebnisse (Lag Measures).","Führen eines verbindlichen Scoreboards: Fortschritt für alle sichtbar machen.","Gegenseitige Rechenschaft (Accountability): regelmäßige Commitments im Team."],
+   r:[0,1,2,3],e:"McChesney/Covey (4DX): 1)WIG (ein klares Hauptziel) 2)Lead Measures (was kann ich heute tun?) 3)Scoreboard (visuell, motivierend) 4)Accountability-Meeting (weekly, 20 Min.: Was habe ich letzte Woche getan? Was tue ich diese Woche?). Direkte Verbindung zu KVP und OKR."},
+
+  {id:"F36",k:"Führung",s:"mittel",q:"Was beschreibt Empowerment als Führungskonzept?",
+   a:["MA erhalten Befugnisse, Ressourcen und Informationen, um eigenständig zu entscheiden.","Empowerment steigert Motivation, Eigenverantwortung und Reaktionsgeschwindigkeit.","Voraussetzungen: klare Ziele, ausreichende Kompetenz, Fehlertoleranz der FK.","Empowerment ist nur für hochqualifizierte Wissensarbeiter geeignet."],
+   r:[0,1,2],e:"Empowerment ≠ Kontrollverlust. Rahmen setzen (Ziele, Grenzen) + Freiheit geben (wie) = Empowerment. Marquet: 'Move the authority to the information, not the information to the authority.' Im Shopfloor: Schichtführer ermächtigen, Produktionsprobleme direkt zu lösen."},
+
+  {id:"F37",k:"Führung",s:"leicht",q:"Was ist der Unterschied zwischen operativer und strategischer Führung?",
+   a:["Operative Führung: kurzfristig, Tagesgeschäft, konkrete Aufgaben und Probleme.","Strategische Führung: langfristig, Richtungsentscheidungen, Zukunftssicherung.","FK auf allen Ebenen müssen beide Perspektiven verbinden können.","Strategische Führung ist ausschließlich Aufgabe des Top-Managements."],
+   r:[0,1,2],e:"Operative FK (Meister, Schichtführer): dominiert operativ, aber kennt strategischen Kontext. Middle Management: Verbindungsglied = übersetzt Strategie in operative Maßnahmen. Fehler: FK nur im Tagesgeschäft → keine Entwicklung, kein Wandel möglich."},
 ]
 
 // ── UTILS ──────────────────────────────────────────────────────────────────
@@ -306,7 +634,7 @@ function shuffle<T>(arr: T[]): T[] {
 const KATEGORIEN = [...new Set(DB.map(f => f.k))]
 const FARBEN: Record<string, string> = {
   "Führung": "#3B82F6", "Kommunikation": "#10B981", "Motivation": "#F59E0B",
-  "Konflikt": "#EF4444", "Personal": "#8B5CF6", "BGM": "#EC4899",
+  "Konflikt": "#EF4444", "Personal": "#8B5CF6", "BGM": "#EC4899", "Digital Leadership": "#06B6D4",
 }
 const SCHWFARBE: Record<string, string> = { leicht: "#10B981", mittel: "#F59E0B", schwer: "#EF4444" }
 
